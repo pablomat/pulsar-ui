@@ -9,6 +9,7 @@
   "to": 2,
   "data": [
     {
+      "oam_name": "OAM S.R.O.",
       "issuer_name": "Auchan",
       "home_member_state": "SP",
       "home_member_state_name": "Spain",
@@ -33,6 +34,7 @@
       "submission_date": "2008-09-15T00:00:00"
     },
     {
+      "oam_name": "LUOAM S.R.O.",
       "issuer_name": "Coca Cola SRO",
       "home_member_state": "LU",
       "home_member_state": "Luxembourg",
