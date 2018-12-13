@@ -3,7 +3,7 @@
   "per_page": 15,
   "current_page": 1,
   "last_page": 14,
-  "next_page_url": "https:\/\/vuetable.ratiw.net\/api\/users?page=2",
+  "next_page_url": \/api\/search.json?page=2",
   "prev_page_url": null,
   "from": 1,
   "to": 15,
@@ -11,6 +11,7 @@
     {
       "issuer_name": "Auchan",
       "home_member_state": "SP",
+      "home_member_state_name": "Spain",
       "identifier_id": 1,
       "identifier_name": "LEI",
       "identifier_value": "8156009F1ECE07075082",
@@ -34,6 +35,7 @@
     {
       "issuer_name": "Coca Cola SRO",
       "home_member_state": "LU",
+      "home_member_state": "Luxembourg",
       "identifier_id": 1,
       "identifier_name": "LEI",
       "identifier_value": "4000302021",
