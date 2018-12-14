@@ -11,6 +11,7 @@
     {
       "oam_name": "OAM S.R.O.",
       "issuer_name": "Auchan",
+      "issuer_name_identifier": "Auchan<br/>8156009F1ECE07075082",
       "home_member_state": "SP",
       "home_member_state_name": "Spain",
       "identifier_id": 1,
@@ -37,6 +38,7 @@
     {
       "oam_name": "LUOAM S.R.O.",
       "issuer_name": "Coca Cola SRO",
+      "issuer_name_identifier": "Coca Cola SRO<br/>4000302021",
       "home_member_state": "LU",
       "home_member_state_name": "Luxembourg",
       "identifier_id": 1,
