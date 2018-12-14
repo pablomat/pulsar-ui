@@ -37,7 +37,7 @@
       "oam_name": "LUOAM S.R.O.",
       "issuer_name": "Coca Cola SRO",
       "home_member_state": "LU",
-      "home_member_state": "Luxembourg",
+      "home_member_state_name": "Luxembourg",
       "identifier_id": 1,
       "identifier_name": "LEI",
       "identifier_value": "4000302021",
