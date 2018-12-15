@@ -5,7 +5,8 @@
   "main": "src/main.js",
   "private": true,
   "scripts": {
-    "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
+    "predev": "if [[ -z ${PUBLIC_HOSTNAME+x} ]]; then { PUBLIC_HOSTNAME=\"pulsar.blkcc.xyz\"; } fi",
+    "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js --public ${PUBLIC_HOSTNAME}",
     "start": "npm run dev",
     "unit": "jest --config test/unit/jest.conf.js --coverage",
     "test": "npm run unit",
