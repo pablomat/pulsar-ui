@@ -22,8 +22,8 @@
       "subclass": 3,
       "subclass_name": "Annual Financial Report",
       "disclosure_date": "2008-09-15T00:00:00",
-      "document_language": "sp",
-      "document_language_name": "Spanish",
+      "document_language": "en",
+      "document_language_name": "English",
       "comment": "Auchan Annual Financial Report",
       "financial_year": 2017,
       "tags": [
@@ -49,8 +49,8 @@
       "subclass": 3,
       "subclass_name": "Annual Financial Report",
       "disclosure_date": "2008-09-15T00:00:00",
-      "document_language": "sp",
-      "document_language_name": "Luxembourgish",
+      "document_language": "fr",
+      "document_language_name": "French",
       "comment": "Coca Cola Annual Financial Report",
       "financial_year": 2018,
       "tags": [
