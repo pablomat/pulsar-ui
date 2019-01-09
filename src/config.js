@@ -16,7 +16,7 @@ const STEEM_BLOCKS_PER_DAY = (24 * 60 * 60) / 3;
 const STEEM_SBD_START_PERCENT = 900;
 const STEEM_SBD_STOP_PERCENT = 1000;
 
-const APP_VERSION = "pulsar/0.0.1";
+const APP_VERSION = "pulsar/0.0.2";
 
 export default {
   SBD: SBD,
