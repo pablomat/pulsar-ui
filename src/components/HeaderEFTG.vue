@@ -1,39 +1,38 @@
-<template
-  ><div>
-    <div id="header">
-      <div id="brand">
-        <div id="logo"><img src="../assets/logo-eftg.png" /></div>
-        <div class="powered">
-          <div>OAM Portal</div>
-          <div class="secondary-text">Powered by Blockchain</div>
+<template>
+  <div>
+    <div class="full-container" id="header">
+      <div class="row">
+        <div class="col d-flex justify-content-start">
+          <div class="d-flex align-items-center">
+            <div id="logo-eftg"><img src="../assets/logo-eftg.png" /></div>
+          </div>          
         </div>
-      </div>
-      <div id="auth">
-        <div v-if="auth.logged">
-          <div
-            id="image-profile"
-            v-bind:style="{ backgroundImage: 'url(' + auth.imgUrl + ')' }"
-          >
-            <!--
-              <div v-if="validImageUrl(auth.imgUrl)">
-                <img :src="auth.imgUrl" />
-              </div>
-              <div v-else><img src="../assets/no-picture-profile.png" /></div>
-            -->
+        <div class="col d-flex justify-content-center">  
+          <div class="d-flex align-items-center">
+            <div id="logo-ec"><img src="../assets/logo2018commission.png" /></div>
           </div>
-          <button @click="logout">Logout</button>
         </div>
-        <div v-else><button @click="login">Login</button></div>
+        <div class="col d-flex justify-content-end">
+          <div class="d-flex align-items-center"> 
+            <div>           
+            <div v-if="auth.logged">
+              <div id="image-profile"
+                v-bind:style="{ backgroundImage: 'url(' + auth.imgUrl + ')' }"
+              >            
+              </div>
+              <button class="btn btn-primary" @click="logout">Logout</button>
+            </div>
+            <div v-else>
+              <button class="btn btn-primary" @click="login">Login</button>
+              <b-modal ref="modalAuth" hide-footer title="Login">
+                <Auth ref="auth" v-on:login="auth = $event;" v-on:close="hideModal"></Auth>
+              </b-modal>
+            </div>
+            </div>
+          </div>
+        </div>
       </div>
-      <div v-if="showModal">
-        <Auth
-          ref="auth"
-          v-on:login="auth = $event;"
-          v-on:close="showModal = false;"
-        >
-        </Auth>
-      </div>
-    </div>
+    </div>    
   </div>
 </template>
 
@@ -42,6 +41,9 @@ import Auth from "@/components/Auth";
 
 export default {
   name: "HeaderEFTG",
+  props: {
+    portal: ""
+  },
   data() {
     return {
       auth: {
@@ -76,7 +78,8 @@ export default {
     },
 
     login() {
-      this.showModal = true;
+      //this.showModal = true;
+      this.$refs.modalAuth.show()
     },
     logout() {
       console.log("@" + this.auth.user + " logout");
@@ -94,6 +97,9 @@ export default {
       localStorage.removeItem("username");
       localStorage.removeItem("password");
     },
+    hideModal() {
+      this.$refs.modalAuth.hide()
+    },
     validImageUrl(url) {
       return url && url.length > 0; //todo: validate the whole path
     }
@@ -106,39 +112,32 @@ export default {
 
 <style scoped>
 #header {
-  padding: 10px;
+  padding: 10px;  
   border-bottom: 1px solid #eee;
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.05);
 }
-
-#logo {
-  display: inline-block;
-  height: 2rem;
+#header .row{
+  margin: 0px !important;
 }
 
-#logo img {
+#logo-eftg {
+  display: inline-block;
+  height: 1.9rem;
+}
+
+#logo-eftg img {
   max-width: 100%;
   max-height: 100%;
 }
 
-#brand {
+#logo-ec {
   display: inline-block;
+  height: 3.7rem;
 }
 
-#auth {
-  display: flex;
-  justify-content: flex-end;
-  float: right;
-  align-items: center;
-  height: 2rem;
+#logo-ec img {
+  max-width: 100%;
   max-height: 100%;
-  //display: inline-block;
-  //float:right;
-}
-
-#auth div {
-  max-height: 100%;
-  vertical-align: middle;
 }
 
 #image-profile {
@@ -150,12 +149,7 @@ export default {
   background-size: cover;
   background-position: center center;
   border-radius: 50%;
-  //padding: 7px;
+  vertical-align: middle;
 }
 
-.powered {
-  display: inline-block;
-  margin-left: 10px;
-  font-size: 0.6rem;
-}
 </style>
