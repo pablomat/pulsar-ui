@@ -8,6 +8,7 @@ import Faq from '@/components/Faq'
 import Contact from '@/components/Contact'
 import Password from '@/components/Password'
 import Witnesses from '@/components/Witnesses'
+import Vote from '@/components/elections/Vote'
 import Page404 from '@/components/Page404'
 
 // Explorer
@@ -77,6 +78,11 @@ export default new Router({
       path: "/witnesses",
       name: "Witnesses",
       component: Witnesses
+    },
+    {
+      path: "/elections/vote",
+      name: "Vote",
+      component: Vote
     },
     {
       path: "/explorer",

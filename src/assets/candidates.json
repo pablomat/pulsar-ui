@@ -1,0 +1,38 @@
+[
+  {
+    "id": 1,
+    "name": "Alice",
+    "image": "https://image.shutterstock.com/image-photo/portrait-happy-casual-businesswoman-sweater-260nw-307218608.jpg",
+    "description": "Description 1"
+  },
+  {
+    "id": 2,
+    "name": "Bob",
+    "image": "https://image.shutterstock.com/image-photo/headshot-successful-smiling-cheerful-african-260nw-567772042.jpg",
+    "description": "Description 2"
+  },
+  {
+    "id": 3,
+    "name": "Carl",
+    "image": "https://image.shutterstock.com/image-photo/senior-business-man-bicycle-outdoors-260nw-703500976.jpg",
+    "description": "Description 3"
+  },
+  {
+    "id": 4,
+    "name": "Dany",
+    "image": "https://image.shutterstock.com/image-photo/young-businessman-working-laptop-office-260nw-395012614.jpg",
+    "description": "Description 4"
+  },
+  {
+    "id": 5,
+    "name": "Eve",
+    "image": "https://t3.ftcdn.net/jpg/00/88/92/28/240_F_88922803_Os70oHlzWYU6rUtNj9HYOb2q2YSPbjXq.jpg",
+    "description": "Description 5"
+  },
+  {
+    "id": 0,
+    "name": "Blank vote",
+    "image": "https://image.shutterstock.com/image-photo/white-cement-texture-stone-concreterock-260nw-525232072.jpg",
+    "description": "None of the above"
+  }
+]
