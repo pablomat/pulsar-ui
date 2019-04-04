@@ -34,13 +34,17 @@ import SteemClient from '@/mixins/SteemClient.js'
 import HeaderEFTG from '@/components/HeaderEFTG'
 import Candidates from '@/assets/candidates.json'
 
+import steem from '@steemit/steem-js'
+
 export default {
   name: 'Vote',
   data () {
     return {
       candidates: [],
       id_selected: -1,
-      sending: false
+      sending: false,
+      moderator: 'initminer',
+      electionId: 'elections-20190402'
     }
   },
 
@@ -53,6 +57,7 @@ export default {
   ],
 
   created() {
+    steem.api.setOptions({address_prefix: 'EUR'})
     this.candidates = Candidates
     for(var i in this.candidates) {
       this.candidates[i].selected = false
@@ -88,15 +93,21 @@ export default {
         var username = this.$store.state.auth.user
         var privKey = this.$store.state.auth.keys.posting
 
+        var salt = Math.random().toString(36).substring(2)
+        var accounts = await this.steem_database_call('get_accounts', [[this.moderator]])
+        var moderator_account = accounts[0]
+        var msg = '#' + candidate.name + '::' + salt
+        var msg_encrypted = steem.memo.encode(privKey.toString(), moderator_account.posting.key_auths[0][0], msg)
+
         var json = {
-          candidate: candidate.name
+          candidate: msg_encrypted
         }
         var operation = [
           'custom_json',
           {
             required_auths: [],
             required_posting_auths: [username],
-            id: 'elections-2019',
+            id: this.electionId,
             json: JSON.stringify(json)
           }
         ]

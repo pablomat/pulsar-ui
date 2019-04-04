@@ -9,6 +9,7 @@ import Contact from '@/components/Contact'
 import Password from '@/components/Password'
 import Witnesses from '@/components/Witnesses'
 import Vote from '@/components/elections/Vote'
+//import Results from '@/components/elections/Results'
 import Page404 from '@/components/Page404'
 
 // Explorer
@@ -23,21 +24,6 @@ Vue.use(Router)
 export default new Router({
   mode: 'history',
   base: process.env.BASE_URL,
-  /*routes: [
-    {
-      path: '/',
-      name: 'home',
-      component: Home
-    },
-    {
-      path: '/about',
-      name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (about.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('./views/About.vue')
-    }
-  ]*/
   routes: [
     {
       path: "/",
@@ -83,6 +69,11 @@ export default new Router({
       path: "/elections/vote",
       name: "Vote",
       component: Vote
+    },
+    {
+      path: "/elections/results",
+      name: "Results",
+      component: () => import('@/components/elections/Results')
     },
     {
       path: "/explorer",
