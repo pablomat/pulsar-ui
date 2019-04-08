@@ -2,6 +2,7 @@ const config = {
   'production': {
     RPC_NODES : [
       'https://api.eftg.eu',
+      'https://rpc-italy.eftg.eu',
       'https://rpc-germany.eftg.eu',
       'https://rpc-luxembourg.eftg.eu',
       'https://rpc-romania.eftg.eu'
@@ -61,7 +62,7 @@ const MAP = {
   INI_ZOOM : 4 ,
 }
 
-const APP_VERSION = 'pulsar/1.4.3';
+const APP_VERSION = 'pulsar/1.5.0';
 
 export default {
 
