@@ -39,7 +39,8 @@
             <b-dropdown-header>{{$store.state.auth.user}}</b-dropdown-header>
             <b-dropdown-divider></b-dropdown-divider>
             <router-link :to="EXPLORER+'@'+$store.state.auth.user" class="dropdown-item no-a" style="border-bottom:0px;"><font-awesome-icon icon="user" class="mr-2"/>Profile</router-link>
-            <router-link to="/password" class="dropdown-item no-a" style="border-bottom:0px;"><font-awesome-icon icon="key" class="mr-2"/>Change Password</router-link>     
+            <router-link :to="'/@'+$store.state.auth.user+'/wallet'" class="dropdown-item no-a" style="border-bottom:0px;"><font-awesome-icon icon="wallet" class="mr-2"/>Wallet</router-link>
+            <router-link to="/password" class="dropdown-item no-a" style="border-bottom:0px;"><font-awesome-icon icon="key" class="mr-2"/>Change Password</router-link>
             <b-dropdown-item @click="logout">Logout</b-dropdown-item>
           </b-nav-item-dropdown>
         </ul>
@@ -85,6 +86,7 @@
                 <b-dropdown-header>{{$store.state.auth.user}}</b-dropdown-header>
                 <b-dropdown-divider></b-dropdown-divider>
                 <router-link :to="EXPLORER+'@'+$store.state.auth.user" class="dropdown-item no-a" style="border-bottom:0px;"><font-awesome-icon icon="user" class="mr-2"/>Profile</router-link>
+                <router-link :to="'/@'+$store.state.auth.user+'/wallet'" class="dropdown-item no-a" style="border-bottom:0px;"><font-awesome-icon icon="wallet" class="mr-2"/>Wallet</router-link>
                 <router-link to="/password" class="dropdown-item no-a" style="border-bottom:0px;"><font-awesome-icon icon="key" class="mr-2"/>Change Password</router-link>
                 <b-dropdown-item @click="logout">Logout</b-dropdown-item>
               </b-nav-item-dropdown>
