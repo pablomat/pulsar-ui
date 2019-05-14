@@ -2,29 +2,29 @@
   <div>
     <HeaderEFTG :showAuth="false" ref="headerEFTG"></HeaderEFTG>
     <div class="container">
-      <h2 class="text-center mb-4">European Financial Transparency Gateway</h2>
+      <h2 class="text-center mb-4">Easy payment system</h2>
       <div class="row">
         <div class="offset-md-1 col-md-4">
-          <router-link to="/oam-portal" class="card no-a mb-3">
+          <router-link to="/menu" class="card no-a mb-3">
             <img class="card-img-top" src="">
             <div class="card-body row">
               <div class="col-4 text-center">
-                <router-link to="/oam-portal" class="text-primary"><font-awesome-icon icon="university" size="4x"/></router-link>
+                <router-link to="/menu" class="text-primary"><font-awesome-icon icon="cocktail" size="4x"/></router-link>
               </div>
               <div class="col-8">
-                <h5 class="card-title">OAM Portal</h5>
-                <p class="card-text">For Official Appointed Mechanism that handle the financial documents received from European companies.</p>
+                <h5 class="card-title">Menu</h5>
+                <p class="card-text">See the menu and order!</p>
               </div>
             </div>
           </router-link>
-          <router-link to="/search.html" class="card no-a mb-3">
+          <router-link to="/barman" class="card no-a mb-3">
             <div class="card-body row">
               <div class="col-4 text-center">
-                <router-link to="/search.html" class="text-primary"><font-awesome-icon icon="business-time" size="4x"/></router-link>              
+                <router-link to="/barman" class="text-primary"><font-awesome-icon icon="user-astronaut" size="4x"/></router-link>              
               </div>
               <div class="col-8">
-                <h5 class="card-title">Investor Portal</h5>
-                <p class="card-text">For investor that wants to search details and financial data of the European companies.</p>
+                <h5 class="card-title">Barman</h5>
+                <p class="card-text">Admin page for the barman.</p>
               </div>
             </div>
           </router-link>
@@ -36,10 +36,7 @@
             </div>
           </div>
         </div>
-      </div>      
-      <p class="mt-4 text-justify">In order to promote cross-border investment and provide investors with easy access to regulated financial information of companies listed on the European Union's (EU) regulated markets, the European Commission (EC) is developing a platform that offers a single view for such information currently stored within different Member States' infrastructures. Following a successful Proof of Concept (PoC) using Blockchain technology, the EC is launching the European Financial Transparency Gateway (EFTG) Pilot Project within the framework of the Capital Market Union and the legal obligations of the Directive 2013/50/EC.</p>
-      <p class="text-justify">EFTG Pilot Project is based on a new approach to build a distributed and decentralized system by interconnecting the OAMs (Officially Appointed Mechanisms) in Europe into a dedicated platform for sharing data instead of exchanging it, offering full traceability and ownership management of both submitted and consumed financial data.</p>
-      <p class="text-justify">The goal of the EFTG Pilot Project consists of developing a Blockchain platform infrastructure, technically enabling citizens and investors by giving them increased access to public regulated information provided by the participating OAMs. The EFTG Project is the first Blockchain-based pilot in Europe, live and publicly available, that on-board real member in the network and shares real financial data from the Member States.</p>
+      </div>
     </div>            
   </div>
 </template>
@@ -57,13 +54,3 @@ export default {
   },
 } 
 </script>
-
-<style>
-.no-a{
-  color: #2c3e50;
-}
-.no-a:hover{
-  text-decoration: none;
-  color: #0F5494;
-}
-</style>

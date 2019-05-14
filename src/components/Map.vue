@@ -63,7 +63,7 @@ import blueIconUrl from '@/assets/blue-circle.png'
 import yellowIconUrl from '@/assets/yellow-circle.png'
 import HeaderEFTG from "@/components/HeaderEFTG";
 import FooterEFTG from "@/components/FooterEFTG";
-import Dictionary from "@/mixins/Dictionary.js"
+// import Dictionary from "@/mixins/Dictionary.js"
 
 // Axios import for HTTP requests
 import axios from 'axios';
@@ -120,7 +120,7 @@ export default {
   },
   
   mixins: [
-    Dictionary,
+    // Dictionary,
     SteemClient
   ],
 
@@ -145,7 +145,8 @@ export default {
     initMap(i = 0) {
       var fireFetchWitnesses = false
 
-      if( this.dictionary.loaded.homeMemberStates ){
+      // if( this.dictionary.loaded.homeMemberStates ){
+      if( true ) {
         fireFetchWitnesses = true
       } else {
         if( i < 30 ) {
@@ -169,9 +170,10 @@ export default {
     },
   
     isOAM(wit) {
-      if(wit.length < 8) return false
-      var hms = this.dictionary.homeMemberStates.find(function (hms) {return hms.code3.toLowerCase() === wit.substring(0,3)})
+      /* if(wit.length < 8) return false
+      var hms = this.dictionary.homeMemberStates.find(function (hms) {return hms.code3.toLowerCase() === wit.substring(0,3)}) 
       if(hms && wit.substring(3,7) === '-tec') return true
+      */
       return false 
     },
     

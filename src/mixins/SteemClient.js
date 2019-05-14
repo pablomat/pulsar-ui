@@ -163,19 +163,19 @@ export default {
     },
 
     async steem_database_call( method, params ) {
-      return this.RPCnode_request( async function(client){
+      return await this.RPCnode_request( async function(client){
         return await client.database.call(method, params)
       }, this.onNodeProgress)
     },
 
     async steem_broadcast_comment( comment, privKey, lambda ) {
-      return this.RPCnode_request( async function(client){
+      return await this.RPCnode_request( async function(client){
         return await client.broadcast.comment(comment, privKey)
       }, this.onNodeProgress)
     },
 
     async steem_broadcast_sendOperations( operations,privKey, lambda ) {
-      return this.RPCnode_request( async function(client){
+      return await this.RPCnode_request( async function(client){
         return await client.broadcast.sendOperations(operations, privKey)
       }, this.onNodeProgress)
     },

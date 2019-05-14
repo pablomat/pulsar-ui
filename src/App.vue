@@ -18,16 +18,18 @@ export default {
 </script>
 
 <style>
+@import url('https://fonts.googleapis.com/css?family=Acme');
+
 body {
   margin: 0px;  
 }
 
 #app {
-  font-family: 'Montserrat', sans-serif;
+  font-family: 'Acme', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
-  font-size: 0.8rem;  
+  font-size: 1rem;  
 }
 
 #app .container{
@@ -37,40 +39,25 @@ body {
 
 #app .navbar{
   padding: 0 14px;
-  background-color: #0F5494 !important;
+  background-color: #9e1515 !important;
   margin-bottom: 1rem;
 }
 
 #app .navbar a{
-  border-bottom: 3px solid #0F5494;
+  /* border-bottom: 3px solid #0F5494; */
 }
 
 #app .navbar a:hover{
-  background-color: #003675;
-  color: #ffeb3b;
-  border-bottom: 3px solid #ffeb3b;  
+  background-color: #771111;  
 }
 
 #app .navbar-dark .navbar-nav .nav-link {
     color: white;
 }
 
-/*#app .nav-link{
-  padding-top: 1rem;
-  padding-bottom: 1rem;
-}*/
-
 #app .col-form-label{
   font-size: 12px;
-  color: #AEAEAE;
-}
-
-#app .card-body2{
-  padding: 0.4rem;
-}
-
-#app .card-text2{
-  min-height: 5rem;
+  color: #636363;
 }
 
 #app .btn{
@@ -85,11 +72,11 @@ body {
 }
 
 #app .btn-primary {
-  background-color: #0F5494;
+  background-color: #9e1515;
 }
 
 #app .btn-primary:hover {
-  background-color: #003675;
+  background-color: #771111;
 }
 
 #app .btn-secondary {
@@ -101,11 +88,11 @@ body {
 }
 
 #app .btn-secondary:not(:disabled):not(.disabled).active {
-  background-color:#0f5494; 
+  background-color:#9e1515; 
 }
 
 #app .bg-primary {
-  background-color: #0F5494 !important;
+  background-color: #9e1515 !important;
 }
 
 #app .bg-secondary {
@@ -117,7 +104,7 @@ body {
 }
 
 #app .text-primary {
-  color: #0F5494 !important;
+  color: #9e1515 !important;
 }
 
 #app .text-secondary {
@@ -125,8 +112,8 @@ body {
 }
 
 #app .table-primary th{
-  background-color: #0F5494 !important;
-  border-color: #0F5494 !important;
+  background-color: #9e1515 !important;
+  border-color: #9e1515 !important;
   color: white !important;
 }
 
@@ -146,10 +133,10 @@ body {
 
 .loader {
   margin: 20px auto;
-  border: 3px solid #f3f3f3;  
+  border: 3px solid #ffffff;  
   border-radius: 50%;
-  border-top: 3px solid #72b4e8;
-  border-right: 3px solid #72b4e8;
+  border-top: 3px solid #e87272;
+  border-right: 3px solid #e87272;
   width: 2rem;
   height: 2rem;
   -webkit-animation: spin 0.7s linear infinite; /* Safari */
@@ -181,7 +168,18 @@ body {
 }
 .no-a:hover{
   text-decoration: none;
-  color: #0F5494;
+  color: #9e1515;
+}
+
+.image-profile {
+  display: inline-block;
+  height: 2rem;
+  width: 2rem;
+  overflow: hidden;
+  background-size: cover;
+  background-position: center center;
+  border-radius: 50%;
+  vertical-align: middle;
 }
 
 </style>

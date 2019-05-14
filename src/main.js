@@ -7,14 +7,13 @@ import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faHome, faUniversity, faQuestionCircle, faBusinessTime, faExclamationTriangle, faKey, faCheck, faUser } from '@fortawesome/free-solid-svg-icons'
+import { faHome, faCocktail, faUserAstronaut, faExclamationTriangle, faKey, faCheck, faUser } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon, FontAwesomeLayers, FontAwesomeLayersText } from '@fortawesome/vue-fontawesome'
 
 library.add(
   faHome,
-  faUniversity,
-  faQuestionCircle,
-  faBusinessTime,
+  faCocktail,
+  faUserAstronaut,
   faExclamationTriangle,
   faKey,
   faCheck,

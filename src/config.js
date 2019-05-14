@@ -1,11 +1,16 @@
 const config = {
   'production': {
     RPC_NODES : [
-      'https://api.eftg.eu',
-      'https://rpc-italy.eftg.eu',
-      'https://rpc-germany.eftg.eu',
-      'https://rpc-luxembourg.eftg.eu',
-      'https://rpc-romania.eftg.eu'
+      'https://api.steemit.com',
+      'https://api.steem.house',
+      'https://gtg.steem.house:8090',
+      'https://appbasetest.timcliff.com',
+      'https://rpc.steemviz.com',
+      'https://steemd.minnowsupportproject.org',
+      'https://steemd.privex.io',
+      'https://rpc.usesteem.com',
+      'https://anyx.io',
+      'https://hive.anyx.io'
     ],
     IMAGE_HOSTER : 'https://cdn.eftg.eu',
     ELASTIC : 'https://api.eftg.eu/pulsar/',
@@ -23,7 +28,16 @@ const config = {
   },
   'development': {
     RPC_NODES : [
-      'https://apidev.blkcc.xyz',
+      'https://api.steemit.com',
+      'https://api.steem.house',
+      'https://gtg.steem.house:8090',
+      'https://appbasetest.timcliff.com',
+      'https://rpc.steemviz.com',
+      'https://steemd.minnowsupportproject.org',
+      'https://steemd.privex.io',
+      'https://rpc.usesteem.com',
+      'https://anyx.io',
+      'https://hive.anyx.io'
     ],
     IMAGE_HOSTER : 'https://cdn.dev.blkcc.xyz',
     ELASTIC : 'https://apidev.blkcc.xyz/pulsar/',
@@ -35,17 +49,17 @@ const config = {
 const environment = process.env.NODE_ENV || 'development';
 const finalConfig = config[environment];
 
-const SBD = 'EUR';
-const STEEM = 'EFTG';
-const SP = 'EFTG-Power';
+const SBD = 'SBD';
+const STEEM = 'STEEM';
+const SP = 'SP';
 const VESTS = 'VESTS';
 
-const HARDFORK = 19
+const HARDFORK = 20
 
 const EXPLORER = '/explorer/'
 const DSTEEM_TIMEOUT = 5000 //ms
 
-const STEEM_ADDRESS_PREFIX = 'EUR';
+const STEEM_ADDRESS_PREFIX = 'STM';
 const STEEM_100_PERCENT = 10000;
 const STEEM_VOTE_REGENERATION_SECONDS = 5 * 24 * 60 * 60;
 const STEEM_INFLATION_RATE_START_PERCENT = 978;
@@ -61,6 +75,8 @@ const MAP = {
   INI_POS : [50.5, 15], //latitude, longitude
   INI_ZOOM : 4 ,
 }
+
+const RESTAURANT_STEEM_ACCOUNT = 'pruebas' // steem account
 
 const APP_VERSION = 'pulsar/1.5.3';
 
@@ -94,6 +110,8 @@ export default {
   STEEM_SBD_STOP_PERCENT: STEEM_SBD_STOP_PERCENT,
 
   MAP:MAP,
+  
+  RESTAURANT_STEEM_ACCOUNT,
 
   APP_VERSION: APP_VERSION,
 };
