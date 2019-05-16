@@ -7,10 +7,10 @@
         <b-tab title="Open" active>
           <div class="card mb-3" v-for="(ticket, index) in openTickets" @click="selectItem('open', index)">
             <div class="row no-gutters">
-              <div class="item-picture" v-bind:style="{ backgroundImage: 'url(' + ticket.imageProduct + ')' }"></div>
+              <div class="item-picture" v-bind:style="{ backgroundImage: 'url(' + require('@/assets/menu/'+ticket.picture) + ')' }"></div>
               <div class="col">
                 <div class="card-block px-2">
-                  <h4 class="card-title">@{{ticket.from2}}</h4>
+                  <h4 class="card-title">{{ticket.from2}}</h4>
                   <div class="rsow">{{ticket.table}}</div>
                   <div class="rsow">{{ticket.product}}</div>
                   <div class="rsow">{{ticket.fakeAmount}}</div>
@@ -20,7 +20,7 @@
                 <div class="text-right">{{ticket.timeAgo}}</div>
                 <div v-if="ticket.selected" class="d-flex justify-content-end">
                   <button class="btn btn-primary"
-                    @click="closeTicket(index)"
+                    @click="moveTicket('close',index)"
                   >Done</button>
                 </div>
               </div>
@@ -30,19 +30,20 @@
         <b-tab title="Closed">
           <div class="card mb-3" v-for="(ticket, index) in closedTickets" @click="selectItem('closed', index)">
            <div class="row no-gutters">
-             <div class="item-picture" v-bind:style="{ backgroundImage: 'url(' + ticket.imageProduct + ')' }"></div>
+             <div class="item-picture" v-bind:style="{ backgroundImage: 'url(' + require('@/assets/menu/'+ticket.picture) + ')' }"></div>
              <div class="col">
                <div class="card-block px-2">
-                 <h4 class="card-title">@{{ticket.from2}}</h4>
+                 <h4 class="card-title">{{ticket.from2}}</h4>
                  <div class="rsow">{{ticket.table}}</div>
                  <div class="rsow">{{ticket.product}}</div>
+                 <div class="rsow">{{ticket.fakeAmount}}</div>
                </div>
              </div>
              <div class="col-3 mr-2">
                <div class="text-right">{{ticket.timeAgo}}</div>
                <div v-if="ticket.selected" class="d-flex justify-content-end">
                  <button class="btn btn-primary"
-                   @click="reopenTicket(index)"
+                   @click="moveTicket('open',index)"
                  >Open again</button>
                </div>
              </div>
@@ -66,32 +67,14 @@ import Config from '@/config.js'
 import Utils from '@/js/utils.js'
 import ChainProperties from '@/mixins/ChainProperties.js'
 import HeaderEFTG from '@/components/HeaderEFTG'
+import restaurant from '@/assets/restaurant.json'
 
 export default {
   name: "Barman",
   
   data() {
     return {
-      products: [
-        {
-          product: 'Beer 1',
-          imageProduct: 'https://res.cloudinary.com/ratebeer/image/upload/w_150,h_300,c_pad,d_beer_img_default.png,f_auto/beer_9410',
-          price: '5 EUR',
-          selected: false
-        },
-        {
-          product: 'Wine 123',
-          imageProduct: 'https://www.vilaviniteca.es/media/catalog/product/cache/3/image/9df78eab33525d08d6e5fb8d27136e95/0/1/015792.jpg',
-          price: '7 EUR',
-          selected: false
-        },
-        {
-          product: 'Cocktail premium',
-          imageProduct: 'http://www.domainehudson.com/wp-content/uploads/2015/06/header-cocktail.jpg',
-          price: '9 EUR',
-          selected: false
-        },
-      ],
+      products: restaurant.menu,
       openTickets: [],
       closedTickets: [],
       lastBlock: 0,
@@ -127,18 +110,86 @@ export default {
       }
     },
 
-    closeTicket(id){
-      var tickets = this.openTickets.splice(id, 1)
+    _moveTicket(ack) {
+      if(ack.id === 'open-ticket') { //ack open
+        var from = 'closedTickets'
+        var to =   'openTickets'
+      }else{
+        var from = 'openTickets'
+        var to =   'closedTickets'
+      }
+      var id = this[from].findIndex( (t)=>{ return t.trx_id === ack.trx_id } )
+      var tickets = this[from].splice(id, 1)
       var ticket = tickets[0]
-      ticket.selected = false
-      this.closedTickets.splice(0, 0, ticket )       
+      if(ticket) {
+        ticket.selected = false
+        if(to === 'openTickets')
+          this[to].splice(0, 0, ticket )
+        else
+          this[to].push( ticket ) //end of the list in closed tickets for old requests.
+      }else{
+        /*console.log('get old transaction...')
+        this.getTransaction(ack.block, ack.trx_id)
+        .then( ()=>{
+          console.log('get old transaction... OK')
+        }).catch( (error)=>{
+          console.log('error old transaction')
+          console.log(error)
+        })*/
+      }
     },
 
-    reopenTicket(id){
-      var tickets = this.closedTickets.splice(id, 1)
-      var ticket = tickets[0]
-      ticket.selected = false
-      this.openTickets.splice(0, 0, ticket )
+    async moveTicket(type, id){
+      this.hideSuccess()
+      this.hideDanger()
+      this.hideInfo()
+      this.sending = true
+
+      try{
+        if (!this.$store.state.auth.logged) {
+          this.$refs.headerEFTG.login();
+          throw new Error('Please login');
+        }
+        if (!this.$store.state.auth.keys.posting)
+          throw new Error('Please login with your posting or master key')
+
+        var username = this.$store.state.auth.user
+        var privKey = this.$store.state.auth.keys.posting
+
+        if(type === 'close')
+          var ticket = this.openTickets[id]
+        else
+          var ticket = this.closedTickets[id]
+
+        var json = {
+          transfer: {
+            from:   ticket.from,
+            to:     ticket.to,
+            amount: ticket.amount,
+            memo:   ticket.memo
+          },
+          block: ticket.block,
+          trx_id: ticket.trx_id
+        }
+
+        var operation = [
+          'custom_json',
+          {
+            required_auths: [],
+            required_posting_auths: [username],
+            id: type + '-ticket',
+            json: JSON.stringify(json)
+          }
+        ]
+
+        var result = await this.steem_broadcast_sendOperations([operation], privKey)
+        this.showSuccess('<a href="'+Config.EXPLORER+'b/'+result.block_num+'/'+result.id+'" class="alert-link" target="_blank">Ticket moved</a>')
+      }catch(error){
+        console.log(error)
+        this.showDanger(error.message)
+      }
+      this.hideInfo()
+      this.sending = false
     },
 
     selectItem(type, index) {
@@ -146,12 +197,18 @@ export default {
         case 'open':
           this.openTickets.forEach( (t) => { t.selected = false } )
           var ticket = this.openTickets[index]
-          if( ticket ) ticket.selected = true
+          if( ticket ){
+            ticket.selected = true
+            this.$set(this.openTickets, index, ticket)
+          }
           break
         case 'closed':
           this.closedTickets.forEach( (t) => { t.selected = false } )
           var ticket = this.closedTickets[index]
-          if( ticket ) ticket.selected = true
+          if( ticket ){
+            ticket.selected = true
+            this.$set(this.closedTickets, index, ticket)
+          }
           break
         default:
           break
@@ -182,25 +239,27 @@ export default {
         }
         var ticket = this.getTicket(trx)
         if(ticket) this.openTickets.push(ticket)
+        var acknowledge = this.getAck(trx)
+        if(acknowledge) this._moveTicket(acknowledge)
       }
     },
 
     getTicket(trx) {
       //TODO: search more operations in 1 transaction
-      if( trx.operations[0][0] !== 'transfer' ) return null
+      if( trx.operations[0][0] !== 'transfer') return null
       if( trx.operations[0][1].to !== Config.RESTAURANT_STEEM_ACCOUNT ) return null
       var memo = trx.operations[0][1].memo.split('***')
-      if(memo.length != 3){
+      if(memo.length != 2){ //3){
         console.log('Transfer with different format: ')
         console.log(trx.operations[0][1])
         return null
       }
 
-      var fakeAmount = (parseFloat(trx.operations[0][1].amount)*1000).toFixed(0) + ' EUR'
-      var imageProduct = ''
+      var fakeAmount = (parseFloat(trx.operations[0][1].amount)*100).toFixed(0) + ' EUR'
+      var picture = ''
 
       var product = this.products.find( (p)=>{ return memo[0] === p.product} )
-      if(product) imageProduct = product.imageProduct
+      if(product) picture = product.picture
 
       console.log('Ticket found: '+trx.operations[0][1].memo)
       return {
@@ -209,29 +268,43 @@ export default {
         amount: trx.operations[0][1].amount,
         memo: trx.operations[0][1].memo,
         table: memo[1],
-        from2: memo[2],
+        from2: trx.operations[0][1].from, //memo[2],
         fakeAmount: fakeAmount,
         product: memo[0],
-        imageProduct: imageProduct,
+        picture: picture,
         time: trx.timestamp,
-        trx_id: trx.trx_id,
-        num_op: trx.op_in_trx,
+        trx_id: trx.transaction_id,
+        block: trx.block_num,
+        num_op: 0,//trx.op_in_trx, //TODO: when get_block search number op
         selected: false
       }
     },
 
+    getAck(trx) {
+      if( trx.operations[0][0] !== 'custom_json') return null
+      if( trx.operations[0][1].required_posting_auths[0] !== Config.RESTAURANT_STEEM_ACCOUNT ) return null
+      var ack = JSON.parse(trx.operations[0][1].json)
+      ack.id = trx.operations[0][1].id
+      return ack
+    },
+
     async loadLastBlocks() {
-      try {
-        var dgp = await this.steem_database_call('get_dynamic_global_properties')
-        this.lastBlock = dgp.head_block_number - 22 //two rounds back from head
-      }catch(error){
-        console.log('Error getting dynamic global properties')
-        console.log(error)
-        return
-      }
+      while(true){
+        try {
+          var dgp = await this.steem_database_call('get_dynamic_global_properties')
+          if(this.lastBlock == 0)
+            this.lastBlock = dgp.head_block_number - 22 //two rounds back from head
+          if(this.lastBlock == dgp.head_block_number)
+            break
+        }catch(error){
+          console.log('Error getting dynamic global properties')
+          console.log(error)
+          return
+        }
       
-      while(this.lastBlock <= dgp.head_block_number)
-        await this.getBlock()
+        while(this.lastBlock < dgp.head_block_number)
+          await this.getBlock()
+      }
       
       setInterval( this.getBlock , 3000 )
     },
@@ -245,10 +318,29 @@ export default {
             ticket.time = result.timestamp
             this.openTickets.push(ticket)
           }
+          var acknowledge = this.getAck(result.transactions[i])
+          if(acknowledge) {
+            this._moveTicket(acknowledge)
+          }
         }
         this.lastBlock++
       }catch(error){
         console.log('Error getting block '+(this.lastBlock+1))
+        console.log(error)
+      }
+    },
+
+    async getTransaction(block, trx_id) {
+      try{
+        var result = await this.steem_database_call('get_block',[block])
+        var trx = result.transactions.find( (t)=>{ return t.transaction_id === trx_id } )
+        if(trx)
+          this.getTicket(trx)
+        else
+          console.log('Error trying to find transaction '+trx_id+' in the block '+block)
+      }catch(error){
+        console.log('Error getting transaction in block '+block)
+        console.log(error)
       }
     },
 

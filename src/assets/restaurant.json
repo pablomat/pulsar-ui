@@ -1,0 +1,275 @@
+{
+	"restaurant": "gudde-wellen",
+	"menu": [{
+		"id": 1,
+		"product": "Diekirch large",
+		"picture": "diekirch-large.jpg",
+		"class": "Beers & Ciders",
+		"subclass": "Lager",
+		"price": "5 EUR"
+	},
+	{
+		"id": 2,
+		"product": "Diekirch small",
+		"picture": "diekirch-large.jpg",
+		"class": "Beers & Ciders",
+		"subclass": "Lager",
+		"price": "3 EUR"
+	},
+	{
+		"id": 3,
+		"product": "Stella Artois",
+		"picture": "stella-artois.jpg",
+		"class": "Beers & Ciders",
+		"subclass": "Lager",
+		"price": "2.5 EUR"
+	},
+	{
+		"id": 4,
+		"product": "Diekirch Grand Cru",
+		"picture": "diekirch-grand-cru.jpg",
+		"class": "Beers & Ciders",
+		"subclass": "Amber",
+		"price": "3.5 EUR"
+	},
+	{
+		"id": 5,
+		"product": "Wellen Ourdaller",
+		"picture": "wellen-ourdaller.jpg",
+		"class": "Beers & Ciders",
+		"subclass": "Amber",
+		"price": "3.5 EUR"
+	},
+	{
+		"id": 6,
+		"product": "Elfique",
+		"picture": "elfique.jpg",
+		"class": "Beers & Ciders",
+		"subclass": "Amber",
+		"price": "4 EUR"
+	},
+	{
+		"id": 7,
+		"product": "Kwak",
+		"picture": "kwak.jpg",
+		"class": "Beers & Ciders",
+		"subclass": "Amber",
+		"price": "4.5 EUR"
+	},
+	{
+		"id": 8,
+		"product": "Triple Karmeliet",
+		"picture": "tripel-karmeliet.jpg",
+		"class": "Beers & Ciders",
+		"subclass": "Amber",
+		"price": "4.5 EUR"
+	},
+	{
+		"id": 9,
+		"product": "Ginette",
+		"picture": "ginette.jpg",
+		"class": "Beers & Ciders",
+		"subclass": "Amber",
+		"price": "6.5 EUR"
+	},
+	{
+		"id": 10,
+		"product": "Okult",
+		"picture": "okult-beer.jpg",
+		"class": "Beers & Ciders",
+		"subclass": "White",
+		"price": "3.5 EUR"
+	},
+	{
+		"id": 11,
+		"product": "Knights in White Satin",
+		"picture": "Stuff-Brauerei-Knights-in-White-Satin.jpg",
+		"class": "Beers & Ciders",
+		"subclass": "White",
+		"price": "7 EUR"
+	},
+	{
+		"id": 12,
+		"product": "Crew Republic IPA",
+		"picture": "",
+		"class": "Beers & Ciders",
+		"subclass": "IPA",
+		"price": "5 EUR"
+	},
+	{
+		"id": 13,
+		"product": "Revolutioun",
+		"picture": "",
+		"class": "Beers & Ciders",
+		"subclass": "IPA",
+		"price": "7 EUR"
+	},
+	{
+		"id": 14,
+		"product": "Grande Ducale - Red Ale",
+		"picture": "",
+		"class": "Beers & Ciders",
+		"subclass": "Specials",
+		"price": "7 EUR"
+	},
+	{
+		"id": 15,
+		"product": "Black Widow - Porter",
+		"picture": "",
+		"class": "Beers & Ciders",
+		"subclass": "Specials",
+		"price": "7 EUR"
+	},
+	{
+		"id": 16,
+		"product": "Diekirch Radler",
+		"picture": "diekirch-radler.jpg",
+		"class": "Beers & Ciders",
+		"subclass": "Specials",
+		"price": "3 EUR"
+	},
+	{
+		"id": 17,
+		"product": "Corona",
+		"picture": "",
+		"class": "Beers & Ciders",
+		"subclass": "Specials",
+		"price": "5 EUR"
+	},
+	{
+		"id": 18,
+		"product": "Becks 0\u00B0",
+		"picture": "",
+		"class": "Beers & Ciders",
+		"subclass": "Specials",
+		"price": "3 EUR"
+	},
+	{
+		"id": 19,
+		"product": "Ramborn Cider",
+		"picture": "",
+		"class": "Beers & Ciders",
+		"subclass": "Cider",
+		"price": "5.5 EUR"
+	},
+	{
+		"id": 20,
+		"product": "Bulmers Cider",
+		"picture": "",
+		"class": "Beers & Ciders",
+		"subclass": "Cider",
+		"price": "7 EUR"
+	},
+	{
+		"id": 21,
+		"product": "Fritz Kola",
+		"picture": "",
+		"class": "Softs",
+		"subclass": "",
+		"price": "3 EUR"
+	},
+	{
+		"id": 22,
+		"product": "Fritz Orange",
+		"picture": "",
+		"class": "Softs",
+		"subclass": "",
+		"price": "3 EUR"
+	},
+	{
+		"id": 23,
+		"product": "Fritz Lemon",
+		"picture": "",
+		"class": "Softs",
+		"subclass": "",
+		"price": "3 EUR"
+	},
+	{
+		"id": 24,
+		"product": "Fritz Rhubarb",
+		"picture": "",
+		"class": "Softs",
+		"subclass": "",
+		"price": "3 EUR"
+	},
+	{
+		"id": 25,
+		"product": "Bionade Orange-Ginger",
+		"picture": "",
+		"class": "Softs",
+		"subclass": "",
+		"price": "3 EUR"
+	},
+	{
+		"id": 26,
+		"product": "Bionade Elderberry",
+		"picture": "",
+		"class": "Softs",
+		"subclass": "",
+		"price": "3 EUR"
+	},
+	{
+		"id": 27,
+		"product": "Bionade Lemon-Bergamote",
+		"picture": "",
+		"class": "Softs",
+		"subclass": "",
+		"price": "3 EUR"
+	},
+	{
+		"id": 28,
+		"product": "Fever Tree Ginger Beer",
+		"picture": "",
+		"class": "Softs",
+		"subclass": "",
+		"price": "3.5 EUR"
+	},
+	{
+		"id": 29,
+		"product": "Fever Tree Tonic",
+		"picture": "",
+		"class": "Softs",
+		"subclass": "",
+		"price": "3.5 EUR"
+	},
+	{
+		"id": 30,
+		"product": "Local Apple Juice",
+		"picture": "",
+		"class": "Softs",
+		"subclass": "",
+		"price": "3 EUR"
+	},
+	{
+		"id": 31,
+		"product": "Local Apple Viz",
+		"picture": "",
+		"class": "Softs",
+		"subclass": "",
+		"price": "3 EUR"
+	},
+	{
+		"id": 32,
+		"product": "Local Apple&Cherry Juice",
+		"picture": "",
+		"class": "Softs",
+		"subclass": "",
+		"price": "3.5 EUR"
+	},
+	{
+		"id": 33,
+		"product": "Fresh Orange Juice",
+		"picture": "",
+		"class": "Softs",
+		"subclass": "",
+		"price": "4 EUR"
+	},
+	{
+		"id": 34,
+		"product": "Club Mate",
+		"picture": "",
+		"class": "Softs",
+		"subclass": "",
+		"price": "3.5 EUR"
+	}]
+}
