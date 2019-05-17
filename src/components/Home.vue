@@ -2,7 +2,8 @@
   <div>
     <HeaderEFTG :showAuth="false" ref="headerEFTG"></HeaderEFTG>
     <div class="container">
-      <h2 class="text-center mb-4">European Financial Transparency Gateway</h2>
+      <h2 class="text-center mb-2">European Financial Transparency Gateway</h2>
+      <h4  class="text-center mb-4">To request a test account, please e-mail DIGIT-BLOCKCHAIN-SUPPORT at ec.europa.eu</h4>
       <div class="row">
         <div class="offset-md-1 col-md-4">
           <router-link to="/oam-portal" class="card no-a mb-3">
