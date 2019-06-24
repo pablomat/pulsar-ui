@@ -439,6 +439,10 @@ app.post("/api/create_badges", authMiddleware, isAdminMiddleware, async (req, re
   res.send(result)
 })
 
+app.get("*", (req, res, next) => {
+  res.sendFile("index.html", { root: publicRoot })
+})
+
 app.listen(port, () => {
   console.log("Example app listening on port "+port)
 })
