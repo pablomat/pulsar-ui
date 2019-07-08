@@ -76,6 +76,61 @@ async function getUser(query) {
   return user
 }
 
+async function createProof(user, data) {
+  var issuer = ''
+  var permlink = ''
+  
+  var url = data.badge_url.trim()
+  var permlink = url.substr(url.lastIndexOf('/') + 1);
+  var issuer = url.substring(url.lastIndexOf('@') + 1, url.lastIndexOf('/'));
+  var content = await steemClient.database.call( 'get_content', [issuer, permlink] )
+  if(!content || !content.json_metadata){
+    throw new Error('There is no content on @'+issuer+'/'+permlink)
+    return
+  }
+  var metadata = JSON.parse(content.json_metadata)
+  if(!metadata || !metadata.assertions){
+    throw new Error('@'+issuer+'/'+permlink+' does not corresponds with a badge with assertions')
+  }
+  var assertion = metadata.assertions.find( 
+    (a)=>{
+      for(var i in user.keys) if(user.keys[i].public_key === a.recipient.identity) return true 
+      return false
+    }
+  )
+  if(!assertion){
+    throw new Error('There are not assertions in the badge that match with this private key')
+  }
+
+  var privKey = null
+  for(var i in user.keys)
+    if(user.keys[i].public_key === assertion.recipient.identity)
+      privKey = PrivateKey.fromString(user.keys[i].private_key)
+
+  var trx = {
+    ref_block_num: 0,
+    ref_block_prefix: 0,
+    expiration: data.expiration_date,
+    operations: [
+      ['transfer',
+        {
+          from: '',
+          to: '',
+          amount: '0.001 ' + Config.STEEM_ADDRESS_PREFIX,
+          memo: data.message
+        }
+      ]
+    ],
+    extensions: []
+  }
+  var sgnTrx = steemClient.broadcast.sign(trx, privKey)
+  var presentation = {
+    badge: { issuer, permlink },
+    proof: sgnTrx
+  }
+  return presentation
+}
+
 app.get("/", (req, res, next) => {
   res.sendFile("index.html", { root: publicRoot })
 })
@@ -124,11 +179,24 @@ app.post("/api/create_keys", authMiddleware, async (req, res, next) => {
   var filter = {_id:ObjectId(req.session.passport.user)}
   var user = await getUser(filter)
 
+  var preconditions = []
+  var expiration = 24*60*60*1000
+  for(var i in req.body.preconditions){
+    var dataProof = {
+      badge_url: req.body.preconditions[i],
+      message: university,
+      expiration_date: new Date(Date.now() + expiration).toISOString().slice(0, -5)
+    }
+    var presentation = await createProof(user, dataProof)
+    preconditions.push(presentation)
+  }
+
   var privKey = PrivateKey.fromSeed(user.username + user.password + university + course)
   var pubKey = privKey.createPublic(Config.STEEM_ADDRESS_PREFIX)
   var key = {
     university,
     course,
+    preconditions,
     pending: true,
     registering: true,
     badge: {},
@@ -160,6 +228,7 @@ app.post("/api/create_keys", authMiddleware, async (req, res, next) => {
         request: {
           user_id: userInIssuer.data._id,
           key: pubKey.toString(),
+          preconditions: preconditions,
           course: course
         }
       }
@@ -304,59 +373,13 @@ app.post("/api/create_proof", authMiddleware, async (req, res, next) => {
 
   var filter = {_id:ObjectId(req.session.passport.user)}
   var user = await getUser(filter)
+  try{
+    var presentation = await createProof(user, req.body)
+  }catch(error){
+    res.status(404).send(error.message)
+    return
+  }
 
-  var issuer = ''
-  var permlink = ''
-  
-  var url = req.body.badge_url.trim()
-  var permlink = url.substr(url.lastIndexOf('/') + 1);
-  var issuer = url.substring(url.lastIndexOf('@') + 1, url.lastIndexOf('/'));
-  var content = await steemClient.database.call( 'get_content', [issuer, permlink] )
-  if(!content || !content.json_metadata){
-    res.status(404).send('There is no content on @'+issuer+'/'+permlink)
-    return
-  }
-  var metadata = JSON.parse(content.json_metadata)
-  if(!metadata || !metadata.assertions){
-    res.status(404).send('@'+issuer+'/'+permlink+' does not corresponds with a badge with assertions')
-    return
-  }
-  var assertion = metadata.assertions.find( 
-    (a)=>{
-      for(var i in user.keys) if(user.keys[i].public_key === a.recipient.identity) return true 
-      return false
-    }
-  )
-  if(!assertion){
-    res.status(404).send('There are not assertions in the badge that match with this private key')
-    return
-  }
-  var privKey = null
-  for(var i in user.keys)
-    if(user.keys[i].public_key === assertion.recipient.identity)
-      privKey = PrivateKey.fromString(user.keys[i].private_key)
-
-  var trx = {
-    ref_block_num: 0,
-    ref_block_prefix: 0,
-    expiration: req.body.expiration_date,
-    operations: [
-      ['transfer',
-        {
-          from: '',
-          to: '',
-          amount: '0.001 ' + Config.STEEM_ADDRESS_PREFIX,
-          memo: req.body.message
-        }
-      ]
-    ],
-    extensions: []
-  }
-  var sgnTrx = steemClient.broadcast.sign(trx, privKey)
-  var presentation = {
-    badge: { issuer, permlink },
-    proof: sgnTrx
-  }
   res.send(presentation)
 })
 

@@ -37,7 +37,22 @@
       <select class="form-control" v-model="create_key_course">
         <option v-for="(opt,key) in courses" :value="opt.name">{{opt.name}}</option>
       </select>
-      <button @click="register_to_course" class="btn btn-primary" :disabled="sending"><div v-if="sending" class="mini loader"></div>Register</button>
+      <div v-if="preconditions.length > 0">
+        <div v-for="p in preconditions">
+          <select class="form-control" v-model="p.input">
+            <option v-for="(opt,index) in keysWithBadge" :value="opt.badge.link">{{opt.course}}</option>
+          </select>
+        </div>
+      </div>
+      <div class="row mt-2">
+        <div class="col-6">
+          <button @click="addPrecondition" class="btn btn-primary">Add badge</button>
+        </div>
+        <div class="col-6">
+          <button @click="removePrecondition" class="btn btn-secondary float-right">Remove</button>
+        </div>
+      </div>
+      <button @click="register_to_course" class="btn btn-primary mt-5" :disabled="sending"><div v-if="sending" class="mini loader"></div>Register</button>
     </b-modal>
 
     <b-modal ref="modalProof" hide-footer title="Create proof">
@@ -102,6 +117,8 @@ export default {
   data() {
     return {
       keys: [],
+      keysWithBadge: [],
+      preconditions: [],
       badge: { badge: {} },
       badge_url: '',
       key: {},
@@ -152,16 +169,19 @@ export default {
   methods: {
     async loadKeys() {
       if(process.env.VUE_APP_DEV){
-        this.keys = dev_data.keys        
+        this.keys = dev_data.keys     
       }else{
         var response = await axios.get(Config.SERVER_API + "get_keys")
         this.keys = response.data
       }
 
+      this.keysWithBadge = []
       this.keys.forEach( (k)=>{
         if(k.badge) k.badge.link = this.EXPLORER + '@' + k.badge.issuer + '/' + k.badge.permlink
         if(k.pending) k.status = 'Pending'
         else k.status = 'Course finished'
+
+        if(k.badge && k.badge.issuer && k.badge.permlink) this.keysWithBadge.push(k)
       })
     },
 
@@ -176,10 +196,15 @@ export default {
       this.hideSuccess()
       this.hideDanger()
 
+      var preconditions = []
+      this.preconditions.forEach( (p)=>{ preconditions.push(p.input) })
+      console.log('preconditions')
+      console.log(preconditions)
       try{
         var data = {
           university: this.create_key_issuer,
-          course: this.create_key_course
+          course: this.create_key_course,
+          preconditions: preconditions
         }
 
         var response = await axios.post(Config.SERVER_API + "create_keys", data)          
@@ -193,6 +218,16 @@ export default {
 
       this.sending = false
       this.hideInfo()
+    },
+
+    addPrecondition() {
+      this.preconditions.push({
+        input: 0,
+      })
+    },
+
+    removePrecondition() {
+      this.preconditions.splice(-1,1)
     },
 
     async add_badge() {
