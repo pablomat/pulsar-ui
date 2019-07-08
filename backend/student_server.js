@@ -65,7 +65,6 @@ function RPCnode_initClient(address = Config.RPC_NODES[0]) {
   opts.addressPrefix = Config.STEEM_ADDRESS_PREFIX
   opts.timeout = Config.DSTEEM_TIMEOUT
   if(process.env.VUE_APP_CHAIN_ID) opts.chainId = process.env.VUE_APP_CHAIN_ID
-  opts.chainId = 'a118feb47e63e942c55e4bc991e74f9e2e2d4d099e32f2ae7d55a66f6b415f14'
   return new Client(address, opts)
 }
 
@@ -131,13 +130,55 @@ app.post("/api/create_keys", authMiddleware, async (req, res, next) => {
     university,
     course,
     pending: true,
+    registering: true,
     badge: {},
     public_key: pubKey.toString(),
     private_key: privKey.toString()
   }  
 
-  await db.collection('users').updateOne(filter,{ $push: { keys: key } })
-  res.send({ok:true})
+  /*var filter = {
+    _id:ObjectId(req.session.passport.user),
+    'issuers.name': university
+  }
+  var issuer = await db.collection('users').findOne(filter)*/
+  var issuer = user.issuers.find( (i)=> { return i.name === university })
+  console.log('issuer')
+  console.log(issuer)
+  if(issuer && issuer.api && issuer.username && issuer.password) {
+    try{
+      var login = {
+        username: issuer.username,
+        password: issuer.password
+      }
+      console.log('making login to '+issuer.api)
+      var userInIssuer = await axios.post(issuer.api + 'login', login)
+
+      console.log('logged in univ')
+      console.log(userInIssuer.data)
+      var data = {
+        auth: login,
+        request: {
+          user_id: userInIssuer.data._id,
+          key: pubKey.toString(),
+          course: course
+        }
+      }
+      console.log('registering')
+      await axios.post(issuer.api + 'request_registration', data)
+      console.log('registered')
+
+      await db.collection('users').updateOne(filter,{ $push: { keys: key } })
+      res.send({ok:true})
+      return
+    }catch(error){
+      console.log('login error')
+      console.log(error)
+      res.status(404).send(error.message)
+      return
+    }
+  }
+  res.status(401).send('No issuer data')
+  return
 })
 
 app.post("/api/update_key", authMiddleware, async (req, res, next) => {

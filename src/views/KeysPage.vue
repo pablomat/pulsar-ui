@@ -37,7 +37,7 @@
       <select class="form-control" v-model="create_key_course">
         <option v-for="(opt,key) in courses" :value="opt.name">{{opt.name}}</option>
       </select>
-      <button @click="create_keys" class="btn btn-primary" :disabled="sending"><div v-if="sending" class="mini loader"></div>Create keys</button>
+      <button @click="register_to_course" class="btn btn-primary" :disabled="sending"><div v-if="sending" class="mini loader"></div>Register</button>
     </b-modal>
 
     <b-modal ref="modalProof" hide-footer title="Create proof">
@@ -171,7 +171,7 @@ export default {
       this.courses = response.data
     },
 
-    async create_keys() {
+    async register_to_course() {
       this.sending = true
       this.hideSuccess()
       this.hideDanger()
