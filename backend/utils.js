@@ -23,6 +23,13 @@ function validateCourse(course) {
   return course
 }
 
+function validateRequest(request) {
+  if(!request.user_id) throw new Error('No _id defined')
+  if(!request.key) throw new Error('No key defined')
+  if(!request.course) throw new Error('No course defined')
+  return request
+}
+
 function createPermlink(title) {
   let permlink
   let noise = Math.random().toString(36).substring(7)
@@ -33,5 +40,6 @@ function createPermlink(title) {
 module.exports = {
   validateUser,
   validateCourse,
+  validateRequest,
   createPermlink
 }

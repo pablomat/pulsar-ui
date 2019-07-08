@@ -16,20 +16,20 @@ const LocalStrategy = require('passport-local').Strategy
 const publicRoot = '/home/julian/pulsar_diploma/pulsar/dist'
 const port = process.env.PORT || 3000
 
-/*app.all('*', function(req, res, next) {
+app.all('*', function(req, res, next) {
    res.header("Access-Control-Allow-Origin", "*");
    res.header("Access-Control-Allow-Headers", "X-Requested-With");
    next();
 });
 
-app.use(express.static(publicRoot))*/
+app.use(express.static(publicRoot))
 
 /*app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
 });*/
-app.use(express.static(publicRoot))
+//app.use(express.static(publicRoot))
 
 app.use(bodyParser.json())
 app.use(cookieSession({
@@ -64,7 +64,7 @@ function RPCnode_initClient(address = Config.RPC_NODES[0]) {
   opts.addressPrefix = Config.STEEM_ADDRESS_PREFIX
   opts.timeout = Config.DSTEEM_TIMEOUT
   if(process.env.VUE_APP_CHAIN_ID) opts.chainId = process.env.VUE_APP_CHAIN_ID
-  opts.chainId = 'a118feb47e63e942c55e4bc991e74f9e2e2d4d099e32f2ae7d55a66f6b415f14'
+  //opts.chainId = 'a118feb47e63e942c55e4bc991e74f9e2e2d4d099e32f2ae7d55a66f6b415f14'
   return new Client(address, opts)
 }
 
@@ -98,6 +98,7 @@ app.get("/", (req, res, next) => {
 })
 
 app.post("/api/login", (req, res, next) => {
+  console.log('trying to login...')
   passport.authenticate('local', (err, user, info) => {
     if (err) {
       return next(err);
@@ -120,8 +121,19 @@ app.get('/api/logout', function(req, res){
   return res.send();
 });
 
-const authMiddleware = (req, res, next) => {
-  // return next() //todo: remove
+const authMiddleware = async (req, res, next) => {
+  /**
+   * Temporal authentication using username and password in each request.
+   * TODO: Use tokens in passport.js or some alternative
+   */
+  if (req.body.auth && req.body.auth.username && req.body.auth.password){
+    var user = await getUser({username:req.body.auth.username, password:req.body.auth.password})
+    if(user) return next()
+  }
+
+  /**
+   * Authentication using passport
+   */
   if (!req.isAuthenticated()) {
     console.log('401 not authenticated')
     res.status(401).send('You are not authenticated')
@@ -213,15 +225,72 @@ app.post("/api/remove_user", authMiddleware, isAdminMiddleware, async (req, res,
   console.log("User removed")
 })
 
+async function updateUser(filter, update) {
+  if(filter._id) filter._id = ObjectId(filter._id)
+  await db.collection('users').updateOne(filter, update)
+  await db.collection('students').updateOne(filter, update)
+  await db.collection('admins').updateOne(filter, update)
+}
+
 app.post("/api/update_user", authMiddleware, isAdminMiddleware, async (req, res, next) => {
-  //const { db, client } = await connectDB()
-  //TODO: input validation
-  if(req.body.filter._id) req.body.filter._id = ObjectId(req.body.filter._id) 
-  await db.collection('users').updateOne(req.body.filter, req.body.update)
-  await db.collection('students').updateOne(req.body.filter, req.body.update)
-  await db.collection('admins').updateOne(req.body.filter, req.body.update)
+  await updateUser(req.body.filter, req.body.update)
   res.send("User updated")
   console.log("User updated")
+})
+
+app.get("/api/requests", authMiddleware, async (req, res, next) => {
+  if( await isAdmin( req.session.passport.user ) )
+    var filter = {}
+  else
+    var filter = {_id:ObjectId(req.params.user)}
+  var requests = await db.collection('requests').find(filter).toArray()
+  console.log('get requests')
+  res.send(requests)
+})
+
+app.post('/api/request_registration', authMiddleware, async (req, res, next) => {
+  try {
+    var request = Utils.validateRequest(req.body.request)
+    var user = await getUser({_id:ObjectId(request.user_id)})
+    request.status = 'pending'
+    request.time = new Date().toISOString().slice(0,-5)
+    request.start_date = new Date().toISOString().slice(0,-5)
+    request.username = user.username
+    request.name = user.name
+    request.family_name = user.family_name
+  }catch(err){
+    res.status(400).send('Error validating request: '+err.message)
+    return
+  }
+  await db.collection('requests').insertOne(request)
+  res.send('request added')
+  console.log('request added')
+})
+
+app.post('/api/resolve_request', authMiddleware, isAdminMiddleware, async (req, res, next) => {
+  var filter = {_id:ObjectId(req.body.request._id)}
+  if(req.body.approve){
+    var request = await db.collection('requests').findOne( filter )
+    var filter = {
+      _id: ObjectId(request.user_id)
+    }
+    var update = {
+      $push:{
+        keys:{
+          key: request.key,
+          course: request.course,
+          start_date: request.start_date
+        }
+      }
+    }
+    await updateUser(filter, update)
+    var status = 'approved'
+  }else{
+    var status = 'denied'
+  }
+  await db.collection('requests').updateOne( filter , {$set:{status:status, comments: req.body.comments}} )
+  res.send('request updated')
+  console.log('request updated')
 })
 
 app.get("/api/courses", async (req, res, next) => {
