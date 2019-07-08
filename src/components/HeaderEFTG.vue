@@ -37,6 +37,9 @@
             <router-link to="/adminstudents" class="nav-item nav-link"><div class="extra-padding">Admin</div></router-link>
           </li>
           <li class="nav-item">
+            <router-link to="/requests" class="nav-item nav-link"><div class="extra-padding">Requests</div></router-link>
+          </li>
+          <li class="nav-item">
             <router-link to="/courses" class="nav-item nav-link"><div class="extra-padding">Courses</div></router-link>
           </li>
           <li class="nav-item">
