@@ -271,6 +271,8 @@ app.post('/api/resolve_request', authMiddleware, isAdminMiddleware, async (req, 
   var filter = {_id:ObjectId(req.body.request._id)}
   if(req.body.approve){
     var request = await db.collection('requests').findOne( filter )
+    if(!request.preconditions) request.preconditions = []
+
     var filter = {
       _id: ObjectId(request.user_id)
     }
@@ -279,7 +281,8 @@ app.post('/api/resolve_request', authMiddleware, isAdminMiddleware, async (req, 
         keys:{
           key: request.key,
           course: request.course,
-          start_date: request.start_date
+          start_date: request.start_date,
+          preconditions: request.preconditions
         }
       }
     }
