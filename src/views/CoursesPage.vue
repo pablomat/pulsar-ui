@@ -39,6 +39,14 @@
                 </div>
               </div>
               <div class="form-group row">
+                <label for="input_description" class="col-md-2 col-form-label">IMAGE</label>
+                <div class="col-md-10">
+                  <input class="form-control" type="text" id="input_imgUrl"
+                    v-model="imgUrl" placeholder="Description" :class="{'is-invalid': error.imgUrl }"/>
+                  <div v-if="error.imgUrl" class="invalid-feedback">{{ errorText.imgUrl }}</div>
+                </div>
+              </div>
+              <div class="form-group row">
                 <label for="input_preconditions" class="col-md-2 col-form-label">PRECONDITIONS</label>
                 <div class="col-md-10">
                   <input class="form-control" type="text" id="input_preconditions"
@@ -91,6 +99,7 @@ export default {
 
       name: '',
       description: '',
+      imgUrl: '',
       preconditions: '',
 
       editing: false,
@@ -100,11 +109,13 @@ export default {
       error:{
         name: false,
         description: false,
+        imgUrl: false,
         preconditions: false,
       },
       errorText:{
         name: '',
         description: '',
+        imgUrl: '',
         preconditions: '',
       }
     }
@@ -166,6 +177,7 @@ export default {
     fillForm() {
       this.name = this.current.name
       this.description = this.current.description
+      this.imgUrl = this.current.imgUrl
       this.preconditions = this.current.preconditions
     },
 
@@ -181,6 +193,7 @@ export default {
           var course = {
             name: this.name,
             description: this.description,
+            imgUrl: this.imgUrl
           }
 
           await axios.post(Config.SERVER_API + 'add_course', course)
@@ -196,6 +209,7 @@ export default {
               $set:{
                 name: this.name,
                 description: this.description,
+                imgUrl: this.imgUrl
               }
             }
           }
