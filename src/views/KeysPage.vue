@@ -30,17 +30,25 @@
       >{{show_private_key?'Hide':'Show private key'}}</button>
     </b-modal>
 
-    <b-modal ref="modalCreateKeys" hide-footer title="Create Keys">
+    <b-modal ref="modalCreateKeys" hide-footer title="Register to new course">
+      <h5>University</h5>
       <select class="form-control" v-model="create_key_issuer">
         <option v-for="(opt,key) in issuers" :value="opt.name">{{opt.name}}</option>
       </select>
+      <h5 class="mt-3">Course</h5>
       <select class="form-control" v-model="create_key_course">
         <option v-for="(opt,key) in courses" :value="opt.name">{{opt.name}}</option>
       </select>
+      <h5 class="mt-3">Preconditions</h5>
       <div v-if="preconditions.length > 0">
         <div v-for="p in preconditions">
           <select class="form-control" v-model="p.input">
-            <option v-for="(opt,index) in keysWithBadge" :value="opt.badge.link">{{opt.course}}</option>
+            <option v-for="(opt,index) in keysWithBadge" :value="opt.badge.link">
+              <div class="row">
+                <div class="col-12">{{opt.course}}</div>
+                <div class="col-12"><small>{{opt.university}}</small></div>
+              </div>
+            </option>
           </select>
         </div>
       </div>
@@ -61,7 +69,12 @@
 
     <HeaderEFTG ref="headerEFTG" v-on:login="onLogin" v-on:logout="onLogout"></HeaderEFTG>
     <div class="container">
-      <h2 class="text-center">Courses</h2>
+      <h2 class="text-center">Dashboard</h2>
+      <div v-if="keys.length > 0" class="row mt-3 mb-3">
+        <div class="offset-2 col-8">
+          <pie-chart :data="dataChart" :options="optionsChart"/>
+        </div>
+      </div>     
       <div role="tablist">
         <b-card 
           v-for="(course,index) in keys"
@@ -69,12 +82,17 @@
           v-bind:value="index"class="mb-1"
         >
           <div role="tab" v-b-toggle="'accordion'+index">
-            <div class="card-title">{{course.course}}</div>
-            <div class="card-subtitle text-muted">{{course.university}}</div>
+            <div class="square4" v-bind:style="{ backgroundImage: 'url(' + course.imgUrl + ')' }"></div>
+            <div class="comp-square4">
+              <div class="card-title">{{course.course}}<span v-if="!course.pending" class="badge badge-pill badge-success float-right">Finished</span></div>
+              <div class="card-subtitle text-muted">{{course.university}}</div>
+            </div>
           </div>
           <b-collapse :id="'accordion'+index" visible accordion="my-accordion" role="tabpanel">
-            <div class="card-text mt-3 mb-2" :class="{'text-primary':course.pending, 'text-success':!course.pending}">{{course.status}}</div>
-            <div class="card-text">
+            <div v-if="course.badge.assertion" class="mt-3">Award date: {{course.badge.assertion.award_date.slice(0,-9)}}</div>
+            <div v-else-if="course.registration_pending">Registration in progress</div>
+            <div v-else>Registered: {{course.registration.comments}}</div>
+            <div class="card-text mt-2">
               <div class="row">
                 <div class="col-4">
                 <button class="btn btn-primary col-12" @click="showKeys(course)">Keys</button>
@@ -90,7 +108,13 @@
           </b-collapse>
         </b-card>
       </div>
-      <button @click="showModalCreateKey" class="btn btn-primary mt-3 mb-3">Add</button>     
+      <div class="row mt-3">
+        <div class="col-12">
+          <div class="float-right">
+            <button @click="showModalCreateKey" class="btn btn-primary btn-circle" style="font-size:24px;">+</button>
+          </div>
+        </div>
+      </div>
       <div v-if="alert.info" class="alert alert-info" role="alert">{{alert.infoText}}</div>
       <div v-if="alert.success" class="alert alert-success" role="alert" v-html="alert.successText"></div>
       <div v-if="alert.danger"  class="alert alert-danger" role="alert">{{alert.dangerText}}</div>
@@ -107,6 +131,8 @@ import Config from '@/config.js'
 import Utils from '@/js/utils.js'
 import HeaderEFTG from '@/components/HeaderEFTG'
 import CreateProof from '@/components/CreateProof'
+import PieChart from '@/components/PieChart'
+import SteemClient from '@/mixins/SteemClient.js'
 import Alerts from '@/mixins/Alerts'
 
 import dev_data from '@/assets/dev_data.json'
@@ -123,6 +149,26 @@ export default {
       badge_url: '',
       key: {},
       show_private_key: false,
+      dataChart: {
+				datasets: [{
+					data: [
+						1,
+						1
+					],
+					backgroundColor: [
+						'#2eb326',
+						'#b34526'
+					],
+					label: 'Dataset 1'
+				}],
+				labels: [
+					'Granted',
+					'In progress'
+				]
+			},
+			optionsChart: {
+				responsive: true
+			},
 
       create_key_issuer: '',
       create_key_course: '',
@@ -145,11 +191,13 @@ export default {
 
   components: {
     HeaderEFTG,
-    CreateProof
+    CreateProof,
+    PieChart
   },
 
   mixins: [
-    Alerts
+    Alerts,
+    SteemClient
   ],
 
   created() {
@@ -178,11 +226,27 @@ export default {
       this.keysWithBadge = []
       this.keys.forEach( (k)=>{
         if(k.badge) k.badge.link = this.EXPLORER + '@' + k.badge.issuer + '/' + k.badge.permlink
-        if(k.pending) k.status = 'Pending'
-        else k.status = 'Course finished'
+        if(k.registration){
+          k.registration_pending = k.registration.pending
+        }
 
         if(k.badge && k.badge.issuer && k.badge.permlink) this.keysWithBadge.push(k)
+        if(!k.imgUrl) k.imgUrl = Config.DEFAULT_COURSE_IMAGE
       })
+      this.dataChart.datasets[0].data = [ this.keysWithBadge.length , this.keys.length - this.keysWithBadge.length ]
+
+      for(var i in this.keysWithBadge){
+        try{
+          var key = this.keysWithBadge[i]
+          key.badge.content = await this.steem_get_badge(key.badge)
+          key.badge.assertion = key.badge.content.metadata.assertions.find( (a)=>{ return a.recipient.identity === key.public_key })
+          this.keys.find((k)=>{return k.public_key === key.public_key}).badge = key.badge
+          console.log('badge loaded: '+key.badge.permlink)
+          console.log('Assertion award date: '+key.badge.assertion.award_date)
+        }catch(error){
+          console.log('Cannot get badge: '+error.message)
+        }
+      }
     },
 
     async loadCourses() {
@@ -283,4 +347,31 @@ export default {
   overflow-wrap: break-word;
 }
 
+.square4 {
+  display: inline-block;
+  height: 4rem;
+  width: 4rem;
+  overflow: hidden;
+  background-size: cover;
+  background-position: center center;
+  border-radius: 5%;
+  vertical-align: middle;
+}
+
+.comp-square4 {
+  width: calc(100% - 5rem);
+  display: inline-block;
+  vertical-align: middle;
+  margin-left: 1rem;
+}
+
+.btn-circle {
+  width: 50px;
+  height: 50px;
+  text-align: center;
+  padding: 6px 0;
+  font-size: 12px;
+  line-height: 1.428571429;
+  border-radius: 25px;
+}
 </style>
