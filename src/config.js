@@ -36,6 +36,7 @@ const finalConfig = config[environment];
 
 const PAGE_AFTER_LOGIN = '/keys'
 const PAGE_AFTER_LOGOUT = '/'
+const DEFAULT_COURSE_IMAGE = 'https://www.designevo.com/res/templates/thumb_small/yellow-light-and-red-student-badge.png'
 
 const SBD = 'EUR';
 const STEEM = 'EFTG';
@@ -76,6 +77,7 @@ export default {
 
   PAGE_AFTER_LOGIN,
   PAGE_AFTER_LOGOUT,
+  DEFAULT_COURSE_IMAGE,
   
   SBD: SBD,
   STEEM: STEEM,
