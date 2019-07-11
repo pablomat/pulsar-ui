@@ -198,8 +198,13 @@ app.post("/api/create_keys", authMiddleware, async (req, res, next) => {
     course,
     preconditions,
     pending: true,
-    registering: true,
+    registration: {
+      pending: true,
+      accepted: false,
+      comments: ''
+    },
     badge: {},
+    imgUrl: '',
     public_key: pubKey.toString(),
     private_key: privKey.toString()
   }  
@@ -235,6 +240,11 @@ app.post("/api/create_keys", authMiddleware, async (req, res, next) => {
       console.log('registering')
       await axios.post(issuer.api + 'request_registration', data)
       console.log('registered')
+
+      // get course image
+      var respCourses = await axios.get(issuer.api + 'courses')
+      var courseIssuer = respCourses.data.find( (c)=>{ return c.name === course })
+      key.imgUrl = courseIssuer.imgUrl
 
       await db.collection('users').updateOne(filter,{ $push: { keys: key } })
       res.send({ok:true})
@@ -312,9 +322,55 @@ app.post("/api/get_key", authMiddleware, async (req, res, next) => {
   return
 })
 
+async function checkIssuerUpdates(user){
+  if(!user.keys) return
+  if(!user.issuers) return
+  // console.log('checkingIssuerUpdates')
+  for(var i in user.keys){
+    var key = user.keys[i]
+    if(key.registration && key.registration.pending){
+      // console.log('registration for '+key.course+' is still pending') 
+      var issuer = user.issuers.find( (is)=>{ return is.name === key.university })
+      if(issuer && issuer.api){
+        // console.log('issuer found')
+        var data = {
+          auth: {
+            username: issuer.username,
+            password: issuer.password
+          }
+        }
+        try{
+          // console.log('quering the university for request update')
+          var response = await axios.post( issuer.api + 'requests', data )
+          var requests = response.data
+          // console.log('there is a response')
+          var request = response.data.find( (r)=>{ return r.key === key.public_key })
+          console.log('the is status is '+request.status)
+          if(request && request.status !== 'pending'){
+            var registration = {
+              pending: false,
+              accepted: request.status === 'approved',
+              comments: request.comments
+            }
+            // console.log('updating registration to: '+JSON.stringify(registration))
+            var filter = {
+              _id:ObjectId(user._id),
+              'keys.public_key': key.public_key
+            }
+            await db.collection('users').updateOne( filter, { $set: { 'keys.$.registration': registration } })
+          }
+        }catch(error){
+          console.log('error getting requests: '+error.message)
+        }
+      }
+    }
+  }
+}
+
 app.get("/api/get_keys", authMiddleware, async (req, res, next) => {
   var filter = {_id:ObjectId(req.session.passport.user)}
   var user = await getUser(filter)
+  await checkIssuerUpdates(user)
   res.send(user.keys)
   return
 })
@@ -329,6 +385,7 @@ app.post('/api/update_issuer', authMiddleware, async (req, res, next) => {
     db.collection('users').updateOne( filter, { $set: { 'issuers.$': req.body.issuer } })
     console.log('issuer updated')
   }else{
+    var filter = { _id:ObjectId(req.session.passport.user) }
     db.collection('users').updateOne( filter, { $push: { issuers: req.body.issuer } })
     console.log('issuer added')
   }
