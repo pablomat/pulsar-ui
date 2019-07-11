@@ -175,6 +175,36 @@ export default {
       return this.RPCnode_request( async function(client){
         return await client.broadcast.sendOperations(operations, privKey)
       }, this.onNodeProgress)
+    },
+
+    async steem_get_badge( var1, var2 ){
+      if(var1.issuer && var1.permlink)
+        var data = [var1.issuer, var1.permlink]
+      else
+        var data = [var1, var2]
+
+      var content = await this.steem_database_call( 'get_content', data )
+      if(!content || !content.json_metadata){
+        throw new Error('There is no content on @'+data[0]+'/'+data[1])
+        return
+      }
+      try{
+        content.metadata = JSON.parse(content.json_metadata)
+      }catch(error){
+        throw new Error('Impossible to read the json_metadata: '+error.message)
+      }
+
+      if(!content.metadata || !content.metadata.assertions){
+        throw new Error('@'+data[0]+'/'+data[1]+' does not corresponds with a badge with assertions')
+      }
+      return content
+    },
+
+    async steem_get_assertion( public_key, var1, var2 ){
+      var content = await this.steem_get_badge( var1, var2 )
+      var assertion = content.metadata.assertions.find( (a)=>{ return a.recipient.identity === public_key })
+      if(!assertion) throw new Error('Assertion with public_key '+public_key+' is not present in the badge '+content.url)
+      return assertion
     }
   }
 }
