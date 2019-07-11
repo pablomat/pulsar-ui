@@ -72,14 +72,22 @@ connectDB(url)
 var steemClient = RPCnode_initClient()
 
 async function isRole(id,role) {
-  //const { db, client } = await connectDB()
+  if(id.session && id.session.passport && id.session.passport.user){
+    id = id.session.passport.user
+  }else if(id.body){
+    var currentUser = await getCurrentUser(id)
+    id = currentUser._id
+  }
   var o_id = ObjectId(id)
   var user = await db.collection('users').findOne({_id:o_id,role:role})
   if(user) return true
-  else return false
+  else {
+    console.log('isRole '+role+' false. '+o_id)
+    return false
+  }
 }
 
-async function isAdmin(id) {
+async function isAdmin(id) { 
   return await isRole(id,'admin')
 }
 
@@ -121,22 +129,35 @@ app.get('/api/logout', function(req, res){
   return res.send();
 });
 
-const authMiddleware = async (req, res, next) => {
-  /**
-   * Temporal authentication using username and password in each request.
-   * TODO: Use tokens in passport.js or some alternative
-   */
-  if (req.body.auth && req.body.auth.username && req.body.auth.password){
-    var user = await getUser({username:req.body.auth.username, password:req.body.auth.password})
-    if(user) return next()
+const getCurrentUser = async (req) => {
+  if(req.isAuthenticated()) {
+    var user = await getUser({_id:ObjectId(req.session.passport.user)})
+    return user
   }
 
+  if(req.body.auth && req.body.auth.username && req.body.auth.password){
+    var user = await getUser({username:req.body.auth.username, password:req.body.auth.password})
+    if(user) return user
+  }
+
+  return null
+}
+
+const authMiddleware = async (req, res, next) => {
   /**
    * Authentication using passport
    */
   if (!req.isAuthenticated()) {
-    console.log('401 not authenticated')
-    res.status(401).send('You are not authenticated')
+    /**
+     * Temporal authentication using username and password in each request
+     * (tests with all roles in the same server).
+     */
+    if (await getCurrentUser(req)){
+      return next()
+    }else{
+      console.log('401 not authenticated')
+      res.status(401).send('You are not authenticated')
+    }
   } else {
     return next()
   }
@@ -163,7 +184,7 @@ const isStudentMiddleware = (req, res, next) => {
 
 app.get("/api/user", authMiddleware, (req, res) => {
   (async () => {
-    var user = await getUser({_id:ObjectId(req.session.passport.user)})
+    var user = await getCurrentUser(req)
     console.log([user, req.session])
     res.send({user: user})
   })()
@@ -171,7 +192,7 @@ app.get("/api/user", authMiddleware, (req, res) => {
 
 app.get("/api/getuser/:user", (req, res) => { //todo: remove
   (async () => {
-    var user = await getUser({_id:ObjectId(req.params.user)})
+    var user = await getCurrentUser(req)
     console.log([user, req.session])
     res.send({user: user})
   })()
@@ -239,19 +260,39 @@ app.post("/api/update_user", authMiddleware, isAdminMiddleware, async (req, res,
 })
 
 app.get("/api/requests", authMiddleware, async (req, res, next) => {
-  if( await isAdmin( req.session.passport.user ) )
+  if( await isAdmin( req ) )
     var filter = {}
-  else
-    var filter = {_id:ObjectId(req.params.user)}
+  else{
+    var user = await getCurrentUser(req)
+    var filter = {user_id:user._id.toString()}
+  }
   var requests = await db.collection('requests').find(filter).toArray()
   console.log('get requests')
   res.send(requests)
 })
 
+app.post("/api/requests", authMiddleware, async (req, res, next) => {
+  if( await isAdmin(req) )
+    var filter = {}
+  else{
+    var user = await getCurrentUser(req)
+    var filter = {user_id:user._id.toString()}
+  }
+  var requests = await db.collection('requests').find(filter).toArray()
+  console.log('get requests')
+  res.send(requests)
+})
+
+
 app.post('/api/request_registration', authMiddleware, async (req, res, next) => {
   try {
     var request = Utils.validateRequest(req.body.request)
-    var user = await getUser({_id:ObjectId(request.user_id)})
+    var user = await getCurrentUser(req)
+    console.log('request_registration')
+    if(user._id.toString() !== request.user_id){
+      res.status(401).send('The user_id in the request does not correspond with logged user')
+      return
+    }
     request.status = 'pending'
     request.time = new Date().toISOString().slice(0,-5)
     request.start_date = new Date().toISOString().slice(0,-5)
@@ -273,7 +314,7 @@ app.post('/api/resolve_request', authMiddleware, isAdminMiddleware, async (req, 
     var request = await db.collection('requests').findOne( filter )
     if(!request.preconditions) request.preconditions = []
 
-    var filter = {
+    var filter2 = {
       _id: ObjectId(request.user_id)
     }
     var update = {
@@ -286,7 +327,7 @@ app.post('/api/resolve_request', authMiddleware, isAdminMiddleware, async (req, 
         }
       }
     }
-    await updateUser(filter, update)
+    await updateUser(filter2, update)
     var status = 'approved'
   }else{
     var status = 'denied'
