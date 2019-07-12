@@ -1,7 +1,7 @@
 <template>
   <div>
-    <b-modal ref="modalAuth" hide-footer title="Login">
-      <AuthComponent ref="auth" v-on:login="onLogin" v-on:close="closeModalAuth"></AuthComponent>
+    <b-modal ref="modalSignUp" hide-footer title="Sign up">
+      <SignUp ref="signup" v-on:close="closeModalSignUp"></SignUp>
     </b-modal>
     <b-navbar toggleable="lg" type="dark" variant="primary">
       <ul class="navbar-nav">
@@ -25,7 +25,7 @@
         </ul>
       </b-navbar>
       <b-navbar-nav v-else class="nav-link ml-auto d-lg-none">
-        <button class="btn btn-primary" @click="showModalAuth">Login</button>
+        <button class="btn btn-primary" @click="showModalSignUp">Sign up</button>
       </b-navbar-nav>
 
       <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
@@ -48,7 +48,7 @@
               </b-nav-item-dropdown>
             </div>
             <div v-else>
-              <button class="btn btn-primary" @click="showModalAuth">Login</button>
+              <button class="btn btn-primary" @click="showModalSignUp">Sign up</button>
             </div>
           </li>
         </ul>
@@ -58,7 +58,7 @@
 </template>
 
 <script>
-import AuthComponent from '@/components/Auth'
+import SignUp from '@/components/SignUp'
 import Auth from '@/mixins/Auth.js'
 import Config from '@/config.js'
 import axios from 'axios'
@@ -76,6 +76,10 @@ export default {
       linkLogo: '/',
       EXPLORER: Config.EXPLORER
     };
+  },
+
+  components: {
+    SignUp
   },
 
   mixins: [
@@ -98,17 +102,17 @@ export default {
       }
     },
     
-    showModalAuth() {
-      this.$refs.modalAuth.show()
+    showModalSignUp() {
+      this.$refs.modalSignUp.show()
     },
 
     onLogin() {
-      this.closeModalAuth()
-      this.$emit('login')    
+      this.closeModalSignUp()
+      this.$emit('login')
     },
 
-    closeModalAuth() {
-      this.$refs.modalAuth.hide()    
+    closeModalSignUp() {
+      this.$refs.modalSignUp.hide()
     },
     
     async logoutAndEmit() {
@@ -116,9 +120,6 @@ export default {
       this.linkLogo = Config.PAGE_AFTER_LOGOUT
       this.$emit('logout')
     }
-  },
-  components: {
-    AuthComponent   
   },
 };
 </script>

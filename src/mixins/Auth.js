@@ -38,11 +38,17 @@ export default {
     },
 
     async logout() {
-      await axios.get(Config.SERVER_API + "logout")
+      if(!process.env.VUE_APP_DEV)
+        await axios.get(Config.SERVER_API + "logout")
       console.log(this.$store.state.auth.username + " logout");
 
       this.$store.state.auth = { user: '', logged: false, imgUrl: '' }
       router.push(Config.PAGE_AFTER_LOGOUT)
+    },
+
+    async signup(username, password) {
+      var response = await axios.post(Config.SERVER_API + 'signup', {username, password})
+      return response.data
     },
 
     setLoginUser(user){

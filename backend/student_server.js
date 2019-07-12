@@ -157,6 +157,23 @@ app.get('/api/logout', function(req, res){
   return res.send();
 });
 
+app.post('/api/signup', async (req, res) => {
+  var user = await getUser({username:req.body.username})
+  if(user){
+    return res.status(404).send('Username '+req.body.username+' already exists')
+  }
+  var newUser = {
+    username: req.body.username,
+    password: req.body.password,
+    keys: [],
+    issuers: []
+  }
+  await db.collection('users').insertOne(newUser)
+  console.log('account created')
+  res.send('Account created')
+  return
+})
+
 const authMiddleware = (req, res, next) => {
   //return next() //todo: remove
   if (!req.isAuthenticated()) {
