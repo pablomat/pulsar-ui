@@ -3,6 +3,8 @@ const memo_key = '5JKVA1RMufcDpprpWmRsNVrkJtb3m3E8VbRUHdsVxC9CRxii2Z4'
 const posting_key = '5JKVA1RMufcDpprpWmRsNVrkJtb3m3E8VbRUHdsVxC9CRxii2Z4'
 const active_key = '5JKVA1RMufcDpprpWmRsNVrkJtb3m3E8VbRUHdsVxC9CRxii2Z4'
 
+const secret_create_account = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
+
 const config = {
   'production': {
     RPC_NODES : [
@@ -72,10 +74,14 @@ const MAP = {
 
 const APP_VERSION = 'pulsar/1.5.3';
 
+const ACCOUNT_CREATION_FEE = '3.000 EFTG'
+
 const final_account       = process.env.ACCOUNT       || account
 const final_memo_key      = process.env.MEMO_KEY      || memo_key
 const final_posting_key   = process.env.POSTING_KEY   || posting_key
 const final_active_key    = process.env.ACTIVE_KEY    || active_key
+
+const final_secret_create_account = process.env.SECRET_CREATE_ACCOUNT || secret_create_account
 
 module.exports = {
 
@@ -110,9 +116,12 @@ module.exports = {
   MAP:MAP,
 
   APP_VERSION: APP_VERSION,
+  ACCOUNT_CREATION_FEE,
 
   ACCOUNT: final_account,
   MEMO_KEY: final_memo_key,
   POSTING_KEY: final_posting_key,
   ACTIVE_KEY: final_active_key,
+  SECRET_CREATE_ACCOUNT: final_secret_create_account,
+
 };

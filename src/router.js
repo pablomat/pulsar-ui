@@ -114,6 +114,11 @@ export default new Router({
       component: () => import('./views/VerifyPage.vue')
     },
     {
+      path: "/createaccount",
+      name: "CreateAccount",
+      component: () => import('./views/CreateAccount.vue')
+    },
+    {
       path: "/explorer",
       name: "Explorer",
       component: HomeExplorer

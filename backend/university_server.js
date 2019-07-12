@@ -552,6 +552,89 @@ app.post("/api/create_badges", authMiddleware, isAdminMiddleware, async (req, re
   res.send(result)
 })
 
+app.post("/api/create_account", authMiddleware, isAdminMiddleware, async (req, res, next) => {
+  console.log('create account')
+
+  var metadata = req.body.metadata ? req.body.metadata : {}
+  var username = req.body.username
+  var password = PrivateKey.fromLogin(username, Config.SECRET_CREATE_ACCOUNT, 'owner').toString().substring(0,15)
+
+  const ownerKey = PrivateKey.fromLogin(username, password, 'owner')
+  const activeKey = PrivateKey.fromLogin(username, password, 'active')
+  const postingKey = PrivateKey.fromLogin(username, password, 'posting')
+  const memoKey = PrivateKey.fromLogin(username, password, 'memo')
+
+  const account = {
+    username,
+    password,
+    owner: {
+      public_key: ownerKey.createPublic().toString(),
+      private_key: ownerKey.toString()
+    },
+    active: {
+      public_key: activeKey.createPublic().toString(),
+      private_key: activeKey.toString()
+    },
+    posting: {
+      public_key: postingKey.createPublic().toString(),
+      private_key: postingKey.toString()
+    },
+    memo: {
+      public_key: memoKey.createPublic().toString(),
+      private_key: memoKey.toString()
+    }
+  }
+
+  var result = await steemClient.database.call('get_accounts',[[username]])
+  if(result && result.length > 0) {
+    console.log('account already exists')
+    if( account.owner.public_key === result[0].owner.key_auths[0][0] )
+      res.send(account)
+    else
+      res.status(404).send('This account already exists. The private key is not in this server')
+    return
+  }
+
+  var operation = [
+    'account_create',
+    {
+      fee: Config.ACCOUNT_CREATION_FEE,
+      creator: Config.ACCOUNT,
+      new_account_name: username,
+      owner: {
+        weight_threshold: 1,
+        account_auths: [],
+        key_auths: [[ownerKey.createPublic(Config.STEEM_ADDRESS_PREFIX).toString(), 1]]
+      },
+      active: {
+        weight_threshold: 1,
+        account_auths: [],
+        key_auths: [[activeKey.createPublic(Config.STEEM_ADDRESS_PREFIX).toString(), 1]]
+      },
+      posting: {
+        weight_threshold: 1,
+        account_auths: [],
+        key_auths: [[postingKey.createPublic(Config.STEEM_ADDRESS_PREFIX).toString(), 1]]
+      },
+      memo_key: memoKey.createPublic(Config.STEEM_ADDRESS_PREFIX).toString(),
+      json_metadata: JSON.stringify(metadata)
+    }
+  ]
+
+  try{
+    var activeK = PrivateKey.fromString(Config.ACTIVE_KEY)
+    var result = await steemClient.broadcast.sendOperations([operation], activeK)
+
+    account.response = result
+    res.send(account)
+    return
+  }catch(error){
+    res.status(400).send('Error broadcasting operation: '+error.message)
+    console.log(error)
+    return
+  }
+})
+
 app.get("*", (req, res, next) => {
   res.sendFile("index.html", { root: publicRoot })
 })
@@ -559,17 +642,3 @@ app.get("*", (req, res, next) => {
 app.listen(port, () => {
   console.log("Example app listening on port "+port)
 })
-
-
-/*
-
-var http = require('http');
-
-http.createServer(function (req, res) {
-  res.writeHead(200, {'Content-Type': 'text/plain'});
-  res.end('Hello world!');
-}).listen(8084);
-
-
-
-*/
