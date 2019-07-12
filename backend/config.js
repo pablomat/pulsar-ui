@@ -5,6 +5,8 @@ const active_key = '5JKVA1RMufcDpprpWmRsNVrkJtb3m3E8VbRUHdsVxC9CRxii2Z4'
 
 const secret_create_account = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
 
+const database = 'univ'
+
 const config = {
   'production': {
     RPC_NODES : [
@@ -82,6 +84,7 @@ const final_posting_key   = process.env.POSTING_KEY   || posting_key
 const final_active_key    = process.env.ACTIVE_KEY    || active_key
 
 const final_secret_create_account = process.env.SECRET_CREATE_ACCOUNT || secret_create_account
+const final_database = process.env.DATABASE || database
 
 module.exports = {
 
@@ -123,5 +126,5 @@ module.exports = {
   POSTING_KEY: final_posting_key,
   ACTIVE_KEY: final_active_key,
   SECRET_CREATE_ACCOUNT: final_secret_create_account,
-
+  DATABASE: final_database
 };

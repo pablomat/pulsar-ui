@@ -43,18 +43,19 @@ app.use(passport.session());
 
 var MongoClient = require('mongodb').MongoClient;
 var ObjectId = require('mongodb').ObjectId;
-var url = 'mongodb://localhost:27017/univ';
+var url = 'mongodb://localhost:27017/'+Config.DATABASE;
+console.log(url)
 
 var _mongoClient;
 var db;
 async function connectDB(url) { 
   if (!_mongoClient){
     _mongoClient = await MongoClient.connect(url);
-    db = _mongoClient.db('univ')
+    db = _mongoClient.db(Config.DATABASE)
   }
 
   return { 
-    db: _mongoClient.db('univ'),
+    db: _mongoClient.db(Config.DATABASE),
     client: _mongoClient
   };
 }
