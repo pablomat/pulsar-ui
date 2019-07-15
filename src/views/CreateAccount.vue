@@ -43,6 +43,7 @@
         <div class="row mt-4">
           <div class="form-group col-12 align-bottom" style="padding-top: 8px;">
             <button @click="create" class="btn btn-primary btn-large mr-2" :disabled="sending"><div v-if="sending" class="mini loader"></div>Create</button>
+            <button @click="modify" class="btn btn-primary btn-large" :disabled="sending"><div v-if="sending" class="mini loader"></div>Modify</button>
           </div>
         </div>
         <div v-if="alert.info" class="alert alert-info" role="alert">{{alert.infoText}}</div>
@@ -114,7 +115,25 @@ export default {
   ],
 
   methods: {
-    async create() {
+    create() {
+      this.update('create_account', (result)=>{
+        console.log(result.data)
+        this.account = result.data
+      }) 
+    },
+
+    modify() {
+      this.update('modify_account', (result)=>{
+        console.log(result)
+        this.showSuccess('Account updated')
+      })
+    },
+
+    async update(method, callback) {
+      if(method !== 'create_account' && method !== 'modify_account'){
+        this.showDanger(call + ' is not a valid call to the server')
+        return
+      }
       this.hideDanger()
       this.hideSuccess()
 
@@ -136,9 +155,8 @@ export default {
       this.sending = true
       this.account = null
       try{
-        var result = await axios.post(Config.SERVER_API + 'create_account', data)
-        console.log(result.data)
-        this.account = result.data
+        var result = await axios.post(Config.SERVER_API + method, data)
+        callback(result)
       }catch(error){
         console.log(error)
         this.showDanger(error.message)

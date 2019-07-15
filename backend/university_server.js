@@ -553,6 +553,48 @@ app.post("/api/create_badges", authMiddleware, isAdminMiddleware, async (req, re
   res.send(result)
 })
 
+app.post('/api/modify_account', authMiddleware, isAdminMiddleware, async (req, res, next) => {
+  console.log('modify account')
+  var metadata = req.body.metadata ? req.body.metadata : {}
+  var username = req.body.username
+  var password = PrivateKey.fromLogin(username, Config.SECRET_CREATE_ACCOUNT, 'owner').toString().substring(0,15)
+  const activeKey = PrivateKey.fromLogin(username, password, 'active')
+  const memoKey = PrivateKey.fromLogin(username, password, 'memo')
+
+  var result = await steemClient.database.call('get_accounts', [[username]])
+  if(!result || result.length == 0){
+    console.log('account does not exists')
+    res.status(404).send('This account does not exists')
+    return
+  }
+
+  var keyPresent = result[0].active.key_auths.find( (k)=>{ return k[0] === activeKey.createPublic(Config.STEEM_ADDRESS_PREFIX).toString() })
+  if(!keyPresent) {
+    console.log('private key is not in the server')
+    res.status(404).send('This server does not have the private key to update the account')
+    return
+  } 
+
+  var operation = [
+    'account_update',
+    {
+      account: username,
+      memo_key: memoKey.createPublic(Config.STEEM_ADDRESS_PREFIX).toString(),
+      json_metadata: JSON.stringify(metadata)
+    }
+  ]
+
+  try{
+    var result = await steemClient.broadcast.sendOperations([operation], activeKey)
+    res.send(result)
+    return
+  }catch(error){
+    res.status(400).send('Error broadcasting operation: '+error.message)
+    console.log(error)
+    return
+  }
+})
+
 app.post("/api/create_account", authMiddleware, isAdminMiddleware, async (req, res, next) => {
   console.log('create account')
 
@@ -569,19 +611,19 @@ app.post("/api/create_account", authMiddleware, isAdminMiddleware, async (req, r
     username,
     password,
     owner: {
-      public_key: ownerKey.createPublic().toString(),
+      public_key: ownerKey.createPublic(Config.STEEM_ADDRESS_PREFIX).toString(),
       private_key: ownerKey.toString()
     },
     active: {
-      public_key: activeKey.createPublic().toString(),
+      public_key: activeKey.createPublic(Config.STEEM_ADDRESS_PREFIX).toString(),
       private_key: activeKey.toString()
     },
     posting: {
-      public_key: postingKey.createPublic().toString(),
+      public_key: postingKey.createPublic(Config.STEEM_ADDRESS_PREFIX).toString(),
       private_key: postingKey.toString()
     },
     memo: {
-      public_key: memoKey.createPublic().toString(),
+      public_key: memoKey.createPublic(Config.STEEM_ADDRESS_PREFIX).toString(),
       private_key: memoKey.toString()
     }
   }
