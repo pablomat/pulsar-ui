@@ -1,3 +1,10 @@
+:root {
+  --color1: #548cec;
+  --color1-hover: #2d5cab;
+  --color2: #C3C3C3;
+  --color2-hover: #A1A1A1;
+}
+
 body {
   margin: 0px;  
 }
@@ -17,7 +24,7 @@ body {
 
 #app .navbar{
   padding: 0 14px;
-  background-color: #548cec !important;
+  background-color: var(--color1) !important;
   margin-bottom: 1rem;
 }
 
@@ -26,11 +33,11 @@ body {
 }
 
 #app .navbar a:hover{
-  background-color: #2d5cab;  
+  background-color: var(--color1-hover);  
 }
 
 #app .list-group-item:hover{
-  background-color: #C3C3C3;  
+  background-color: var(--color2);  
 }
 
 #app .navbar-dark .navbar-nav .nav-link {
@@ -54,31 +61,31 @@ body {
 }
 
 #app .btn-primary {
-  background-color: #548cec;
+  background-color: var(--color1);
 }
 
 #app .btn-primary:hover {
-  background-color: #2d5cab;
+  background-color: var(--color1-hover);
 }
 
 #app .btn-secondary {
-  background-color:#C3C3C3; 
+  background-color:var(--color2); 
 }
 
 #app .btn-secondary:hover {
-  background-color:#A1A1A1; 
+  background-color:--color2-hover; 
 }
 
 #app .btn-secondary:not(:disabled):not(.disabled).active {
-  background-color:#548cec; 
+  background-color:var(--color1); 
 }
 
 #app .bg-primary {
-  background-color: #548cec !important;
+  background-color: var(--color1) !important;
 }
 
 #app .bg-secondary {
-  background-color:#C3C3C3 !important; 
+  background-color:var(--color2) !important; 
 }
 
 #app .bg-info {
@@ -86,16 +93,16 @@ body {
 }
 
 #app .text-primary {
-  color: #548cec !important;
+  color: var(--color1) !important;
 }
 
 #app .text-secondary {
-  color: #C3C3C3 !important;
+  color: var(--color2) !important;
 }
 
 #app .table-primary th{
-  background-color: #548cec !important;
-  border-color: #548cec !important;
+  background-color: var(--color1) !important;
+  border-color: var(--color1) !important;
   color: white !important;
 }
 
@@ -117,8 +124,8 @@ body {
   margin: 20px auto;
   border: 3px solid #ffffff;  
   border-radius: 50%;
-  border-top: 3px solid #2d5cab;
-  border-right: 3px solid #2d5cab;
+  border-top: 3px solid var(--color1-hover);
+  border-right: 3px solid var(--color1-hover);
   width: 2rem;
   height: 2rem;
   -webkit-animation: spin 0.7s linear infinite; /* Safari */
@@ -150,7 +157,7 @@ body {
 }
 .no-a:hover{
   text-decoration: none;
-  color: #548cec;
+  color: var(--color1);
 }
 
 .image-profile {
