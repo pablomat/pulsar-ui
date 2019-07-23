@@ -76,7 +76,7 @@
                         <div class="col-11">
                           {{key.key}}
                           <div class="row">
-                            <div class="col-3">{{key.course}}</div>
+                            <div class="col-3">{{key.course_name}}</div>
                             <div class="col-9">{{key.start_date}}</div>
                           </div>
                         </div>
@@ -94,7 +94,7 @@
                       <option
                         v-for="option in courses"
                         v-bind:key="option.name"
-                        v-bind:value="option.name"
+                        v-bind:value="option._id"
                       >
                         {{ option.name }}
                       </option>
@@ -283,6 +283,7 @@ export default {
 
     selectStudent(id) {
       this.current = this.students[id]
+      this.getCourseNames()
       this.closeUpdate()
     },
 
@@ -319,6 +320,18 @@ export default {
     reloadCurrent() {
       if(!this.current) return
       this.current = this.students.find( (s)=>{ return s._id === this.current._id } )
+      this.getCourseNames()
+    },
+
+    getCourseNames() {
+      this.current.keys.forEach( (k)=>{
+        try{
+          k.course_name = this.courses.find( (c)=>{ return c._id === k.course }).name
+        }catch(error){
+          k.course_name = 'Error loading course name'
+          console.log(error)
+        } 
+      })
     },
 
     async updateStudent() {
