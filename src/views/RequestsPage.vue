@@ -16,7 +16,7 @@
         </div>
         <div class="col">
           <div v-if="current">
-            <h3>Request {{current.course}}</h3>
+            <h3>Request {{current.course_name}}</h3>
             <div class="row">
               <div class="col-md-3">Student</div>
               <div class="col">{{current.family_name}}, {{current.name}}</div>
@@ -75,6 +75,7 @@ export default {
   data() {
     return {
       requests: [],
+      courses: [],
       current: null,
 
       comments: '',
@@ -91,7 +92,7 @@ export default {
   ],
 
   created() {
-    this.loadRequests()
+    this.loadCourses().then( this.loadRequests )
   },
 
   methods: {
@@ -103,6 +104,9 @@ export default {
         console.log(this.requests)
         for(var i in this.requests){
           var r = this.requests[i]
+
+          r.course_name = this.courses.find((c)=>{ return r.course === c._id }).name
+
           if(!r.preconditions) r.preconditions = []
           for(var j in r.preconditions){
             var p = r.preconditions[j]
@@ -204,6 +208,16 @@ export default {
       return {
         messages: messages,
         course: course
+      }
+    },
+
+    async loadCourses() {
+      try{
+        var response = await axios.get(Config.SERVER_API + "courses")
+        console.log(response.data.length)
+        this.courses = response.data
+      }catch(error){
+        console.log(error)
       }
     },
 

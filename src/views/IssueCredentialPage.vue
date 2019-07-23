@@ -12,7 +12,7 @@
               <option
                 v-for="option in courses"
                 v-bind:key="option.name"
-                v-bind:value="option.name"
+                v-bind:value="option._id"
               >
                 {{ option.name }}
               </option>
