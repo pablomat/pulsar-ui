@@ -6,6 +6,7 @@ const active_key = '5JKVA1RMufcDpprpWmRsNVrkJtb3m3E8VbRUHdsVxC9CRxii2Z4'
 const secret_create_account = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
 
 const database = 'univ'
+const publicRoot = '../dist'
 
 const config = {
   'production': {
@@ -85,6 +86,7 @@ const final_active_key    = process.env.ACTIVE_KEY    || active_key
 
 const final_secret_create_account = process.env.SECRET_CREATE_ACCOUNT || secret_create_account
 const final_database = process.env.DATABASE || database
+const final_publicRoot = process.env.PUBLIC_ROOT || publicRoot
 
 module.exports = {
 
@@ -126,5 +128,6 @@ module.exports = {
   POSTING_KEY: final_posting_key,
   ACTIVE_KEY: final_active_key,
   SECRET_CREATE_ACCOUNT: final_secret_create_account,
-  DATABASE: final_database
+  DATABASE: final_database,
+  PUBLIC_ROOT: final_publicRoot
 };

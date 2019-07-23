@@ -13,7 +13,7 @@ const passport = require('passport')
 // getting the local authentication type
 const LocalStrategy = require('passport-local').Strategy
 
-const publicRoot = '/home/julian/pulsar_diploma/pulsar/dist'
+//const publicRoot = '/home/julian/pulsar_diploma/pulsar/dist'
 const port = process.env.PORT || 3000
 
 app.all('*', function(req, res, next) {
@@ -22,7 +22,7 @@ app.all('*', function(req, res, next) {
    next();
 });
 
-app.use(express.static(publicRoot))
+app.use(express.static(Config.PUBLIC_ROOT))
 
 /*app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
@@ -103,7 +103,7 @@ async function getUser(query) {
 }
 
 app.get("/", (req, res, next) => {
-  res.sendFile("index.html", { root: publicRoot })
+  res.sendFile("index.html", { root: Config.PUBLIC_ROOT })
 })
 
 app.post("/api/login", (req, res, next) => {
@@ -679,7 +679,7 @@ app.post("/api/create_account", authMiddleware, isAdminMiddleware, async (req, r
 })
 
 app.get("*", (req, res, next) => {
-  res.sendFile("index.html", { root: publicRoot })
+  res.sendFile("index.html", { root: Config.PUBLIC_ROOT })
 })
 
 app.listen(port, () => {
