@@ -49,8 +49,8 @@ const environment = process.env.NODE_ENV || 'development';
 const finalConfig = config[environment];
 
 const SBD = 'EUR';
-const STEEM = 'EFTG';
-const SP = 'EFTG-Power';
+const STEEM = 'PULSE';
+const SP = 'PULSE-Power';
 const VESTS = 'VESTS';
 
 const HARDFORK = 19
@@ -68,6 +68,7 @@ const STEEM_BLOCKS_PER_YEAR = (365 * 24 * 60 * 60) / 3;
 const STEEM_BLOCKS_PER_DAY = (24 * 60 * 60) / 3;
 const STEEM_SBD_START_PERCENT = 900;
 const STEEM_SBD_STOP_PERCENT = 1000;
+const STEEM_CHAIN_ID = '07c687c01f134adaf217a9b9367d1cef679c3c020167fdd25ee8c403f687528e'
 
 const MAP = {
   TOP_WITNESSES: 30,
@@ -77,7 +78,7 @@ const MAP = {
 
 const APP_VERSION = 'pulsar/1.5.3';
 
-const ACCOUNT_CREATION_FEE = '3.000 EFTG'
+const ACCOUNT_CREATION_FEE = '3.000 PULSE'
 
 const final_account       = process.env.ACCOUNT       || account
 const final_memo_key      = process.env.MEMO_KEY      || memo_key
@@ -117,6 +118,7 @@ module.exports = {
   STEEM_BLOCKS_PER_DAY: STEEM_BLOCKS_PER_DAY,
   STEEM_SBD_START_PERCENT: STEEM_SBD_START_PERCENT,
   STEEM_SBD_STOP_PERCENT: STEEM_SBD_STOP_PERCENT,
+  STEEM_CHAIN_ID,
 
   MAP:MAP,
 

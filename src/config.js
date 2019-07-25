@@ -35,8 +35,8 @@ const environment = process.env.NODE_ENV || 'development';
 const finalConfig = config[environment];
 
 const SBD = 'EUR';
-const STEEM = 'EFTG';
-const SP = 'EFTG-Power';
+const STEEM = 'PULSE';
+const SP = 'PULSE-Power';
 const VESTS = 'VESTS';
 
 const HARDFORK = 19

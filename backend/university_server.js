@@ -64,8 +64,7 @@ function RPCnode_initClient(address = Config.RPC_NODES[0]) {
   let opts = {}
   opts.addressPrefix = Config.STEEM_ADDRESS_PREFIX
   opts.timeout = Config.DSTEEM_TIMEOUT
-  if(process.env.VUE_APP_CHAIN_ID) opts.chainId = process.env.VUE_APP_CHAIN_ID
-  //opts.chainId = 'a118feb47e63e942c55e4bc991e74f9e2e2d4d099e32f2ae7d55a66f6b415f14'
+  if(Config.STEEM_CHAIN_ID) opts.chainId = Config.STEEM_CHAIN_ID
   return new Client(address, opts)
 }
 
@@ -681,6 +680,7 @@ app.post("/api/create_account", authMiddleware, isAdminMiddleware, async (req, r
   }catch(error){
     res.status(400).send('Error broadcasting operation: '+error.message)
     console.log(error)
+    console.log(JSON.stringify(error))
     return
   }
 })
