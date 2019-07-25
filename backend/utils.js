@@ -19,6 +19,7 @@ function validateUser(user) {
 function validateCourse(course) {
   if(!course.name) throw new Error('No name defined')
   if(!course.description) throw new Error('No description defined')
+  if(!course.level) throw new Error('No level defined')
   if(!course.preconditions) {}
   return course
 }

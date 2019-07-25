@@ -341,8 +341,15 @@ app.post('/api/resolve_request', authMiddleware, isAdminMiddleware, async (req, 
 app.get("/api/courses", async (req, res, next) => {
   //const { db, client } = await connectDB()
   var courses = await db.collection('courses').find({}).toArray()
+  var levels = await db.collection('courselevels').find({}).toArray()
   console.log('get courses')
-  res.send(courses)
+  res.send({courses,levels})
+})
+
+app.get("/api/courselevels", async (req, res, next) => {
+  var levels = await db.collection('courselevels').find({}).toArray()
+  console.log('get course levels')
+  res.send(levels)
 })
 
 app.post('/api/add_course', authMiddleware, isAdminMiddleware, async (req, res, next) => {

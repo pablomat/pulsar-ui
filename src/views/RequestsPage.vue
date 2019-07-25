@@ -215,7 +215,7 @@ export default {
       try{
         var response = await axios.get(Config.SERVER_API + "courses")
         console.log(response.data.length)
-        this.courses = response.data
+        this.courses = response.data.courses
       }catch(error){
         console.log(error)
       }

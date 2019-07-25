@@ -47,6 +47,20 @@
                 </div>
               </div>
               <div class="form-group row">
+                <label for="input_level" class="col-md-2 col-form-label">LEVEL</label>
+                <div class="col-md-10">
+                  <select v-model="level_id" class="form-control">
+                    <option
+                      v-for="option in levels"
+                      v-bind:key="option.name"
+                      v-bind:value="option.id"
+                    >
+                      {{ option.name }}
+                    </option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group row">
                 <label for="input_preconditions" class="col-md-2 col-form-label">PRECONDITIONS</label>
                 <div class="col-md-10">
                   <input class="form-control" type="text" id="input_preconditions"
@@ -62,6 +76,7 @@
             <div v-if="current">
               <h3>{{current.name}}</h3>
               <p>{{current.description}}</p>
+              <p><strong>Level:</strong> {{current.level_name}}</p>
               <p><strong>Preconditions:</strong> {{current.preconditions}}</p>
               <div v-if="isAdmin" class="mt-3">
                 <button class="btn btn-primary mr-2" @click="editCourse">Edit course</button>
@@ -95,11 +110,13 @@ export default {
       isAdmin: true,
 
       courses: [],
+      levels: [],
       current: null,
 
       name: '',
       description: '',
       imgUrl: '',
+      level_id: 1,
       preconditions: '',
 
       editing: false,
@@ -137,8 +154,8 @@ export default {
     async loadCourses() {
       try{
         var response = await axios.get(Config.SERVER_API + "courses")
-        console.log(response.data.length)
-        this.courses = response.data
+        this.courses = response.data.courses
+        this.levels = response.data.levels
 
         this.reloadCurrent()
         console.log('load courses')
@@ -150,6 +167,7 @@ export default {
 
     selectCourse(id) {
       this.current = this.courses[id]
+      this.current.level_name = this.levels.find( (l)=>{return l.id == this.current.level_id} ).name
       this.closeUpdate()
     },
 
@@ -184,6 +202,7 @@ export default {
     reloadCurrent() {
       if(!this.current) return
       this.current = this.courses.find( (s)=>{ return s._id === this.current._id } )
+      this.current.level_name = this.levels.find( (l)=>{return l.id == this.current.level_id} ).name
     },
 
     async updateCourse() {
@@ -193,7 +212,9 @@ export default {
           var course = {
             name: this.name,
             description: this.description,
-            imgUrl: this.imgUrl
+            level_id: this.level_id,
+            imgUrl: this.imgUrl,
+            preconditions: this.preconditions
           }
 
           await axios.post(Config.SERVER_API + 'add_course', course)
@@ -209,7 +230,9 @@ export default {
               $set:{
                 name: this.name,
                 description: this.description,
-                imgUrl: this.imgUrl
+                level_id: this.level_id,
+                imgUrl: this.imgUrl,
+                preconditions: this.preconditions
               }
             }
           }
