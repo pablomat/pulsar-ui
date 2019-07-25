@@ -9,7 +9,7 @@
           <div class="card mb-2">
             <ul class="list-group list-group-flush">
               <li v-for="(request,index) in requests" class="list-group-item" @click="selectRequest(index)">
-                {{request.course}}
+                {{request.course_name}}
               </li>
             </ul>
           </div>
