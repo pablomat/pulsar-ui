@@ -153,7 +153,7 @@ export default {
       this.hideDanger()
 
       try{
-        var course = this.courses.find( (c)=>{return c.name === this.course} )
+        var course = this.courses.find( (c)=>{return c._id === this.course} )
 
         var valid = true;
         valid = this.validateAwardDate(true) && valid

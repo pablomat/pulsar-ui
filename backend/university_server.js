@@ -428,7 +428,7 @@ app.post("/api/create_badges", authMiddleware, isAdminMiddleware, async (req, re
     res.status(400).send('No course name defined')
     return
   }
-  var course = await db.collection('courses').findOne({name:req.body.course.name})
+  var course = await db.collection('courses').findOne({_id:ObjectId(req.body.course._id)})
   if(!course){
     res.status(400).send('Course '+req.body.course.name+' not found')
     return
