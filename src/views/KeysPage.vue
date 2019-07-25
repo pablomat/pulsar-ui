@@ -37,7 +37,7 @@
       </select>
       <h5 class="mt-3">Course</h5>
       <select class="form-control" v-model="create_key_course">
-        <option v-for="(opt,key) in courses" :value="opt.name">{{opt.name}}</option>
+        <option v-for="(opt,key) in courses" :value="opt._id">{{opt.name}}</option>
       </select>
       <h5 class="mt-3">Preconditions</h5>
       <div v-if="preconditions.length > 0">
@@ -70,7 +70,7 @@
     <HeaderEFTG ref="headerEFTG" v-on:login="onLogin" v-on:logout="onLogout"></HeaderEFTG>
     <div class="container">
       <h2 class="text-center">Dashboard</h2>
-      <div v-if="keys.length > 0" class="row mt-3 mb-3">
+      <div v-if="false && keys.length > 0" class="row mt-3 mb-3">
         <div class="offset-2 col-8">
           <pie-chart :data="dataChart" :options="optionsChart"/>
         </div>
@@ -84,7 +84,7 @@
           <div role="tab" v-b-toggle="'accordion'+index">
             <div class="square4" v-bind:style="{ backgroundImage: 'url(' + course.imgUrl + ')' }"></div>
             <div class="comp-square4">
-              <div class="card-title">{{course.course}}<span v-if="!course.pending" class="badge badge-pill badge-success float-right">Finished</span></div>
+              <div class="card-title">{{course.course_name}}<span v-if="!course.pending" class="badge badge-pill badge-success float-right">Finished</span></div>
               <div class="card-subtitle text-muted">{{course.university}}</div>
             </div>
           </div>
@@ -268,6 +268,7 @@ export default {
         var data = {
           university: this.create_key_issuer,
           course: this.create_key_course,
+          course_name: this.courses.find( (c)=>{ return c._id === this.create_key_course }).name,
           preconditions: preconditions
         }
 

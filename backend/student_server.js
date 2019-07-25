@@ -193,6 +193,7 @@ app.get("/api/login", authMiddleware, async (req, res) => {
 app.post("/api/create_keys", authMiddleware, async (req, res, next) => {
   var university = req.body.university
   var course = req.body.course
+  var course_name = req.body.course_name
   var filter = {_id:ObjectId(req.session.passport.user)}
   var user = await getUser(filter)
 
@@ -213,6 +214,7 @@ app.post("/api/create_keys", authMiddleware, async (req, res, next) => {
   var key = {
     university,
     course,
+    course_name,
     preconditions,
     pending: true,
     registration: {
@@ -226,11 +228,6 @@ app.post("/api/create_keys", authMiddleware, async (req, res, next) => {
     private_key: privKey.toString()
   }  
 
-  /*var filter = {
-    _id:ObjectId(req.session.passport.user),
-    'issuers.name': university
-  }
-  var issuer = await db.collection('users').findOne(filter)*/
   var issuer = user.issuers.find( (i)=> { return i.name === university })
   console.log('issuer')
   console.log(issuer)
@@ -260,7 +257,7 @@ app.post("/api/create_keys", authMiddleware, async (req, res, next) => {
 
       // get course image
       var respCourses = await axios.get(issuer.api + 'courses')
-      var courseIssuer = respCourses.data.find( (c)=>{ return c.name === course })
+      var courseIssuer = respCourses.data.find( (c)=>{ return c._id === course })
       key.imgUrl = courseIssuer.imgUrl
 
       await db.collection('users').updateOne(filter,{ $push: { keys: key } })
