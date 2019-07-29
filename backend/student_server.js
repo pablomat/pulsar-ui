@@ -257,7 +257,7 @@ app.post("/api/create_keys", authMiddleware, async (req, res, next) => {
 
       // get course image
       var respCourses = await axios.get(issuer.api + 'courses')
-      var courseIssuer = respCourses.data.find( (c)=>{ return c._id === course })
+      var courseIssuer = respCourses.data.courses.find( (c)=>{ return c._id === course })
       key.imgUrl = courseIssuer.imgUrl
 
       await db.collection('users').updateOne(filter,{ $push: { keys: key } })
@@ -298,7 +298,8 @@ app.post("/api/update_key", authMiddleware, async (req, res, next) => {
 
   var key_found = false
   var metadata = JSON.parse(content.json_metadata)
-  if(metadata && metadata.assertions){
+  if(metadata && metadata.assertions && metadata.badge){
+    badge.course_id = metadata.badge.id
     user.keys.forEach( (key) => {
       var assertion = metadata.assertions.find( (a)=>{ return a.recipient.identity === key.public_key })
       if(assertion){

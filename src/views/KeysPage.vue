@@ -1,7 +1,7 @@
 <template>
   <div>
     <b-modal ref="modalBadge" hide-footer title="Badge">
-      <h2>{{badge.course}}</h2>
+      <h2>{{badge.course_name}}</h2>
       <h3>{{badge.university}}</h3>
       <div v-if="badge.pending" class="text-danger mt-3">
         Pending course
@@ -32,22 +32,21 @@
 
     <b-modal ref="modalCreateKeys" hide-footer title="Register to new course">
       <h5>University</h5>
-      <select class="form-control" v-model="create_key_issuer">
+      <select class="form-control" v-model="create_key.issuer">
         <option v-for="(opt,key) in issuers" :value="opt.name">{{opt.name}}</option>
       </select>
       <h5 class="mt-3">Course</h5>
-      <select class="form-control" v-model="create_key_course">
+      <select class="form-control" v-model="create_key.course">
         <option v-for="(opt,key) in courses" :value="opt._id">{{opt.name}}</option>
       </select>
       <h5 class="mt-3">Preconditions</h5>
-      <div v-if="preconditions.length > 0">
-        <div v-for="p in preconditions">
+      <p>{{create_key.course_preconditions}}</p>
+      <p v-if="create_key.level.preconditions" class="mt-3">
+      <div v-if="provided_badges.length > 0">
+        <div v-for="p in provided_badges">
           <select class="form-control" v-model="p.input">
-            <option v-for="(opt,index) in keysWithBadge" :value="opt.badge.link">
-              <div class="row">
-                <div class="col-12">{{opt.course}}</div>
-                <div class="col-12"><small>{{opt.university}}</small></div>
-              </div>
+            <option v-for="(opt,index) in keysWithBadge" :value="index">
+              {{opt.course_name}} - {{opt.university}}
             </option>
           </select>
         </div>
@@ -60,7 +59,11 @@
           <button @click="removePrecondition" class="btn btn-secondary float-right">Remove</button>
         </div>
       </div>
-      <button @click="register_to_course" class="btn btn-primary mt-5" :disabled="sending"><div v-if="sending" class="mini loader"></div>Register</button>
+      <div v-if="create_key.remaining_preconditions.length > 0">
+        <span>Please add these preconditions: </span
+        ><span v-for="p in create_key.remaining_preconditions">{{p}}. </span>
+      </div>
+      <button @click="register_to_course" class="btn btn-primary mt-5" :disabled="sending || create_key.remaining_preconditions.length>0"><div v-if="sending" class="mini loader"></div>Register</button>
     </b-modal>
 
     <b-modal ref="modalProof" hide-footer title="Create proof">
@@ -144,7 +147,7 @@ export default {
     return {
       keys: [],
       keysWithBadge: [],
-      preconditions: [],
+      provided_badges: [],
       badge: { badge: {} },
       badge_url: '',
       key: {},
@@ -170,10 +173,16 @@ export default {
 				responsive: true
 			},
 
-      create_key_issuer: '',
-      create_key_course: '',
+      create_key: {
+        issuer: '',
+        course: '',
+        course_preconditions: '',
+        level: {preconditions:[]},
+        remaining_preconditions: []
+      },
 
       courses: [],
+      levels: [],
       issuers: [],
 
       sending: false,
@@ -206,15 +215,36 @@ export default {
   },
 
   watch: {
-    create_key_issuer: function() {
+    'create_key.issuer': function() {
       this.debounced_loadCourses();
     },
-    create_key_course: function() {
-      console.log('course changed')
+    'create_key.course': function() {
+      var course = this.courses.find( (c)=>{ return c._id === this.create_key.course })
+      this.create_key.course_preconditions = course.preconditions,
+      this.create_key.level = this.levels.find( (l)=>{ return l.id === course.level_id })
+      this.checkPreconditions()
+    },
+    provided_badges: function() {
+      console.log('Provided badges changed')
+      this.checkPreconditions()
     }
   },
 
   methods: {
+    checkPreconditions() {
+      console.log('checking preconditions')
+      var preconditions = this.create_key.level.preconditions.slice()
+      this.provided_badges.forEach( (p)=>{
+        var course_id = this.keysWithBadge[p.input].course
+        var course = this.courses.find( (c)=>{ return c._id === course_id })
+        var level = this.levels.find( (l)=>{ return l.id === course.level_id })
+        var level_provided = level.name
+        var id = preconditions.findIndex( (pre)=>{ return pre === level_provided })
+        if(id >= 0) preconditions.splice(id,1)
+      })
+      this.create_key.remaining_preconditions = preconditions
+    },
+
     async loadKeys() {
       if(process.env.VUE_APP_DEV){
         this.keys = dev_data.keys     
@@ -250,9 +280,10 @@ export default {
     },
 
     async loadCourses() {
-      var issuer = this.issuers.find( (i)=>{ return i.name === this.create_key_issuer })
+      var issuer = this.issuers.find( (i)=>{ return i.name === this.create_key.issuer })
       var response = await axios.get(issuer.api + 'courses')
-      this.courses = response.data
+      this.courses = response.data.courses
+      this.levels = response.data.levels
     },
 
     async register_to_course() {
@@ -260,16 +291,14 @@ export default {
       this.hideSuccess()
       this.hideDanger()
 
-      var preconditions = []
-      this.preconditions.forEach( (p)=>{ preconditions.push(p.input) })
-      console.log('preconditions')
-      console.log(preconditions)
+      var provided_badges = []
+      this.provided_badges.forEach( (p)=>{ provided_badges.push( this.keysWithBadge[p.input].badge.link ) })
       try{
         var data = {
-          university: this.create_key_issuer,
-          course: this.create_key_course,
-          course_name: this.courses.find( (c)=>{ return c._id === this.create_key_course }).name,
-          preconditions: preconditions
+          university: this.create_key.issuer,
+          course: this.create_key.course,
+          course_name: this.courses.find( (c)=>{ return c._id === this.create_key.course }).name,
+          preconditions: provided_badges
         }
 
         var response = await axios.post(Config.SERVER_API + "create_keys", data)          
@@ -286,13 +315,13 @@ export default {
     },
 
     addPrecondition() {
-      this.preconditions.push({
+      this.provided_badges.push({
         input: 0,
       })
     },
 
     removePrecondition() {
-      this.preconditions.splice(-1,1)
+      this.provided_badges.splice(-1,1)
     },
 
     async add_badge() {
