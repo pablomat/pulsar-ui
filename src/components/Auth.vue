@@ -67,6 +67,7 @@ export default {
         var auth = await self.login(self.username, self.password);
         if (auth.logged) {
           self.$store.state.auth = auth
+          self.$store.state.isOwner = self.isOwner()
           self.$emit("login")
         }
         self.sending = false
@@ -182,6 +183,18 @@ export default {
       console.log("Welcome @" + _username);
       this.hideDanger()
       return auth;
+    },
+
+    async isOwner() {
+      if(!this.$store.state.auth.logged) return false
+      try{
+        owners = await this.steem_database_call('get_owners',[[this.$store.state.auth.user]])
+        if(owners && owners.length>0) return true
+        return false
+      }catch(error){
+        console.log(error)
+        return false
+      }
     },
 
     close() {
