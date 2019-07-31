@@ -34,25 +34,7 @@
       <b-collapse id="nav-collapse" is-nav>
         <ul class="navbar-nav">
           <li class="nav-item">
-            <router-link to="/adminstudents" class="nav-item nav-link"><div class="extra-padding">Admin</div></router-link>
-          </li>
-          <li class="nav-item">
-            <router-link to="/requests" class="nav-item nav-link"><div class="extra-padding">Requests</div></router-link>
-          </li>
-          <li class="nav-item">
-            <router-link to="/courses" class="nav-item nav-link"><div class="extra-padding">Courses</div></router-link>
-          </li>
-          <li class="nav-item">
-            <router-link to="/issue" class="nav-item nav-link"><div class="extra-padding">Issue Credentials</div></router-link>
-          </li>
-          <li class="nav-item">
-            <router-link to="/keymanagement" class="nav-item nav-link"><div class="extra-padding">Key management</div></router-link>
-          </li>
-          <li class="nav-item">
-            <router-link to="/proof" class="nav-item nav-link"><div class="extra-padding">Proof</div></router-link>
-          </li>
-          <li class="nav-item">
-            <router-link to="/verify" class="nav-item nav-link"><div class="extra-padding">Verify</div></router-link>
+            <router-link to="/publish" class="nav-item nav-link"><div class="extra-padding">Publish</div></router-link>
           </li>
           <li class="nav-item">
             <router-link to="/explorer" class="nav-item nav-link"><div class="extra-padding">Explorer</div></router-link>
@@ -62,9 +44,6 @@
           </li>
           <li class="nav-item">
             <router-link to="/witnesses" class="nav-item nav-link"><div class="extra-padding">Witnesses</div></router-link>
-          </li>
-          <li class="nav-item">
-            <router-link to="/contact" class="nav-item nav-link"><div class="extra-padding">Contact</div></router-link>
           </li>
         </ul>
         <ul class="navbar-nav ml-auto">
