@@ -62,6 +62,7 @@ const MAP = {
   INI_ZOOM : 4 ,
 }
 
+const ACCOUNT_CREATION_FEE = '3.000 PULSE'
 const APP_VERSION = 'pulsar/1.5.3';
 
 export default {
@@ -96,6 +97,7 @@ export default {
   STEEM_CHAIN_ID,
 
   MAP:MAP,
+  ACCOUNT_CREATION_FEE,
 
   APP_VERSION: APP_VERSION,
 };
