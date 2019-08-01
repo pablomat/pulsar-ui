@@ -108,7 +108,8 @@ export default {
       var keysFromWIF = {
         owner: { public: "", private: "" },
         active: { public: "", private: "" },
-        posting: { public: "", private: "" }
+        posting: { public: "", private: "" },
+        memo: { public: '', private: '' }
       };
       for (var role in keysFromWIF) {
         keysFromWIF[role].private = PrivateKey.fromLogin(
@@ -130,7 +131,7 @@ export default {
           .createPublic(Config.STEEM_ADDRESS_PREFIX)
           .toString();
       }catch(error){}
-      var roles = ["owner", "active", "posting"];
+      var roles = ["owner", "active", "posting","memo"];
       //var roles = ["posting"];
       //let self = this;
       var account = accounts[0];
@@ -155,19 +156,25 @@ export default {
       // check owner, active and posting keys
       for (var i = 0; i < roles.length; i++) {
         role = roles[i];
-        //multisignature: A specific role could have several keys
-        var authority = account[role].key_auths;
-        for (var j = 0; j < authority.length; j++) {
-          var pubKey = authority[j][0];
-          //save in 'auth' the valid keys
-          if (pubKey === keysFromWIF[role].public) {
-            auth.keys[role] = keysFromWIF[role].private;
-            keyFound = true;
-            typeOfPassword = "WIF";
-          } else if (pubKey === keyRole.public) {
-            auth.keys[role] = keyRole.private;
-            keyFound = true;
-            typeOfPassword = role;
+        if(role !== 'memo'){
+          //multisignature: A specific role could have several keys
+          var authority = account[role].key_auths;
+          for (var j = 0; j < authority.length; j++) {
+            var pubKey = authority[j][0];
+            //save in 'auth' the valid keys
+            if (pubKey === keysFromWIF[role].public) {
+              auth.keys[role] = keysFromWIF[role].private;
+              keyFound = true;
+              typeOfPassword = "WIF";
+            } else if (pubKey === keyRole.public) {
+              auth.keys[role] = keyRole.private;
+              keyFound = true;
+              typeOfPassword = role;
+            }
+          }
+        }else{
+          if(account.memo_key === keysFromWIF.memo.public){
+            auth.keys.memo = keysFromWIF.memo.private
           }
         }
       }
@@ -188,7 +195,7 @@ export default {
     async isOwner() {
       if(!this.$store.state.auth.logged) return false
       try{
-        owners = await this.steem_database_call('get_owners',[[this.$store.state.auth.user]])
+        var owners = await this.steem_database_call('get_owners',[[this.$store.state.auth.user]])
         if(owners && owners.length>0) return true
         return false
       }catch(error){
