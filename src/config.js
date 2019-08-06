@@ -63,6 +63,7 @@ const MAP = {
 }
 
 const ACCOUNT_CREATION_FEE = '3.000 PULSE'
+const CONFIRMATION_PAYMENT_ID_NAME = 'confirmation_payment'
 const APP_VERSION = 'pulsar/1.5.3';
 
 export default {
@@ -98,6 +99,7 @@ export default {
 
   MAP:MAP,
   ACCOUNT_CREATION_FEE,
+  CONFIRMATION_PAYMENT_ID_NAME,
 
   APP_VERSION: APP_VERSION,
 };
