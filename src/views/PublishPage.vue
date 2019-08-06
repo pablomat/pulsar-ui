@@ -18,6 +18,13 @@
         </div>
       </div>
       <div class="form-group row">
+        <label class="col-md-2 col-form-label">PRICE</label>
+        <div class="col-md-10">
+          <input class="form-control" type="text" id="input_price"
+            v-model="price" placeholder="Price"/>
+        </div>
+      </div>
+      <div class="form-group row">
         <label class="col-md-2 col-form-label">DESCRIPTION</label>
         <div class="col-md-10">
           <textarea class="form-control" id="input_description"
@@ -46,6 +53,7 @@ export default{
       showPage: false,
       product: '',
       image: '',
+      price: '',
       description: '',
       sending: false,
     }
@@ -70,10 +78,13 @@ export default{
         var username = this.$store.state.auth.user
         var permlink = Utils.createPermLink(this.product)
 
+        this.stringToAsset(this.price) // verify correct format
+
         var metadata = {
           tags: [],
           product: this.product,
           image: this.image,
+          price: this.price.toUpperCase(),
           description: this.description
         }
 
@@ -97,6 +108,24 @@ export default{
       }
       this.sending = false
     },
+
+    stringToAsset(data){
+      var parts = data.split(' ')
+      if(parts.length !== 2)
+        throw new Error(`Incorrect price format`)
+      var currency = parts[1]
+      var precision = parts[0].length - parts[0].indexOf('.') - 1
+      var amount = parseInt(parseFloat(parts[0])*Math.pow(10,precision))
+      if(currency !== Config.SBD && currency !== Config.STEEM)
+        throw new Error(`Incorrect asset type: ${currency}`)
+
+      return {
+        amount,
+        precision,
+        currency
+      }
+    },
+
     changeLogin(){
       this.showPage = this.$store.state.auth.isOwner
     }
