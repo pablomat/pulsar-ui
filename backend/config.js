@@ -76,6 +76,9 @@ const MAP = {
   INI_ZOOM : 4 ,
 }
 
+const CONFIRMATION_PAYMENT_ID_NAME = 'confirmation_payment'
+const STATE_FILE = 'state.json'
+
 const APP_VERSION = 'pulsar/1.5.3';
 
 const ACCOUNT_CREATION_FEE = '3.000 PULSE'
@@ -124,6 +127,8 @@ module.exports = {
 
   APP_VERSION: APP_VERSION,
   ACCOUNT_CREATION_FEE,
+  CONFIRMATION_PAYMENT_ID_NAME,
+  STATE_FILE,
 
   ACCOUNT: final_account,
   MEMO_KEY: final_memo_key,
