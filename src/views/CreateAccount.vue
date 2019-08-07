@@ -108,7 +108,7 @@ export default {
   data() {
     return {
 
-      account: this.generateAccountDetails('testABC'),
+      account: null, //this.generateAccountDetails('testABC'),
 
       username: '',
       name: '',
