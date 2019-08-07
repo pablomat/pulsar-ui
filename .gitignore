@@ -24,4 +24,5 @@ yarn-error.log*
 # backend
 /backend/node_modules
 /backend/package-lock.json
+/backend/state.json
 
