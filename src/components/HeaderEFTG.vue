@@ -116,8 +116,7 @@ export default {
       this.$refs.modalAuth.hide()    
     },
     
-    async logout() {
-      await axios.get(Config.SERVER_API + "logout")
+    logout() {
       console.log(this.$store.state.auth.username + " logout");
       this.$store.state.auth = {
         user: "",
