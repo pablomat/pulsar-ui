@@ -40,7 +40,11 @@ function RPCnode_initClient(address = Config.RPC_NODES[0]) {
 function loadState(){
   if( !fs.existsSync(Config.STATE_FILE) ) return
   content = fs.readFileSync(Config.STATE_FILE, 'utf8')
-  state = JSON.parse(content)
+  try{
+    state = JSON.parse(content)
+  }catch(error){
+    utils.log(`Problems reading ${Config.STATE_FILE} file. ${error.message}`)
+  }
 }
 
 function saveState(){
@@ -140,6 +144,10 @@ async function main(){
   utils.log(`Last block processed: ${state.last_block}`)
 
   var i = 0
+  var sync = {
+    last_message: 'no sync',
+    time_last_message: 0,
+  }
   while(true){
     if(i%20 == 0) gpo = await steemClient.database.call('get_dynamic_global_properties')
 
@@ -151,11 +159,27 @@ async function main(){
       state.last_block = block_num
       saveState()
     }else{
-      utils.log(`block ${block_num} does not exist yet. Waiting 3 seconds`)
+      utils.log(`block ${block_num} does not exist yet`)
     }
 
-    if(gpo.head_block_number <= block_num)
+    diff_sync = gpo.head_block_number - state.last_block
+    if(diff_sync <= 1){
       await delay(3000)
+      if(sync.last_message === 'no sync'){
+        utils.log(`Synchronized with the blockchain. Block ${gpo.head_block_number}. Time: ${gpo.time}`)
+        sync.last_message = 'sync'
+        sync.time_last_message = new Date().getTime()
+      }
+    }else{
+      if(sync.last_message === 'sync'){
+        utils.log(`Not synchronized. Head block ${gpo.head_block_number} (${gpo.time}). Last checked block ${state.last_block}. Diff of ${diff_sync} blocks.`)
+        sync.last_message = 'no sync'
+        sync.time_last_message = new Date().getTime()
+      }else if(new Date().getTime() - sync.time_last_message >= 3*1000){
+        utils.log(`Syncing. Head block ${gpo.head_block_number} (${gpo.time}). Last checked block ${state.last_block}. Diff of ${diff_sync} blocks.`)
+        sync.time_last_message = new Date().getTime()
+      }
+    }
 
     i++
   }
