@@ -5,7 +5,7 @@ import store from './store'
 import BootstrapVue from 'bootstrap-vue'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
-import '@/assets/css/custom.css'
+import '@/../public/custom.css'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faHome, faUniversity, faQuestionCircle, faBusinessTime, faExclamationTriangle, faKey, faCheck, faTimes, faUser } from '@fortawesome/free-solid-svg-icons'

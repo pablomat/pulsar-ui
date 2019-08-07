@@ -6,7 +6,7 @@
     <b-navbar toggleable="lg" type="dark" variant="primary">
       <ul class="navbar-nav">
         <li class="nav-item">
-          <router-link to="/" class="nav-item nav-link"><div id="logo"><img src="../assets/university-logo-white.png" /></div></router-link>
+          <router-link to="/" class="nav-item nav-link"><div id="logo"><img src="../../public/university-logo-white.png" /></div></router-link>
         </li>
       </ul>
       <b-navbar v-if="$store.state.auth.logged" class="ml-auto d-lg-none" style="margin:0;">
