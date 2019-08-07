@@ -140,7 +140,7 @@ export default{
         var ack = await this.steem_broadcast_sendOperations([operation], this.$store.state.auth.keys.active)
         this.showSuccess('Transfer done. waiting confirmation...')
         var ack2 = await this.waitPaymentConfirmation(ack, product)
-        this.showSuccess(`<a href="@{Config.EXPLORER}/b/@{ack2.block_num}/@{ack2.id}">Purchase confirmed</a>`)
+        this.showSuccess(`<a href="${Config.EXPLORER}b/${ack2.block_num}/${ack2.id}">Purchase confirmed</a>`)
       }catch(error){
         console.log(error)
         this.showDanger(error.message)
@@ -156,22 +156,31 @@ export default{
       const delay = (duration) => new Promise(resolve => setTimeout(resolve, duration));
 
       var confirmation = null
-      for(var i=0; i<5 && !confirmation; i++){
+      for(var i=0; i<6; i++){
         var block = await this.steem_database_call('get_block',[block_num])
         if(!block){
           console.log(`block @{block_num} does not exist yet. Waiting 3 seconds`)
         }else{
           block.transactions.forEach( (trx, index)=>{
             trx.operations.forEach( (op)=>{
+              // console.log('Operation found')
               if(op[0] !== 'custom_json') return
+              // console.log('Is custom json')
               if(op[1].required_posting_auths[0] !== product.issuer) return
+              // console.log('Posting auths correct')
               if(op[1].id !== Config.CONFIRMATION_PAYMENT_ID_NAME) return
+              // console.log('Correct id')
               var data = JSON.parse(op[1].json)
-              if(data.buyer === this.$store.state.auth.user)
+              // console.log(`json: ${op[1].json}`)
+              if(data.buyer === this.$store.state.auth.user){
+                // console.log('correct buyer')
                 confirmation = op
                 trx_id = block.transaction_ids[index]
+              }
             })
           })
+          if(confirmation) break
+          block_num++
         }
         await delay(3000)
       }
