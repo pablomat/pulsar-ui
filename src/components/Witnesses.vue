@@ -12,7 +12,7 @@
           <tr class="table-primary">
             <th scope="col">#</th>
             <th scope="col">Witness</th>
-            <th scope="col">EFTG Power</th>
+            <th scope="col">Pulse Power</th>
             <th scope="col">Enabled</th>
             <th scope="col">Version</th>
             <th scope="col">Approval</th>
