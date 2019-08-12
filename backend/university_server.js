@@ -2,6 +2,8 @@ const express = require('express')
 const Utils = require('./utils')
 const Config = require('./config')
 const { Client, PrivateKey } = require('eftg-dsteem')
+const dotenv = require('dotenv');
+dotenv.config();
 
 // creating an express instance
 const app = express()
@@ -166,8 +168,8 @@ const authMiddleware = async (req, res, next) => {
 const isAdminMiddleware = (req, res, next) => {
   // return next(); //todo: remove
   (async () => {
-    if( await isAdmin( req.session.passport.user ) )
-      next()
+    if( await isAdmin(req) )
+        next()
     else
       res.status(401).send('You are not an admin')
   })()
@@ -199,19 +201,31 @@ app.get("/api/getuser/:user", (req, res) => { //todo: remove
 })
 
 app.get("/api/students", authMiddleware, async (req, res, next) => {
-  if( await isAdmin( req ) )
-    var filter = {}
-  else{
+  if( await isAdmin( req ) ){
+    if(req.body && req.body.keys)
+      var filter = req.body.keys
+    else
+      var filter = {}
+  }else{
     var user = await getCurrentUser(req)
-    var filter = {user_id:user._id.toString()}
+    var filter = {_id:user._id}
   }
   var students = await db.collection('students').find(filter).toArray()
   console.log('get students')
   res.send(students)
 })
 
-app.post("/api/students", authMiddleware, isAdminMiddleware, async (req, res, next) => {
-  var students = await db.collection('students').find(req.body).toArray()
+app.post("/api/students", authMiddleware, async (req, res, next) => {
+  if( await isAdmin( req ) ){
+    if(req.body && req.body.keys)
+      var filter = req.body
+    else
+      var filter = {}
+  }else{
+    var user = await getCurrentUser(req)
+    var filter = {_id:user._id}
+  }
+  var students = await db.collection('students').find(filter).toArray()
   console.log('get students post')
   res.send(students)
 })
