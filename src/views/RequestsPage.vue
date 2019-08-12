@@ -115,6 +115,7 @@ export default {
             p.course = check.course
             p.messages = check.messages
           }
+          this.$set(this.requests, i, r)
         }
 
         this.reloadCurrent()
@@ -129,6 +130,7 @@ export default {
       var messages = []
       var course = ''
       var i = 0
+      var verification
       if(data.proof) {
         try{
           var sgnTrx = data.proof
@@ -214,7 +216,7 @@ export default {
     async loadCourses() {
       try{
         var response = await axios.get(Config.SERVER_API + "courses")
-        console.log(response.data.length)
+        console.log(response.data.courses.length)
         this.courses = response.data.courses
       }catch(error){
         console.log(error)
