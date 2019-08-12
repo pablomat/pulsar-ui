@@ -379,6 +379,49 @@ async function checkIssuerUpdates(user){
         }
       }
     }
+    if(key.registration && key.registration.accepted && !key.badge.permlink){
+      // check for badges
+      var issuer = user.issuers.find( (is)=>{ return is.name === key.university })
+      if(issuer && issuer.api){
+        // console.log('issuer found')
+        var data = {
+          auth: {
+            username: issuer.username,
+            password: issuer.password
+          }
+        }
+        try{
+          // console.log('quering the university for request update')
+          var response = await axios.post( issuer.api + 'students', data )
+          var students = response.data
+          if(students && students.length > 0){
+            var student = students[0]
+            if(student.badges){
+              var badge = student.badges.find( (b)=>{
+                if(b.assertion && b.assertion.recipient && b.assertion.recipient.identity)
+                  return b.assertion.recipient.identity === key.public_key
+                else
+                  return false
+              })
+              if(badge){
+                console.log('New badge found')
+                var filter = {
+                  _id:ObjectId(user._id),
+                  'keys.public_key': key.public_key
+                }
+                badge = {
+                  issuer: badge.badge.link.author,
+                  permlink: badge.badge.link.permlink
+                }
+                await db.collection('users').updateOne( filter, { $set: { 'keys.$.badge': badge, 'keys.$.pending': false } })
+              }
+            }
+          }
+        }catch(error){
+          console.log('error getting badges: '+error.message)
+        }
+      }
+    }
   }
 }
 
