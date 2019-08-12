@@ -2,44 +2,10 @@
   <div>
     <HeaderEFTG :showAuth="false" ref="headerEFTG"></HeaderEFTG>
     <div class="container">
-      <h2 class="text-center mb-4">European Financial Transparency Gateway</h2>
-      <div class="row">
-        <div class="offset-md-1 col-md-4">
-          <router-link to="/oam-portal" class="card no-a mb-3">
-            <img class="card-img-top" src="">
-            <div class="card-body row">
-              <div class="col-4 text-center">
-                <router-link to="/oam-portal" class="text-primary"><font-awesome-icon icon="university" size="4x"/></router-link>
-              </div>
-              <div class="col-8">
-                <h5 class="card-title">OAM Portal</h5>
-                <p class="card-text">For Official Appointed Mechanism that handle the financial documents received from European companies.</p>
-              </div>
-            </div>
-          </router-link>
-          <router-link to="/search.html" class="card no-a mb-3">
-            <div class="card-body row">
-              <div class="col-4 text-center">
-                <router-link to="/search.html" class="text-primary"><font-awesome-icon icon="business-time" size="4x"/></router-link>              
-              </div>
-              <div class="col-8">
-                <h5 class="card-title">Investor Portal</h5>
-                <p class="card-text">For investor that wants to search details and financial data of the European companies.</p>
-              </div>
-            </div>
-          </router-link>
-        </div>
-        <div class="col-md-6">
-          <div class="card">
-            <div class="card-body">
-              <Map :showBlocks="false" :showLegend="false" :showTitles="false"></Map>
-            </div>
-          </div>
-        </div>
-      </div>      
-      <p class="mt-4 text-justify">In order to promote cross-border investment and provide investors with easy access to regulated financial information of companies listed on the European Union's (EU) regulated markets, the European Commission (EC) is developing a platform that offers a single view for such information currently stored within different Member States' infrastructures. Following a successful Proof of Concept (PoC) using Blockchain technology, the EC is launching the European Financial Transparency Gateway (EFTG) Pilot Project within the framework of the Capital Market Union and the legal obligations of the Directive 2013/50/EC.</p>
-      <p class="text-justify">EFTG Pilot Project is based on a new approach to build a distributed and decentralized system by interconnecting the OAMs (Officially Appointed Mechanisms) in Europe into a dedicated platform for sharing data instead of exchanging it, offering full traceability and ownership management of both submitted and consumed financial data.</p>
-      <p class="text-justify">The goal of the EFTG Pilot Project consists of developing a Blockchain platform infrastructure, technically enabling citizens and investors by giving them increased access to public regulated information provided by the participating OAMs. The EFTG Project is the first Blockchain-based pilot in Europe, live and publicly available, that on-board real member in the network and shares real financial data from the Member States.</p>
+      <h2 class="text-center mb-4">AEGIS</h2>
+      <div class="text-center"><youtube video-id="Mh1ELHxnk70"></youtube></div>
+      <p class="mt-5 text-justify">The aegis, as stated in the Iliad, is carried by Athena and Zeus, but its nature is uncertain. It had been interpreted as an animal skin or a shield, sometimes bearing the head of a Gorgon. There may be a connection with a deity named Aex or Aix, a daughter of Helios and a nurse of Zeus or alternatively a mistress of Zeus (Hyginus, Astronomica 2. 13). The aegis of Athena is referred to in several places in the Iliad. "It produced a sound as from a myriad roaring dragons (Iliad, 4.17) and was borne by Athena in battle ... and among them went bright-eyed Athene, holding the precious aegis which is ageless and immortal: a hundred tassels of pure gold hang fluttering from it, tight-woven each of them, and each the worth of a hundred oxen."</p>
+<p>The modern concept of doing something "under someone's aegis" means doing something under the protection of a powerful, knowledgeable, or benevolent source. The word aegis is identified with protection by a strong force with its roots in Greek mythology and adopted by the Romans; there are parallels in Norse mythology and in Egyptian mythology as well,[citation needed] where the Greek word aegis is applied by extension.</p>
     </div>            
   </div>
 </template>
@@ -47,6 +13,10 @@
 <script>
 import HeaderEFTG from '@/components/HeaderEFTG'
 import Map from '@/components/Map'
+import Vue from 'vue'
+import VueYouTubeEmbed from 'vue-youtube-embed'
+
+Vue.use(VueYouTubeEmbed)
 
 export default {
   name: "Home",
