@@ -198,10 +198,14 @@ app.get("/api/getuser/:user", (req, res) => { //todo: remove
   })()
 })
 
-app.get("/api/students", authMiddleware, isAdminMiddleware, async (req, res, next) => {
-  //const { db, client } = await connectDB()
-  console.log('starting to get students')
-  var students = await db.collection('students').find({}).toArray()
+app.get("/api/students", authMiddleware, async (req, res, next) => {
+  if( await isAdmin( req ) )
+    var filter = {}
+  else{
+    var user = await getCurrentUser(req)
+    var filter = {user_id:user._id.toString()}
+  }
+  var students = await db.collection('students').find(filter).toArray()
   console.log('get students')
   res.send(students)
 })
