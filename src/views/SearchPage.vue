@@ -1,5 +1,32 @@
 <template>
   <div>
+    <b-modal ref="modalProduct" hide-footer :title="currentProd.name">
+      <div class="text-center">
+        <img :src="currentProd.image"/>
+      </div>
+      <p class="mt-2 mb-3">{{currentProd.description}}</p>
+      <div class="form-group">
+        <label class="form-label">Class</label>
+        <div>{{currentProd.product_class}}</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">License Type</label>
+        <div>{{currentProd.license_type}}</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Category</label>
+        <div>{{currentProd.category}}</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Price</label>
+        <div>{{currentProd.price}}</div>
+      </div>
+      <button class="btn btn-primary mb-3" v-if="!currentProd.free" @click="buy(currentProd)">buy</button>
+      <div v-if="alertProduct.danger"  class="alert alert-danger" role="alert">{{alertProduct.dangerText}}</div>
+      <div v-if="alertProduct.info" class="alert alert-info" role="alert">{{alertProduct.infoText}}</div>
+    </b-modal>
+
+
     <HeaderEFTG ref="headerEFTG" v-on:login="changeLogin" v-on:logout="changeLogin"></HeaderEFTG>
     <div class="container">
       <h2>Search products</h2>
@@ -13,24 +40,18 @@
           <button class="btn btn-primary" @click="filter" :disabled="sending"><div v-if="sending" class="mini loader"></div>Search</button>
         </div>
       </div>
-      <table class="table mb-4">
-        <thead>
-          <tr class="table-primary">
-            <th scope="col">Issuer</th>
-            <th scope="col">Product</th>
-            <th scope="col">Price</th>
-            <th scope="col"></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(product,index) in products" :key="index" :value="index">
-            <td>@{{product.issuer}}</td>
-            <td>{{product.name}}</td>
-            <td>{{product.price}}</td>
-            <td><button class="btn btn-primary" @click="buy(index)" :disabled="product.buying">BUY</button></td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="card mb-4">
+        <ul class="list-group list-group-flush">
+          <li v-for="(product,index) in products" class="list-group-item" :key="index" @click="selectProduct(index)">
+            <div class="col-md-2">@{{product.issuer}}</div
+            ><div class="col-md-3">{{product.name}}</div
+            ><div class="col-md-2">{{product.product_class}}</div
+            ><div class="col-md-2">{{product.category}}</div
+            ><div class="col-md-1">{{product.license_type}}</div
+            ><div class="col-md-2">{{product.price}}</div>            
+          </li>
+        </ul>
+      </div>
       <div v-if="alert.info" class="alert alert-info" role="alert">{{alert.infoText}}</div>
       <div v-if="alert.success" class="alert alert-success" role="alert" v-html="alert.successText"></div>
       <div v-if="alert.danger"  class="alert alert-danger" role="alert">{{alert.dangerText}}</div>
@@ -50,9 +71,26 @@ export default{
   data() {
     return {
       products: [],
+      currentProd: {
+        issuer: '',
+        name: '',
+        image: '',
+        price: '',
+        license_type: '',
+        product_class: '',
+        category: '',
+        description: '',
+        free: false
+      },
       issuer: '',
       sending: false,
       owners: ['initminer','owner1'],
+      alertProduct: {
+        danger: false,
+        info: false,
+        dangerText: '',
+        infoText: '',
+      }
     }
   },
 
@@ -92,6 +130,11 @@ export default{
       this.products = products
     },
 
+    selectProduct(index){
+      this.currentProd = this.products[index]
+      this.$refs.modalProduct.show()
+    },
+
     async getProductsByOwner(owner){
       var products = []
       try{
@@ -103,8 +146,13 @@ export default{
             products.push({
               issuer: p.author,
               name: metadata.product,
+              image: metadata.image,
               price: metadata.price,
-              description: metadata.description
+              license_type: metadata.license_type,
+              product_class: metadata.product_class,
+              category: metadata.category,
+              description: metadata.description,
+              free: parseFloat(metadata.price) == 0
             })
           }
         })
@@ -116,17 +164,18 @@ export default{
       this.products = await this.getProductsByOwner(this.issuer)
     },
 
-    async buy(index) {
+    async buy(product) {
       this.hideSuccess()
       this.hideDanger()
       this.hideInfo()
+
+      this.alertProduct.danger = false
+      this.alertProduct.info = false
       if(!this.$store.state.auth.logged || this.$store.state.auth.keys.active == null){
-        this.showDanger('Please login with the active key')
+        this.alertProduct.danger = true
+        this.alertProduct.dangerText = 'Please login with the active key'
         return
       }
-      var product = this.products[index]
-      product.buying = true
-      this.$set(this.products, index, product)
       try{
         var operation = [
           'transfer',
@@ -138,15 +187,16 @@ export default{
           }
         ]
         var ack = await this.steem_broadcast_sendOperations([operation], this.$store.state.auth.keys.active)
-        this.showSuccess('Transfer done. waiting confirmation...')
+        this.alertProduct.info = false
+        this.alertProduct.infoText = 'Transfer done. waiting confirmation...'
         var ack2 = await this.waitPaymentConfirmation(ack, product)
         this.showSuccess(`<a href="${Config.EXPLORER}b/${ack2.block_num}/${ack2.id}">Purchase confirmed</a>`)
+        this.$refs.modalProduct.hide()
       }catch(error){
-        console.log(error)
-        this.showDanger(error.message)
+        this.alertProduct.danger = true
+        this.alertProduct.dangerText = error.message
+        throw error
       }
-      product.buying = false
-      this.$set(this.products, index, product)
     },
 
     async waitPaymentConfirmation(ack, product) {

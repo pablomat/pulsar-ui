@@ -7,7 +7,8 @@ const config = {
     ELASTIC : 'https://api.eftg.eu/pulsar/',
     CDN : 'https://cdn.eftg.eu/',
     SERVER_API: '/api/',
-    EFTG_HARDFORK_0_1 : false
+    EFTG_HARDFORK_0_1 : false,
+    TAG_PRODUCT: 'aegis'
   },
   'acceptance': {
     RPC_NODES : [
@@ -17,7 +18,8 @@ const config = {
     ELASTIC : 'https://api.blkcc.xyz/pulsar/',
     CDN : 'https://cdn.acc.blkcc.xyz/',
     SERVER_API: 'http://40.113.101.44:8084/api/',
-    EFTG_HARDFORK_0_1 : false
+    EFTG_HARDFORK_0_1 : false,
+    TAG_PRODUCT: 'dev'
   },
   'development': {
     RPC_NODES : [
@@ -27,7 +29,9 @@ const config = {
     ELASTIC : 'https://apidev.blkcc.xyz/pulsar/',
     CDN : 'https://cdn.dev.blkcc.xyz/',
     SERVER_API: 'http://pulsar.dev.blkcc.xyz:8084/api/',
-    EFTG_HARDFORK_0_1 : true
+    EFTG_HARDFORK_0_1 : true,
+    TAG_PRODUCT: 'dev'
+    
   }
 }
 
@@ -64,6 +68,25 @@ const MAP = {
 
 const ACCOUNT_CREATION_FEE = '3.000 PULSE'
 const CONFIRMATION_PAYMENT_ID_NAME = 'confirmation_payment'
+
+const PRODUCT_CLASS_LIST = [
+  'class 1',
+  'class 2',
+  'class 3'
+]
+
+const PRODUCT_LICENSE_TYPE_LIST = [
+  'GPL',
+  'MIT'
+]
+
+const PRODUCT_CATEGORY_LIST = [
+  'land',
+  'ocean',
+  'city',
+  'river'
+]
+
 const APP_VERSION = 'pulsar/1.5.3';
 
 export default {
@@ -73,6 +96,7 @@ export default {
   ELASTIC: finalConfig.ELASTIC,
   CDN: finalConfig.CDN,
   SERVER_API: finalConfig.SERVER_API,
+  TAG_PRODUCT: finalConfig.TAG_PRODUCT,
   
   SBD: SBD,
   STEEM: STEEM,
@@ -100,6 +124,10 @@ export default {
   MAP:MAP,
   ACCOUNT_CREATION_FEE,
   CONFIRMATION_PAYMENT_ID_NAME,
+
+  PRODUCT_CLASS_LIST,
+  PRODUCT_LICENSE_TYPE_LIST,
+  PRODUCT_CATEGORY_LIST,
 
   APP_VERSION: APP_VERSION,
 };

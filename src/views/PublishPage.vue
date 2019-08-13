@@ -11,10 +11,40 @@
         </div>
       </div>
       <div class="form-group row">
-        <label class="col-md-2 col-form-label">IMAGE</label>
+        <label class="col-md-2 col-form-label">ICON</label>
         <div class="col-md-10">
           <input class="form-control" type="text" id="input_image"
-            v-model="image" placeholder="Url"/>
+            v-model="image" placeholder="Image url"/>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-md-2 col-form-label">CLASS</label>
+        <div class="col-md-10">
+          <select class="form-control" v-model="product_class">
+            <option v-for="(item,index) in PRODUCT_CLASS_LIST" :key="index" :value="item">
+              {{item}}
+            </option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-md-2 col-form-label">LICENSE TYPE</label>
+        <div class="col-md-10">
+          <select class="form-control" v-model="product_license_type">
+            <option v-for="(item,index) in PRODUCT_LICENSE_TYPE_LIST" :key="index" :value="item">
+              {{item}}
+            </option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label class="col-md-2 col-form-label">CATEGORY</label>
+        <div class="col-md-10">
+          <select class="form-control" v-model="product_category">
+            <option v-for="(item,index) in PRODUCT_CATEGORY_LIST" :key="index" :value="item">
+              {{item}}
+            </option>
+          </select>
         </div>
       </div>
       <div class="form-group row">
@@ -55,7 +85,13 @@ export default{
       image: '',
       price: '',
       description: '',
+      product_license_type: Config.PRODUCT_LICENSE_TYPE_LIST[0],
+      product_class: Config.PRODUCT_CLASS_LIST[0],
+      product_category: Config.PRODUCT_CATEGORY_LIST[0],
       sending: false,
+      PRODUCT_CLASS_LIST: Config.PRODUCT_CLASS_LIST,
+      PRODUCT_LICENSE_TYPE_LIST: Config.PRODUCT_LICENSE_TYPE_LIST,
+      PRODUCT_CATEGORY_LIST: Config.PRODUCT_CATEGORY_LIST,
     }
   },
   components: {
@@ -81,18 +117,21 @@ export default{
         this.stringToAsset(this.price) // verify correct format
 
         var metadata = {
-          tags: [],
+          tags: [Config.TAG_PRODUCT],
           product: this.product,
           image: this.image,
           price: this.price.toUpperCase(),
-          description: this.description
+          description: this.description,
+          license_type: this.product_license_type,
+          product_class: this.product_class,
+          category: this.product_category,
         }
 
         var operation = [
           'comment',
           {
             author: username,
-            body: `![product](${this.image})\n\n${this.description}`,
+            body: this.description,
             json_metadata: JSON.stringify(metadata),
             parent_author: '',
             parent_permlink: 'product',
