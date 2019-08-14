@@ -119,7 +119,6 @@ export default{
   },
   methods: {
     async publish(){
-      this.sending = true
       this.hideSuccess()
       this.hideDanger()
 
@@ -128,6 +127,7 @@ export default{
         return
       }
 
+      this.sending = true
       try{
         var username = this.$store.state.auth.user
         var permlink = Utils.createPermLink(this.product)
