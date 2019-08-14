@@ -21,6 +21,7 @@
             <b-dropdown-divider></b-dropdown-divider>
             <router-link :to="EXPLORER+'@'+$store.state.auth.user" class="dropdown-item no-a" style="border-bottom:0px;"><font-awesome-icon icon="user" class="mr-2"/>Profile</router-link>
             <router-link to="/password" class="dropdown-item no-a" style="border-bottom:0px;"><font-awesome-icon icon="key" class="mr-2"/>Change Password</router-link>
+            <router-link to="/broadcast" class="dropdown-item no-a" style="border-bottom:0px;"><font-awesome-icon icon="signature" class="mr-2"/>Broadcast</router-link>
             <router-link to="/createaccount" class="dropdown-item no-a" style="border-bottom:0px;"><font-awesome-icon icon="key" class="mr-2"/>Create Account</router-link>
             <b-dropdown-item @click="logout">Logout</b-dropdown-item>
           </b-nav-item-dropdown>
@@ -62,6 +63,7 @@
                 <b-dropdown-divider></b-dropdown-divider>
                 <router-link :to="EXPLORER+'@'+$store.state.auth.user" class="dropdown-item no-a" style="border-bottom:0px;"><font-awesome-icon icon="user" class="mr-2"/>Profile</router-link>
                 <router-link to="/password" class="dropdown-item no-a" style="border-bottom:0px;"><font-awesome-icon icon="key" class="mr-2"/>Change Password</router-link>
+                <router-link to="/broadcast" class="dropdown-item no-a" style="border-bottom:0px;"><font-awesome-icon icon="signature" class="mr-2"/>Broadcast</router-link>
                 <router-link to="/createaccount" class="dropdown-item no-a" style="border-bottom:0px;"><font-awesome-icon icon="key" class="mr-2"/>Create Account</router-link>
                 <b-dropdown-item @click="logout">Logout</b-dropdown-item>
               </b-nav-item-dropdown>
