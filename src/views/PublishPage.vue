@@ -61,6 +61,15 @@
             v-model="description" rows="5"/>
         </div>
       </div>
+      <div class="form-group row">
+        <label class="col-md-2 col-form-label">FILE</label>
+        <div class="col-md-10">
+          <div class="custom-file">            
+            <input type="file" class="custom-file-input" id="input_file">
+            <label class="custom-file-label" for="input_file">Choose file...</label>          
+          </div>
+        </div>
+      </div>
       <button class="btn btn-primary btn-large mb-4" @click="publish" :disabled="sending"><div v-if="sending" class="mini loader"></div>Publish</button>
       <div v-if="alert.info" class="alert alert-info" role="alert">{{alert.infoText}}</div>
       <div v-if="alert.success" class="alert alert-success" role="alert" v-html="alert.successText"></div>
@@ -70,6 +79,7 @@
 </template>
 
 <script>
+import {cryptoUtils} from 'eftg-dsteem'
 import Config from '@/config.js'
 import Utils from '@/js/utils.js'
 import SteemClient from '@/mixins/SteemClient.js'
@@ -104,11 +114,19 @@ export default{
   created(){
     this.changeLogin()
   },
+  mounted(){
+    this.startEventListenerFile()
+  },
   methods: {
     async publish(){
       this.sending = true
       this.hideSuccess()
       this.hideDanger()
+
+      if(!this.$store.state.auth.logged || this.$store.state.auth.keys.posting == null){
+        this.showDanger('Please login with the posting key')
+        return
+      }
 
       try{
         var username = this.$store.state.auth.user
@@ -125,6 +143,7 @@ export default{
           license_type: this.product_license_type,
           product_class: this.product_class,
           category: this.product_category,
+          hash: await this.getHashFile()
         }
 
         var operation = [
@@ -163,6 +182,59 @@ export default{
         precision,
         currency
       }
+    },
+
+    async getHashFile() {
+      let self = this
+      var localFile = document.getElementById("input_file").files[0];
+      var fileData = await this.readFileAsBuffer(localFile,{
+        onProgress: function(progressEvent){
+          var loaded = progressEvent.loaded
+          var total = progressEvent.total
+          self.showInfo('Reading file '+Math.floor(loaded*100/total)+'%')            
+        }
+      });
+      console.log(cryptoUtils.sha256(fileData).toString('hex'))
+      return cryptoUtils.sha256(fileData).toString('hex')
+    },
+
+    async readFileAsBuffer(inputFile, config) {
+      const reader = new FileReader();
+      return new Promise((resolve, reject) => {
+        reader.onerror = () => {
+          reader.abort();
+          reject(new DOMException("Problem parsing file to upload"));
+        };
+        reader.onload = () => {
+          if(config.onLoad) config.onLoad()
+        
+          //the result is an ArrayBuffer, we change it to Buffer.
+          //this is important because the hash using 'crypto' is different in the 2 cases
+          //TODO: [es-lint] says that Buffer is not defined, however it works
+          var dataArrayBuffer = reader.result;
+          var dataBuffer = new Buffer(dataArrayBuffer);
+          resolve(dataBuffer);
+        };
+        
+        if(config.onProgress)  reader.onprogress  = config.onProgress
+        if(config.onAbort)     reader.onabort     = config.onAbort
+        if(config.onError)     reader.onerror     = config.onError
+        if(config.onLoadStart) reader.onloadstart = config.onLoadStart
+        if(config.onLoadEnd)   reader.onloadend   = config.onLoadEnd 
+        
+        reader.readAsArrayBuffer(inputFile);
+      });
+    },
+
+    startEventListenerFile() {
+      var input = document.getElementById("input_file")
+      var label = input.nextElementSibling
+      var labelVal = label.innerHTML
+      input.addEventListener("change", function(e) {
+        var fileName = e.target.value.split("\\").pop()
+        if (fileName) label.innerHTML = fileName
+        else label.innerHTML = labelVal
+      })
     },
 
     changeLogin(){
