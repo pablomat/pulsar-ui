@@ -37,7 +37,7 @@
             <router-link to="/publish" class="nav-item nav-link"><div class="extra-padding">Publish</div></router-link>
           </li>
           <li class="nav-item">
-            <router-link to="/search" class="nav-item nav-link"><div class="extra-padding">Search</div></router-link>
+            <router-link to="/market" class="nav-item nav-link"><div class="extra-padding">Market</div></router-link>
           </li>
           <li class="nav-item">
             <router-link to="/explorer" class="nav-item nav-link"><div class="extra-padding">Explorer</div></router-link>

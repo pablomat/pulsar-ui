@@ -54,9 +54,9 @@ export default new Router({
       component: () => import('./views/CreateAccount.vue')
     },
     {
-      path: "/search",
-      name: "SearchPage",
-      component: () => import('./views/SearchPage.vue')
+      path: "/market",
+      name: "MarketPage",
+      component: () => import('./views/MarketPage.vue')
     },
     {
       path: "/explorer",
