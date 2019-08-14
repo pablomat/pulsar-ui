@@ -1451,6 +1451,22 @@ Example for props:
 }
 
 /**
+ * owner_create
+ */
+const owner_create = {
+  authorities: ['active'],
+  description:
+`
+
+`,
+  params: {
+    creator,
+    owner: account,
+    signing_key: memo_key
+  }
+}
+
+/**
  * account_witness_weight_vote
  */
 const account_witness_weight_vote = {
@@ -1527,6 +1543,7 @@ var operations = {
   // PULSAR OPERATIONS
   sbd_create,
   sbd_burn,
+  owner_create,
   owner_set_properties
   
   // SPS
