@@ -1,27 +1,35 @@
 <template>
   <div>
     <b-modal ref="modalProduct" hide-footer :title="currentProd.name">
-      <div class="text-center">
-        <img :src="currentProd.image"/>
+      <div class="text-center row">
+        <img :src="currentProd.image" class="col-12"/>
       </div>
-      <p class="mt-2 mb-3">{{currentProd.description}}</p>
-      <div class="form-group">
-        <label class="form-label">Class</label>
-        <div>{{currentProd.product_class}}</div>
+      <p class="mt-2 mb-3 text-justify">{{currentProd.description}}</p>
+      <div class="form-group row">
+        <label class="form-label col-4">Issuer</label>
+        <div class="col">@{{currentProd.issuer}}</div>
       </div>
-      <div class="form-group">
-        <label class="form-label">License Type</label>
-        <div>{{currentProd.license_type}}</div>
+      <div class="form-group row">
+        <label class="form-label col-4">Class</label>
+        <div class="col">{{currentProd.product_class}}</div>
       </div>
-      <div class="form-group">
-        <label class="form-label">Category</label>
-        <div>{{currentProd.category}}</div>
+      <div class="form-group row">
+        <label class="form-label col-4">License Type</label>
+        <div class="col">{{currentProd.license_type}}</div>
       </div>
-      <div class="form-group">
-        <label class="form-label">Price</label>
-        <div>{{currentProd.price}}</div>
+      <div class="form-group row">
+        <label class="form-label col-4">Category</label>
+        <div class="col">{{currentProd.category}}</div>
       </div>
-      <button class="btn btn-primary mb-3" v-if="!currentProd.free" @click="buy(currentProd)">buy</button>
+      <div class="form-group row">
+        <label class="form-label col-4">Price</label>
+        <div class="col">{{currentProd.price}}</div>
+      </div>
+      <div class="form-group row">
+        <label class="form-label col-4">Hash</label>
+        <div class="col-8 text-break">{{currentProd.hash}}</div>
+      </div>
+      <button class="btn btn-primary mb-3" v-if="!currentProd.free" @click="buy(currentProd)" :disabled="sending"><div v-if="sending" class="mini loader"></div>buy</button>
       <div v-if="alertProduct.danger"  class="alert alert-danger" role="alert">{{alertProduct.dangerText}}</div>
       <div v-if="alertProduct.info" class="alert alert-info" role="alert">{{alertProduct.infoText}}</div>
     </b-modal>
@@ -80,6 +88,7 @@ export default{
         product_class: '',
         category: '',
         description: '',
+        hash: '',
         free: false
       },
       issuer: '',
@@ -120,8 +129,7 @@ export default{
         console.log(owners)
         for(var i in owners){
           var owner_products = await this.getProductsByOwner(owners[i])
-          owner_products.forEach( (prod)=>{ products.push(prod) } )
-          products.forEach( (prod)=>{ prod.buying = false })
+          owner_products.forEach( (prod)=>{ products.push(prod) })
         }        
       }catch(error){
         this.showDanger(error.message)
@@ -142,7 +150,7 @@ export default{
         owner_posts.forEach( (p)=>{
           if(!p.json_metadata || p.json_metadata.length==0) return
           var metadata = JSON.parse(p.json_metadata)
-          if(metadata.product && metadata.description){
+          if(metadata.product && metadata.description && metadata.tags.find((t)=>{return t===Config.TAG_PRODUCT})){
             products.push({
               issuer: p.author,
               name: metadata.product,
@@ -152,6 +160,7 @@ export default{
               product_class: metadata.product_class,
               category: metadata.category,
               description: metadata.description,
+              hash: metadata.hash,
               free: parseFloat(metadata.price) == 0
             })
           }
@@ -176,6 +185,7 @@ export default{
         this.alertProduct.dangerText = 'Please login with the active key'
         return
       }
+      this.sending = true
       try{
         var operation = [
           'transfer',
@@ -187,14 +197,17 @@ export default{
           }
         ]
         var ack = await this.steem_broadcast_sendOperations([operation], this.$store.state.auth.keys.active)
-        this.alertProduct.info = false
+        this.alertProduct.info = true
         this.alertProduct.infoText = 'Transfer done. waiting confirmation...'
         var ack2 = await this.waitPaymentConfirmation(ack, product)
         this.showSuccess(`<a href="${Config.EXPLORER}b/${ack2.block_num}/${ack2.id}">Purchase confirmed</a>`)
         this.$refs.modalProduct.hide()
+        this.alertProduct.info = false
+        this.sending = false
       }catch(error){
         this.alertProduct.danger = true
         this.alertProduct.dangerText = error.message
+        this.sending = false
         throw error
       }
     },
