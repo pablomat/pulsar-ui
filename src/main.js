@@ -8,7 +8,7 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 import '@/assets/css/custom.css'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faHome, faUniversity, faQuestionCircle, faBusinessTime, faExclamationTriangle, faKey, faCheck, faTimes, faUser } from '@fortawesome/free-solid-svg-icons'
+import { faHome, faUniversity, faQuestionCircle, faBusinessTime, faExclamationTriangle, faKey, faCheck, faTimes, faUser, faSync, faSignature } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon, FontAwesomeLayers, FontAwesomeLayersText } from '@fortawesome/vue-fontawesome'
 
 library.add(
@@ -20,7 +20,9 @@ library.add(
   faKey,
   faCheck,
   faTimes,
-  faUser
+  faUser,
+  faSync,
+  faSignature
 )
 
 Vue.component('font-awesome-icon', FontAwesomeIcon)
