@@ -51,12 +51,14 @@
       <div class="card mb-4">
         <ul class="list-group list-group-flush">
           <li v-for="(product,index) in products" class="list-group-item" :key="index" @click="selectProduct(index)">
-            <div class="col-md-2">@{{product.issuer}}</div
-            ><div class="col-md-3">{{product.name}}</div
-            ><div class="col-md-2">{{product.product_class}}</div
-            ><div class="col-md-2">{{product.category}}</div
-            ><div class="col-md-1">{{product.license_type}}</div
-            ><div class="col-md-2">{{product.price}}</div>            
+            <div class="row"
+              ><div class="col-md-2">@{{product.issuer}}</div
+              ><div class="col-md-3">{{product.name}}</div
+              ><div class="col-md-2">{{product.product_class}}</div
+              ><div class="col-md-2">{{product.category}}</div
+              ><div class="col-md-1">{{product.license_type}}</div
+              ><div class="col-md-2">{{product.price}}</div
+            ></div>
           </li>
         </ul>
       </div>
