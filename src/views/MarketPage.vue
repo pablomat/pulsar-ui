@@ -1,17 +1,20 @@
 <template>
   <div>
-    <b-modal ref="modalProduct" hide-footer title="AEGIS Certificate">
+    <b-modal ref="modalProduct" hide-footer>
+      <template slot="modal-title">
+        <div class="stamp"><img src="../assets/logo-white.png" /></div> AEGIS Blockchain Certificate
+      </template>
       <div class="text-center row">
         <img :src="currentProd.image" class="col-12"/>
       </div>
       <h3>{{currentProd.name}}</h3>
-      <p class="mt-2 mb-3 text-justify">{{currentProd.description}}</p>
+      <p class="mt-2 mb-3 text-justify"><strong>Description: </strong>{{currentProd.description}}</p>
       <div class="form-group row">
         <label class="form-label col-4">Issuer</label>
         <div class="col">@{{currentProd.issuer}}</div>
       </div>
       <div class="form-group row">
-        <label class="form-label col-4">Class</label>
+        <label class="form-label col-4">Product class</label>
         <div class="col">{{currentProd.product_class}}</div>
       </div>
       <div class="form-group row">
@@ -27,7 +30,7 @@
         <div class="col">{{currentProd.price}}</div>
       </div>
       <div class="form-group row">
-        <label class="form-label col-4">Hash</label>
+        <label class="form-label col-4">Hash [Unique identifier]</label>
         <div class="col-8 text-break">{{currentProd.hash}}</div>
       </div>
       <button class="btn btn-primary mb-3" v-if="!currentProd.free" @click="buy(currentProd)" :disabled="sending"><div v-if="sending" class="mini loader"></div>buy</button>
@@ -321,3 +324,20 @@ export default{
   }
 }
 </script>
+
+<style scoped>
+.stamp {
+  height: 3rem;
+  display: inline-block;
+  margin-right: 13px;
+}
+
+.stamp img {
+  max-width: 100%;
+  max-height: 100%;
+  background: #21294c;
+  display: inline-block;
+  padding: 5px;
+  border-radius: 50%;
+}
+</style>
