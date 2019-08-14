@@ -1457,7 +1457,7 @@ const owner_create = {
   authorities: ['active'],
   description:
 `
-
+signing_key: EUR1111111111111111111111111111111114T1Anm
 `,
   params: {
     creator,
