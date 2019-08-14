@@ -1,9 +1,10 @@
 <template>
   <div>
-    <b-modal ref="modalProduct" hide-footer :title="currentProd.name">
+    <b-modal ref="modalProduct" hide-footer title="AEGIS Certificate">
       <div class="text-center row">
         <img :src="currentProd.image" class="col-12"/>
       </div>
+      <h3>{{currentProd.name}}</h3>
       <p class="mt-2 mb-3 text-justify">{{currentProd.description}}</p>
       <div class="form-group row">
         <label class="form-label col-4">Issuer</label>
@@ -50,9 +51,19 @@
       </div>
       <div class="card mb-4">
         <ul class="list-group list-group-flush">
+          <li class="list-group-item">
+            <div class="row"
+              ><div class="col-md-2"><strong>Issuer</strong></div
+              ><div class="col-md-3"><strong>Product</strong></div
+              ><div class="col-md-2"><strong>Class</strong></div
+              ><div class="col-md-2"><strong>Category</strong></div
+              ><div class="col-md-1"><strong>License type</strong></div
+              ><div class="col-md-2"><strong>Price</strong></div
+            ></div>
+          </li>
           <li v-for="(product,index) in products" class="list-group-item" :key="index" @click="selectProduct(index)">
             <div class="row"
-              ><div class="col-md-2">@{{product.issuer}}</div
+              ><div class="col-md-2">{{product.issuer_name}}</div
               ><div class="col-md-3">{{product.name}}</div
               ><div class="col-md-2">{{product.product_class}}</div
               ><div class="col-md-2">{{product.category}}</div
@@ -83,6 +94,7 @@ export default{
       products: [],
       currentProd: {
         issuer: '',
+        issuer_name: '',
         name: '',
         image: '',
         price: '',
@@ -127,15 +139,27 @@ export default{
       var products = []
       try{
         var owners = await this.steem_database_call('lookup_owners',['',100])
+        owners.push('demo')
         console.log('owners')
         console.log(owners)
         for(var i in owners){
           var owner_products = await this.getProductsByOwner(owners[i])
           owner_products.forEach( (prod)=>{ products.push(prod) })
-        }        
+        }
+        var owner_accounts = await this.steem_database_call('get_accounts',[owners])
+        products.forEach( (prod)=>{
+          var owner_acc = owner_accounts.find( (o)=>{ return o.name === prod.issuer })
+          if(!owner_acc) return
+          try{
+            var metadata = JSON.parse(owner_acc.json_metadata)
+            prod.issuer_name = metadata.profile.name
+          }catch(err){
+            console.log(`Problems reading the metadata of owner @${prod.issuer}`)
+          } 
+        })
       }catch(error){
         this.showDanger(error.message)
-        throw error
+        console.log(error)
       }
       this.products = products
     },
@@ -155,6 +179,7 @@ export default{
           if(metadata.product && metadata.description && metadata.tags.find((t)=>{return t===Config.TAG_PRODUCT})){
             products.push({
               issuer: p.author,
+              issuer_name: p.author,
               name: metadata.product,
               image: metadata.image,
               price: metadata.price,
