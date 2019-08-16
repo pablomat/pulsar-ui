@@ -70,21 +70,43 @@ const ACCOUNT_CREATION_FEE = '3.000 PULSE'
 const CONFIRMATION_PAYMENT_ID_NAME = 'confirmation_payment'
 
 const PRODUCT_CLASS_LIST = [
-  'class 1',
-  'class 2',
-  'class 3'
+  'Method',
+  'Derived method',
+  'Process',
+  'Derived process',
+  'Algorithm',
+  'Derived Algorithm',
+  'Image',
+  'Map',
+  'Results',
 ]
 
 const PRODUCT_LICENSE_TYPE_LIST = [
-  'GPL',
-  'MIT'
+  'Single User Fixed Duration',
+  'Perpetual Single User',
+  'Company Fixed Duration', 
+  'On Demand Corporate',
+  'Metered Licence',
+  'Offline use',
+  'Whitelist',
+  'Floating',
+  'Aggregate Use time', 
+  'Project-based licensing',
+  'Open Science',
+  'Open Edcuatiion',
+  'Open Source GPL',
+  'Open Source Apache', 
+  'Open Source BSD',
+  'Open Source MIT',
 ]
 
 const PRODUCT_CATEGORY_LIST = [
-  'land',
-  'ocean',
-  'city',
-  'river'
+  'Atmosphere',
+  'Marine',
+  'Land',
+  'Climate Change',
+  'Security',
+  'Emergency',
 ]
 
 const APP_VERSION = 'pulsar/1.5.3';
