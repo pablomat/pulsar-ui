@@ -3,6 +3,23 @@ const memo_key = '5JKVA1RMufcDpprpWmRsNVrkJtb3m3E8VbRUHdsVxC9CRxii2Z4'
 const posting_key = '5JKVA1RMufcDpprpWmRsNVrkJtb3m3E8VbRUHdsVxC9CRxii2Z4'
 const active_key = '5JKVA1RMufcDpprpWmRsNVrkJtb3m3E8VbRUHdsVxC9CRxii2Z4'
 
+const LOOK_ACCOUNTS = [
+  'iospace.tech',
+  'inova.technology',
+  'softspace.exp',
+  'smart.geo.system',
+  'smart.santinel',
+  'geo.raw.tech',
+  'greenplanet.tech',
+  'sea.tech.plus',
+  'ceospace',
+  'eoalert.sys',
+  'space.grid',
+  'sat.data.system',
+  'synotech'
+]
+const DERIVE_PRIVATE_KEYS = true
+
 const secret_create_account = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
 
 const database = 'univ'
@@ -136,5 +153,8 @@ module.exports = {
   ACTIVE_KEY: final_active_key,
   SECRET_CREATE_ACCOUNT: final_secret_create_account,
   DATABASE: final_database,
-  PUBLIC_ROOT: final_publicRoot
+  PUBLIC_ROOT: final_publicRoot,
+
+  LOOK_ACCOUNTS,
+  DERIVE_PRIVATE_KEYS,
 };

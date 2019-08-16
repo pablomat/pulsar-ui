@@ -3,31 +3,12 @@ const Config = require('./config')
 const fs = require('fs')
 const { Client, PrivateKey } = require('eftg-dsteem')
 
-var MongoClient = require('mongodb').MongoClient;
-var ObjectId = require('mongodb').ObjectId;
-var url = 'mongodb://localhost:27017/'+Config.DATABASE;
-utils.log(url)
-
-var _mongoClient;
-var db;
 var state = {
-  last_block: 356170
+  last_block: 645000
 }
 var products = []
 
 var steemClient = RPCnode_initClient()
-
-async function connectDB(url) { 
-  if (!_mongoClient){
-    _mongoClient = await MongoClient.connect(url, { useNewUrlParser: true });
-    db = _mongoClient.db(Config.DATABASE)
-  }
-
-  return { 
-    db: _mongoClient.db(Config.DATABASE),
-    client: _mongoClient
-  };
-}
 
 function RPCnode_initClient(address = Config.RPC_NODES[0]) {
   let opts = {}
@@ -88,7 +69,8 @@ function notifyOperation( operation ){
 
 function checkPayment( op ){
   if(op[0] !== 'transfer') return
-  if(op[1].to !== Config.ACCOUNT) return
+  if(!Config.LOOK_ACCOUNTS.find( (a)=>{return a === op[1].to} )) return
+  var issuer = op[1].to
   utils.log(`transfer of ${op[1].amount} from @${op[1].from}. Memo: ${op[1].memo}`)
   var product = products.find( (p)=>{ return op[1].memo.toLowerCase() === p.name.toLowerCase() })
   if(!product){
@@ -110,12 +92,12 @@ function checkPayment( op ){
     utils.log(`Price: ${utils.assetToString(product.price)}. Transfer with extra ${utils.assetToString(_refund)}. The transfer will be processed but no refund is scheduled. Please review this transfer`)
   }
 
-  confirmPurchase( product, op[1].from ).then( (result)=>{
+  confirmPurchase( issuer, product, op[1].from ).then( (result)=>{
     utils.log(`Confirmation sent to @${op[1].from} for product "${product.name}"`)
   }).catch((e)=>{utils.log(e.message)})
 }
 
-async function confirmPurchase( product, buyer ){
+async function confirmPurchase( issuer, product, buyer ){
   var data = {
     product: product.name,
     buyer: buyer
@@ -125,19 +107,23 @@ async function confirmPurchase( product, buyer ){
     'custom_json',
     {
       required_auths: [],
-      required_posting_auths: [Config.ACCOUNT],
+      required_posting_auths: [issuer],
       id: Config.CONFIRMATION_PAYMENT_ID_NAME,
       json: JSON.stringify(data)
     }
   ]
-  return await steemClient.broadcast.sendOperations([operation], PrivateKey.fromString(Config.POSTING_KEY))
+  var password = PrivateKey.fromLogin(issuer, Config.ACTIVE_KEY, 'owner').toString().substring(0,15)
+  var postingKey = PrivateKey.fromLogin(issuer, password, 'posting')
+  return await steemClient.broadcast.sendOperations([operation], postingKey)
 }
 
 async function main(){
-  await connectDB(url)
-
   loadState()
-  products = await getProductsByOwner(Config.ACCOUNT)
+  for(var i=0; i<Config.LOOK_ACCOUNTS.length; i++){
+    prods = await getProductsByOwner(Config.LOOK_ACCOUNTS[i])
+    prods.forEach( (p)=>{ products.push(p) } )
+  }
+  utils.log(`Account: ${Config.ACCOUNT}`)
 
   var gpo = await steemClient.database.call('get_dynamic_global_properties')
   utils.log(`Current block: ${gpo.head_block_number}`)
