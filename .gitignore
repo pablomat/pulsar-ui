@@ -20,3 +20,9 @@ yarn-error.log*
 *.njsproj
 *.sln
 *.sw*
+
+# backend
+/backend/node_modules
+/backend/package-lock.json
+/backend/state.json
+

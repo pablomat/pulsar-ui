@@ -22,21 +22,6 @@ Vue.use(Router)
 export default new Router({
   mode: 'history',
   base: process.env.BASE_URL,
-  /*routes: [
-    {
-      path: '/',
-      name: 'home',
-      component: Home
-    },
-    {
-      path: '/about',
-      name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (about.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('./views/About.vue')
-    }
-  ]*/
   routes: [
     {
       path: "/",
@@ -44,29 +29,9 @@ export default new Router({
       component: Home
     },
     {
-      path: "/oam-portal",
-      name: "OAMEntryPage",
-      component: OAMEntryPage
-    },
-    {
-      path: "/search.html",
-      name: "SearchPage",
-      component: SearchPage
-    },
-    {
-      path: "/faq",
-      name: "Faq",
-      component: Faq
-    },
-    {
       path: "/map",
       name: "MapPage",
       component: MapPage
-    },
-    {
-      path: "/contact",
-      name: "Contact",
-      component: Contact
     },
     {
       path: "/password",
@@ -77,6 +42,26 @@ export default new Router({
       path: "/witnesses",
       name: "Witnesses",
       component: Witnesses
+    },
+    {
+      path: "/publish",
+      name: "Publish",
+      component: () => import('./views/PublishPage.vue')
+    },
+    {
+      path: "/createaccount",
+      name: "CreateAccount",
+      component: () => import('./views/CreateAccount.vue')
+    },
+    {
+      path: "/market",
+      name: "MarketPage",
+      component: () => import('./views/MarketPage.vue')
+    },
+    {
+      path: "/broadcast",
+      name: "Broadcast",
+      component: () => import('./views/BroadcastPage.vue')
     },
     {
       path: "/explorer",

@@ -1,14 +1,44 @@
+const account = 'initminer'
+const memo_key = '5JKVA1RMufcDpprpWmRsNVrkJtb3m3E8VbRUHdsVxC9CRxii2Z4'
+const posting_key = '5JKVA1RMufcDpprpWmRsNVrkJtb3m3E8VbRUHdsVxC9CRxii2Z4'
+const active_key = '5JKVA1RMufcDpprpWmRsNVrkJtb3m3E8VbRUHdsVxC9CRxii2Z4'
+
+const LOOK_ACCOUNTS = [
+  'iospace.tech',
+  'inova.technology',
+  'softspace.exp',
+  'smart.geo.system',
+  'smart.santinel',
+  'geo.raw.tech',
+  'greenplanet.tech',
+  'sea.tech.plus',
+  'ceospace',
+  'eoalert.sys',
+  'space.grid',
+  'sat.data.system',
+  'synotech'
+]
+const DERIVE_PRIVATE_KEYS = true
+
+const secret_create_account = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
+
+const database = 'univ'
+const publicRoot = '../dist'
+
 const config = {
   'production': {
     RPC_NODES : [
-      'https://apidev.blkcc.xyz',
+      'https://api.eftg.eu',
+      'https://rpc-italy.eftg.eu',
+      'https://rpc-germany.eftg.eu',
+      'https://rpc-luxembourg.eftg.eu',
+      'https://rpc-romania.eftg.eu'
     ],
     IMAGE_HOSTER : 'https://cdn.eftg.eu',
     ELASTIC : 'https://api.eftg.eu/pulsar/',
     CDN : 'https://cdn.eftg.eu/',
     SERVER_API: '/api/',
-    EFTG_HARDFORK_0_1 : false,
-    TAG_PRODUCT: 'aegis'
+    EFTG_HARDFORK_0_1 : false
   },
   'acceptance': {
     RPC_NODES : [
@@ -18,8 +48,7 @@ const config = {
     ELASTIC : 'https://api.blkcc.xyz/pulsar/',
     CDN : 'https://cdn.acc.blkcc.xyz/',
     SERVER_API: 'http://40.113.101.44:8084/api/',
-    EFTG_HARDFORK_0_1 : false,
-    TAG_PRODUCT: 'dev'
+    EFTG_HARDFORK_0_1 : false
   },
   'development': {
     RPC_NODES : [
@@ -29,9 +58,7 @@ const config = {
     ELASTIC : 'https://apidev.blkcc.xyz/pulsar/',
     CDN : 'https://cdn.dev.blkcc.xyz/',
     SERVER_API: 'http://pulsar.dev.blkcc.xyz:8084/api/',
-    EFTG_HARDFORK_0_1 : true,
-    TAG_PRODUCT: 'demo1'
-    
+    EFTG_HARDFORK_0_1 : true
   }
 }
 
@@ -66,59 +93,29 @@ const MAP = {
   INI_ZOOM : 4 ,
 }
 
-const ACCOUNT_CREATION_FEE = '3.000 PULSE'
 const CONFIRMATION_PAYMENT_ID_NAME = 'confirmation_payment'
-
-const PRODUCT_CLASS_LIST = [
-  'Method',
-  'Derived method',
-  'Process',
-  'Derived process',
-  'Algorithm',
-  'Derived Algorithm',
-  'Image',
-  'Map',
-  'Results',
-]
-
-const PRODUCT_LICENSE_TYPE_LIST = [
-  'Single User Fixed Duration',
-  'Perpetual Single User',
-  'Company Fixed Duration', 
-  'On Demand Corporate',
-  'Metered Licence',
-  'Offline use',
-  'Whitelist',
-  'Floating',
-  'Aggregate Use time', 
-  'Project-based licensing',
-  'Open Science',
-  'Open Edcuatiion',
-  'Open Source GPL',
-  'Open Source Apache', 
-  'Open Source BSD',
-  'Open Source MIT',
-]
-
-const PRODUCT_CATEGORY_LIST = [
-  'Atmosphere',
-  'Marine',
-  'Land',
-  'Climate Change',
-  'Security',
-  'Emergency',
-]
+const STATE_FILE = 'state.json'
 
 const APP_VERSION = 'pulsar/1.5.3';
 
-export default {
+const ACCOUNT_CREATION_FEE = '3.000 PULSE'
+
+const final_account       = process.env.ACCOUNT       || account
+const final_memo_key      = process.env.MEMO_KEY      || memo_key
+const final_posting_key   = process.env.POSTING_KEY   || posting_key
+const final_active_key    = process.env.ACTIVE_KEY    || active_key
+
+const final_secret_create_account = process.env.SECRET_CREATE_ACCOUNT || secret_create_account
+const final_database = process.env.DATABASE || database
+const final_publicRoot = process.env.PUBLIC_ROOT || publicRoot
+
+module.exports = {
 
   RPC_NODES: finalConfig.RPC_NODES,
   IMAGE_HOSTER: finalConfig.IMAGE_HOSTER,
   ELASTIC: finalConfig.ELASTIC,
   CDN: finalConfig.CDN,
   SERVER_API: finalConfig.SERVER_API,
-  TAG_PRODUCT: finalConfig.TAG_PRODUCT,
   
   SBD: SBD,
   STEEM: STEEM,
@@ -144,12 +141,20 @@ export default {
   STEEM_CHAIN_ID,
 
   MAP:MAP,
-  ACCOUNT_CREATION_FEE,
-  CONFIRMATION_PAYMENT_ID_NAME,
-
-  PRODUCT_CLASS_LIST,
-  PRODUCT_LICENSE_TYPE_LIST,
-  PRODUCT_CATEGORY_LIST,
 
   APP_VERSION: APP_VERSION,
+  ACCOUNT_CREATION_FEE,
+  CONFIRMATION_PAYMENT_ID_NAME,
+  STATE_FILE,
+
+  ACCOUNT: final_account,
+  MEMO_KEY: final_memo_key,
+  POSTING_KEY: final_posting_key,
+  ACTIVE_KEY: final_active_key,
+  SECRET_CREATE_ACCOUNT: final_secret_create_account,
+  DATABASE: final_database,
+  PUBLIC_ROOT: final_publicRoot,
+
+  LOOK_ACCOUNTS,
+  DERIVE_PRIVATE_KEYS,
 };

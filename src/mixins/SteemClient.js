@@ -1,24 +1,21 @@
 import { Client } from 'eftg-dsteem'
 import Config from '@/config.js'
+import Alerts from '@/mixins/Alerts.js'
 
 export default {
   
   data: function(){
     return {
-      alert: {
-        success: false,
-        danger: false,
-        info: false,
-        successText: '',
-        dangerText: '',
-        infoText: ''
-      },
       sending: false,
       aborting: false,
       onNodeProgress: null,
       abortNodeConnection: false
     }
   },
+
+  mixins: [
+    Alerts
+  ],
   
   created() {
     let self = this
@@ -63,7 +60,7 @@ export default {
       let opts = {}
       opts.addressPrefix = Config.STEEM_ADDRESS_PREFIX
       opts.timeout = Config.DSTEEM_TIMEOUT
-      if(process.env.VUE_APP_CHAIN_ID) opts.chainId = process.env.VUE_APP_CHAIN_ID
+      opts.chainId = Config.STEEM_CHAIN_ID
       return new Client(address, opts)
     },
 
@@ -180,34 +177,10 @@ export default {
       }, this.onNodeProgress)
     },
 
-    showInfo(msg){
-      this.alert.info = true
-      this.alert.infoText = msg
-    },
-
-    hideInfo(){
-      this.alert.info = false
-      this.alert.infoText = ''
-    },
-
-    showSuccess(msg) {
-      this.alert.success = true
-      this.alert.successText = msg
-    },
-
-    hideSuccess() {
-      this.alert.success = false
-      this.alert.successText = ''
-    },
-
-    showDanger(msg) {
-      this.alert.danger = true
-      this.alert.dangerText = msg
-    },
-
-    hideDanger() {
-      this.alert.danger = false
-      this.alert.dangerText = ''
+    async steem_broadcast_send( trx ) {
+      return this.RPCnode_request( async function(client){
+        return await client.broadcast.send(trx)
+      }, this.onNodeProgress)
     }
   }
 }

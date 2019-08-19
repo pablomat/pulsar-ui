@@ -35,10 +35,8 @@ import { Client, PrivateKey } from 'eftg-dsteem'
 import Config from "@/config.js";
 import Utils from "@/js/utils.js";
 import SteemClient from '@/mixins/SteemClient.js'
-
 export default {
   name: "Auth",
-
   data() {
     return {
       username: "",
@@ -56,11 +54,9 @@ export default {
       }
     };
   },
-
   mixins: [
     SteemClient
   ],
-
   methods: {
     try_to_login() {
       let self = this;
@@ -71,6 +67,7 @@ export default {
         var auth = await self.login(self.username, self.password);
         if (auth.logged) {
           self.$store.state.auth = auth
+          self.$store.state.isOwner = self.isOwner()
           self.$emit("login")
         }
         self.sending = false
@@ -88,7 +85,6 @@ export default {
         self.$emit('error')
       });
     },
-
     /**
      * Checks if the password or WIF is valid for that user
      */
@@ -96,7 +92,6 @@ export default {
     
       this.RPCnode_setMaxFails(1)
       this.RPCnode_setMaxFailRounds(2)
-
       // Check if the user exists      
       const accounts = await this.steem_database_call('get_accounts',[[_username]])
       if (accounts.length == 0){        
@@ -104,21 +99,18 @@ export default {
         e.name = "UserError";
         throw e;
       }
-
-
       /* We check if the password is:
          1. WIF: the master key that generates the keys for all roles (owner, active, posting)
           or
          2. role key: The password could be the key for a specific role
       */
-
       // keysFromWIF: suppossing that password is WIF
       var keysFromWIF = {
         owner: { public: "", private: "" },
         active: { public: "", private: "" },
-        posting: { public: "", private: "" }
+        posting: { public: "", private: "" },
+        memo: { public: '', private: '' }
       };
-
       for (var role in keysFromWIF) {
         keysFromWIF[role].private = PrivateKey.fromLogin(
           _username,
@@ -139,17 +131,14 @@ export default {
           .createPublic(Config.STEEM_ADDRESS_PREFIX)
           .toString();
       }catch(error){}
-
-      var roles = ["owner", "active", "posting"];
+      var roles = ["owner", "active", "posting","memo"];
       //var roles = ["posting"];
       //let self = this;
-
       var account = accounts[0];
       var json_metadata = {}
       try{
         json_metadata = JSON.parse(account.json_metadata);
       }catch(error){
-
       }
       var keyFound = false;
       var typeOfPassword = "";
@@ -164,43 +153,55 @@ export default {
           memo: null
         }
       };
-
       // check owner, active and posting keys
       for (var i = 0; i < roles.length; i++) {
         role = roles[i];
-        //multisignature: A specific role could have several keys
-        var authority = account[role].key_auths;
-        for (var j = 0; j < authority.length; j++) {
-          var pubKey = authority[j][0];
-
-          //save in 'auth' the valid keys
-          if (pubKey === keysFromWIF[role].public) {
-            auth.keys[role] = keysFromWIF[role].private;
-            keyFound = true;
-            typeOfPassword = "WIF";
-          } else if (pubKey === keyRole.public) {
-            auth.keys[role] = keyRole.private;
-            keyFound = true;
-            typeOfPassword = role;
+        if(role !== 'memo'){
+          //multisignature: A specific role could have several keys
+          var authority = account[role].key_auths;
+          for (var j = 0; j < authority.length; j++) {
+            var pubKey = authority[j][0];
+            //save in 'auth' the valid keys
+            if (pubKey === keysFromWIF[role].public) {
+              auth.keys[role] = keysFromWIF[role].private;
+              keyFound = true;
+              typeOfPassword = "WIF";
+            } else if (pubKey === keyRole.public) {
+              auth.keys[role] = keyRole.private;
+              keyFound = true;
+              typeOfPassword = role;
+            }
+          }
+        }else{
+          if(account.memo_key === keysFromWIF.memo.public){
+            auth.keys.memo = keysFromWIF.memo.private
           }
         }
       }
-
       if (!keyFound){
         var e = new Error("Incorrect password. Please use posting key or WIF");
         e.name = "PasswordError";
         throw e;
       }
-
       auth.logged = true;
       auth.user = _username;
       auth.imgUrl = Utils.extractUrlProfileImage(json_metadata);
-
       console.log("Correct " + typeOfPassword + " key");
       console.log("Welcome @" + _username);
       this.hideDanger()
-
       return auth;
+    },
+
+    async isOwner() {
+      if(!this.$store.state.auth.logged) return false
+      try{
+        var owners = await this.steem_database_call('get_owners',[[this.$store.state.auth.user]])
+        if(owners && owners.length>0) return true
+        return false
+      }catch(error){
+        console.log(error)
+        return false
+      }
     },
 
     close() {
@@ -208,7 +209,6 @@ export default {
       if(this.sending) this.aborting = true
       this.$emit("close");
     },
-
     getBestKeyForPosting() {
       if (this.auth.posting != null) return this.auth.posting;
       if (this.auth.active != null) return this.auth.active;
@@ -220,5 +220,4 @@ export default {
 </script>
 
 <style scoped>
-
 </style>

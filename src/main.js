@@ -5,9 +5,10 @@ import store from './store'
 import BootstrapVue from 'bootstrap-vue'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
+import '@/assets/css/custom.css'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faHome, faUniversity, faQuestionCircle, faBusinessTime, faExclamationTriangle, faKey, faCheck, faUser } from '@fortawesome/free-solid-svg-icons'
+import { faHome, faUniversity, faQuestionCircle, faBusinessTime, faExclamationTriangle, faKey, faCheck, faTimes, faUser, faSync, faSignature } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon, FontAwesomeLayers, FontAwesomeLayersText } from '@fortawesome/vue-fontawesome'
 
 library.add(
@@ -18,7 +19,10 @@ library.add(
   faExclamationTriangle,
   faKey,
   faCheck,
-  faUser
+  faTimes,
+  faUser,
+  faSync,
+  faSignature
 )
 
 Vue.component('font-awesome-icon', FontAwesomeIcon)
