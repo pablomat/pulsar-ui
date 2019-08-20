@@ -3,31 +3,14 @@ const config = {
     RPC_NODES : [
       'https://apidev.blkcc.xyz',
     ],
-    IMAGE_HOSTER : 'https://cdn.eftg.eu',
-    ELASTIC : 'https://api.eftg.eu/pulsar/',
-    CDN : 'https://cdn.eftg.eu/',
     SERVER_API: '/api/',
-    EFTG_HARDFORK_0_1 : false,
+    EFTG_HARDFORK_0_1 : true,
     TAG_PRODUCT: 'aegis'
-  },
-  'acceptance': {
-    RPC_NODES : [
-      'https://api.blkcc.xyz'
-    ],
-    IMAGE_HOSTER : 'https://cdn.acc.blkcc.xyz',
-    ELASTIC : 'https://api.blkcc.xyz/pulsar/',
-    CDN : 'https://cdn.acc.blkcc.xyz/',
-    SERVER_API: 'http://40.113.101.44:8084/api/',
-    EFTG_HARDFORK_0_1 : false,
-    TAG_PRODUCT: 'dev'
   },
   'development': {
     RPC_NODES : [
       'https://apidev.blkcc.xyz',
     ],
-    IMAGE_HOSTER : 'https://cdn.dev.blkcc.xyz',
-    ELASTIC : 'https://apidev.blkcc.xyz/pulsar/',
-    CDN : 'https://cdn.dev.blkcc.xyz/',
     SERVER_API: 'http://pulsar.dev.blkcc.xyz:8084/api/',
     EFTG_HARDFORK_0_1 : true,
     TAG_PRODUCT: 'demo1'
@@ -67,47 +50,6 @@ const MAP = {
 }
 
 const ACCOUNT_CREATION_FEE = '3.000 PULSE'
-const CONFIRMATION_PAYMENT_ID_NAME = 'confirmation_payment'
-
-const PRODUCT_CLASS_LIST = [
-  'Method',
-  'Derived method',
-  'Process',
-  'Derived process',
-  'Algorithm',
-  'Derived Algorithm',
-  'Image',
-  'Map',
-  'Results',
-]
-
-const PRODUCT_LICENSE_TYPE_LIST = [
-  'Single User Fixed Duration',
-  'Perpetual Single User',
-  'Company Fixed Duration', 
-  'On Demand Corporate',
-  'Metered Licence',
-  'Offline use',
-  'Whitelist',
-  'Floating',
-  'Aggregate Use time', 
-  'Project-based licensing',
-  'Open Science',
-  'Open Edcuatiion',
-  'Open Source GPL',
-  'Open Source Apache', 
-  'Open Source BSD',
-  'Open Source MIT',
-]
-
-const PRODUCT_CATEGORY_LIST = [
-  'Atmosphere',
-  'Marine',
-  'Land',
-  'Climate Change',
-  'Security',
-  'Emergency',
-]
 
 const APP_VERSION = 'pulsar/1.5.3';
 
@@ -145,11 +87,6 @@ export default {
 
   MAP:MAP,
   ACCOUNT_CREATION_FEE,
-  CONFIRMATION_PAYMENT_ID_NAME,
-
-  PRODUCT_CLASS_LIST,
-  PRODUCT_LICENSE_TYPE_LIST,
-  PRODUCT_CATEGORY_LIST,
 
   APP_VERSION: APP_VERSION,
 };

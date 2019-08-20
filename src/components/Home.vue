@@ -2,7 +2,7 @@
   <div>
     <HeaderEFTG :showAuth="false" ref="headerEFTG"></HeaderEFTG>
     <div class="container">
-      <h2 class="text-center mb-4">AEGIS</h2>
+      <h2 class="text-center mb-4">PULSAR</h2>
       <div class="text-center"><vimeo-player video-id="354021809"></vimeo-player></div>
       <p class="mt-5 text-justify">AEGIS is a solution to the outstanding challenges of protecting copyright in Earth Observation (EO) cloud-based algorithms, software, tools and data. It is an innovative blockchain platform that provides integrity, traceability, automated certification and auditability of EO data and information.</p>
       <h3>Demo</h3>
