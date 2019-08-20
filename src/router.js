@@ -1,21 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Home from '@/components/Home'
-import OAMEntryPage from '@/components/OAMEntryPage'
-import SearchPage from '@/components/SearchPage'
-import MapPage from '@/components/MapPage'
-import Faq from '@/components/Faq'
-import Contact from '@/components/Contact'
-import Password from '@/components/Password'
-import Witnesses from '@/components/Witnesses'
-import Page404 from '@/components/Page404'
-
-// Explorer
-import HomeExplorer from '@/components/explorer/Home'
-import AccountExplorer from '@/components/explorer/Account'
-import PostExplorer from '@/components/explorer/Post'
-import BlockExplorer from '@/components/explorer/Block'
-import TransactionExplorer from '@/components/explorer/Transaction'
 
 Vue.use(Router)
 
@@ -31,32 +16,22 @@ export default new Router({
     {
       path: "/map",
       name: "MapPage",
-      component: MapPage
+      component: () => import('./components/MapPage.vue')
     },
     {
       path: "/password",
       name: "Password",
-      component: Password
+      component: () => import('./components/Password.vue')
     },
     {
       path: "/witnesses",
       name: "Witnesses",
-      component: Witnesses
-    },
-    {
-      path: "/publish",
-      name: "Publish",
-      component: () => import('./views/PublishPage.vue')
+      component: () => import('./components/Witnesses.vue')
     },
     {
       path: "/createaccount",
       name: "CreateAccount",
       component: () => import('./views/CreateAccount.vue')
-    },
-    {
-      path: "/market",
-      name: "MarketPage",
-      component: () => import('./views/MarketPage.vue')
     },
     {
       path: "/broadcast",
@@ -66,28 +41,28 @@ export default new Router({
     {
       path: "/explorer",
       name: "Explorer",
-      component: HomeExplorer
+      component: () => import('./components/explorer/Home.vue')
     },
     {
       path: '/explorer/@:account',
       name: 'Account',
-      component: AccountExplorer
+      component: () => import('./components/explorer/Account.vue')
     },{
       path: '/explorer/@:account/:permlink',
       name: 'Post',
-      component: PostExplorer
+      component: () => import('./components/explorer/Post.vue')
     },{
       path: '/explorer/b/:id',
       name: 'Block',
-      component: BlockExplorer
+      component: () => import('./components/explorer/Block.vue')
     },{
       path: '/explorer/b/:id/:tx',
       name: 'Transaction',
-      component: TransactionExplorer
+      component: () => import('./components/explorer/Transaction.vue')
     },{
       path: '*',
       name: 'Page404',
-      component: Page404
+      component: () => import('./components/Page404.vue')
     }
   ]
 })

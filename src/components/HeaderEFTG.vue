@@ -21,7 +21,6 @@
             <b-dropdown-divider></b-dropdown-divider>
             <router-link :to="EXPLORER+'@'+$store.state.auth.user" class="dropdown-item no-a" style="border-bottom:0px;"><font-awesome-icon icon="user" class="mr-2"/>Profile</router-link>
             <router-link to="/password" class="dropdown-item no-a" style="border-bottom:0px;"><font-awesome-icon icon="key" class="mr-2"/>Change Password</router-link>
-            <router-link to="/broadcast" class="dropdown-item no-a" style="border-bottom:0px;"><font-awesome-icon icon="signature" class="mr-2"/>Broadcast</router-link>
             <router-link to="/createaccount" class="dropdown-item no-a" style="border-bottom:0px;"><font-awesome-icon icon="key" class="mr-2"/>Create Account</router-link>
             <b-dropdown-item @click="logout">Logout</b-dropdown-item>
           </b-nav-item-dropdown>
@@ -35,12 +34,6 @@
       <b-collapse id="nav-collapse" is-nav>
         <ul class="navbar-nav">
           <li class="nav-item">
-            <router-link to="/publish" class="nav-item nav-link"><div class="extra-padding">Publish</div></router-link>
-          </li>
-          <li class="nav-item">
-            <router-link to="/market" class="nav-item nav-link"><div class="extra-padding">Market</div></router-link>
-          </li>
-          <li class="nav-item">
             <router-link to="/explorer" class="nav-item nav-link"><div class="extra-padding">Explorer</div></router-link>
           </li>
           <li class="nav-item">
@@ -48,6 +41,9 @@
           </li>
           <li class="nav-item">
             <router-link to="/witnesses" class="nav-item nav-link"><div class="extra-padding">Witnesses</div></router-link>
+          </li>
+          <li class="nav-item">
+            <router-link to="/broadcast" class="nav-item nav-link"><div class="extra-padding">Broadcast</div></router-link>
           </li>
         </ul>
         <ul class="navbar-nav ml-auto">
@@ -63,7 +59,6 @@
                 <b-dropdown-divider></b-dropdown-divider>
                 <router-link :to="EXPLORER+'@'+$store.state.auth.user" class="dropdown-item no-a" style="border-bottom:0px;"><font-awesome-icon icon="user" class="mr-2"/>Profile</router-link>
                 <router-link to="/password" class="dropdown-item no-a" style="border-bottom:0px;"><font-awesome-icon icon="key" class="mr-2"/>Change Password</router-link>
-                <router-link to="/broadcast" class="dropdown-item no-a" style="border-bottom:0px;"><font-awesome-icon icon="signature" class="mr-2"/>Broadcast</router-link>
                 <router-link to="/createaccount" class="dropdown-item no-a" style="border-bottom:0px;"><font-awesome-icon icon="key" class="mr-2"/>Create Account</router-link>
                 <b-dropdown-item @click="logout">Logout</b-dropdown-item>
               </b-nav-item-dropdown>
