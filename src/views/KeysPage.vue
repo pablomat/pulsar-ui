@@ -231,17 +231,25 @@ export default {
   },
 
   methods: {
-    checkPreconditions() {
+    async checkPreconditions() {
       console.log('checking preconditions')
       var preconditions = this.create_key.level.preconditions.slice()
-      this.provided_badges.forEach( (p)=>{
+      for(var i in this.provided_badges){
+        var p = this.provided_badges[i]
         var course_id = this.keysWithBadge[p.input].course
-        var course = this.courses.find( (c)=>{ return c._id === course_id })
-        var level = this.levels.find( (l)=>{ return l.id === course.level_id })
+
+        var issuer_name = this.keysWithBadge[p.input].badge.issuer
+        var issuer = this.issuers.find( (i)=>{ return i.name === issuer_name })
+        var response = await axios.get(issuer.api + 'courses')
+        var courses = response.data.courses
+        var levels = response.data.levels
+
+        var course = courses.find( (c)=>{ return c._id === course_id })
+        var level = levels.find( (l)=>{ return l.id === course.level_id })
         var level_provided = level.name
         var id = preconditions.findIndex( (pre)=>{ return pre === level_provided })
         if(id >= 0) preconditions.splice(id,1)
-      })
+      }
       this.create_key.remaining_preconditions = preconditions
     },
 
