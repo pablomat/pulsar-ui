@@ -375,10 +375,12 @@ app.post('/api/add_course', authMiddleware, isAdminMiddleware, async (req, res, 
     var newcourse = Utils.validateCourse(req.body)
   } catch(err) {
     res.status(400).send('Error validating course. '+err.message)
+    console.log(err.message)
     return
   }
   if( await db.collection('courses').findOne(newcourse) ){
     res.status(400).send('This course already exists')
+    console.log(err.message)
     return
   }
   await db.collection('courses').insertOne(newcourse)
