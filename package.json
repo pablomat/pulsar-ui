@@ -16,6 +16,7 @@
     "axios": "^0.18.0",
     "bootstrap": "^4.3.1",
     "bootstrap-vue": "^2.0.0-rc.13",
+    "chart.js": "^2.8.0",
     "crypto": "^1.0.1",
     "eftg-dsteem": "2.0.4",
     "file-saver": "^2.0.2",
