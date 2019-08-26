@@ -30,6 +30,10 @@
         <div class="col">{{currentProd.price}}</div>
       </div>
       <div class="form-group row">
+        <label class="form-label col-4">Timestamp</label>
+        <div class="col-8 text-break">{{currentProd.timestamp}}</div>
+      </div>
+      <div class="form-group row">
         <label class="form-label col-4">Hash [Unique identifier]</label>
         <div class="col-8 text-break">{{currentProd.hash}}</div>
       </div>
@@ -190,6 +194,7 @@ export default{
               product_class: metadata.product_class,
               category: metadata.category,
               description: metadata.description,
+              timestamp: p.created,
               hash: metadata.hash,
               free: parseFloat(metadata.price) == 0
             })
