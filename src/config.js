@@ -93,7 +93,7 @@ const PRODUCT_LICENSE_TYPE_LIST = [
   'Aggregate Use time', 
   'Project-based licensing',
   'Open Science',
-  'Open Edcuatiion',
+  'Open Education',
   'Open Source GPL',
   'Open Source Apache', 
   'Open Source BSD',
