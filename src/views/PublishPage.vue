@@ -7,14 +7,14 @@
         <label class="col-md-2 col-form-label">PRODUCT</label>
         <div class="col-md-10">
           <input class="form-control" type="text" id="input_product"
-            v-model="product" placeholder="Product"/>
+            v-model="product" placeholder="Insert the name of your product"/>
         </div>
       </div>
       <div class="form-group row">
         <label class="col-md-2 col-form-label">ICON</label>
         <div class="col-md-10">
           <input class="form-control" type="text" id="input_image"
-            v-model="image" placeholder="Image url"/>
+            v-model="image" placeholder="Insert the external url link of your logo"/>
         </div>
       </div>
       <div class="form-group row">
@@ -66,8 +66,9 @@
         <div class="col-md-10">
           <div class="custom-file">            
             <input type="file" class="custom-file-input" id="input_file">
-            <label class="custom-file-label" for="input_file">Choose file...</label>          
+            <label class="custom-file-label" for="input_file">Choose the file you want to fingerprint...</label>          
           </div>
+          <small>This file is not uploaded to the blockchain. We only create an unique identifier/fingerprint/hash for this file and register it in the blockchain.</small>
         </div>
       </div>
       <button class="btn btn-primary btn-large mb-4" @click="publish" :disabled="sending"><div v-if="sending" class="mini loader"></div>Publish</button>
