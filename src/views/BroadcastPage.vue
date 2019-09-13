@@ -382,7 +382,6 @@ export default {
           // special case for owner_set_properties
           if( op.operation === 'owner_set_properties' )
             operation = utils.buildOwnerSetPropertiesOperation( operation[1].owner , operation[1].props )
-          }
         }
         operations.push(operation)
       }
