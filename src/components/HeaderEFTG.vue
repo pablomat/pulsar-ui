@@ -8,15 +8,9 @@
       </div>
     </div>
     <div class="container">
-      <div class="row">
-        <div class="col d-flex justify-content-start">
-          <div class="d-flex align-items-end">
-            <div id="logo-ec"><router-link to="/"><img src="../assets/logo2018commissionname.png" /></router-link></div>            
-          </div>
-          <div class="d-flex align-items-end">
-            <div id="logo-eftg" class="ml-2"><router-link to="/"><img src="../assets/logo-eftg.png" /></router-link></div>            
-          </div>  
-        </div>
+      <div class="row" style="align-items: center;">
+        <div id="logo-ec"><router-link to="/"><img src="../assets/eftg-logo.png" /></router-link></div>
+        <div id="logo-eftg" class="ml-2"><router-link to="/"><img src="../assets/logo-eftg.png" /></router-link></div>
       </div>
     </div>
     <b-modal ref="modalAuth" hide-footer title="Login">
@@ -186,7 +180,7 @@ export default {
 
 #logo-eftg {
   display: inline-block;
-  height: 1.9rem;
+  height: 2.5rem;
 }
 
 #logo-eftg img {
