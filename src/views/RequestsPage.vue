@@ -8,7 +8,15 @@
         <div class="col-md-3">
           <div class="card mb-2">
             <ul class="list-group list-group-flush">
-              <li v-for="(request,index) in requests" class="list-group-item" @click="selectRequest(index)">
+              <li v-for="(request,index) in requests" 
+                class="list-group-item"
+                :class="{
+                  'approved': request.status  === 'approved',
+                  'denied': request.status === 'denied',
+                  'pending': request.status === 'pending'
+                }"
+                @click="selectRequest(index)"
+              >
                 {{request.course_name}}
               </li>
             </ul>
@@ -279,3 +287,18 @@ export default {
 }
 
 </script>
+
+<style scoped>
+
+.approved{
+  background-color: #e8ffef;
+}
+
+.denied{
+  background-color: #fff8e8;
+}
+
+.pending{
+  background-color: white;
+}
+</style>
