@@ -1,6 +1,6 @@
 :root {
-  --color1: #21294c;
-  --color1-hover: #49568e;
+  --color1: #926922;
+  --color1-hover: #b58531;
   --color2: #C3C3C3;
   --color2-hover: #A1A1A1;
 }
@@ -10,7 +10,7 @@ body {
 }
 
 #app {
-  font-family: 'Arvo', sans-serif;
+  font-family: 'Roboto', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
