@@ -71,6 +71,7 @@ export default {
         var data = await this.signup(this.username, this.password);
         this.showSuccess('Account created')
         console.log(data)
+        this.close()
       }catch(error) {
         console.log(error);
         this.showDanger(error.message)

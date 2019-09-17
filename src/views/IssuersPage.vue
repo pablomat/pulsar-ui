@@ -68,7 +68,7 @@
           </b-collapse>
         </b-card>
       </div>
-      <button class="btn btn-primary" @click="openModalIssuer">Add</button>
+      <button class="btn btn-primary mb-3" @click="openModalIssuer">Add</button>
       <div v-if="alert.info" class="alert alert-info" role="alert">{{alert.infoText}}</div>
       <div v-if="alert.success" class="alert alert-success" role="alert" v-html="alert.successText"></div>
       <div v-if="alert.danger"  class="alert alert-danger" role="alert">{{alert.dangerText}}</div>
@@ -130,6 +130,8 @@ export default {
           password: this.password
         } 
         var response = await axios.post(Config.SERVER_API + 'update_issuer', {issuer})
+        this.closeModalIssuer()
+        this.loadIssuers()
         this.showSuccess('Issuer added')
       }catch(error){
         console.log(error)

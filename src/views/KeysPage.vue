@@ -61,7 +61,7 @@
       </div>
       <div v-if="create_key.remaining_preconditions.length > 0">
         <span>Please add these preconditions: </span
-        ><span v-for="p in create_key.remaining_preconditions">{{p}}. </span>
+        ><span v-for="p in create_key.remaining_preconditions" class="text-danger">{{p}}. </span>
       </div>
       <button @click="register_to_course" class="btn btn-primary mt-5" :disabled="sending || create_key.remaining_preconditions.length>0"><div v-if="sending" class="mini loader"></div>Register</button>
     </b-modal>
@@ -78,7 +78,7 @@
           <pie-chart :data="dataChart" :options="optionsChart"/>
         </div>
       </div>     
-      <div role="tablist">
+      <div role="tablist mb-3">
         <b-card 
           v-for="(course,index) in keys"
           v-bind:key="index"
@@ -111,6 +111,9 @@
           </b-collapse>
         </b-card>
       </div>
+      <div v-if="alert.info" class="alert alert-info" role="alert">{{alert.infoText}}</div>
+      <div v-if="alert.success" class="alert alert-success" role="alert" v-html="alert.successText"></div>
+      <div v-if="alert.danger"  class="alert alert-danger" role="alert">{{alert.dangerText}}</div>
       <div class="row mt-3">
         <div class="col-12">
           <div class="float-right">
@@ -118,9 +121,7 @@
           </div>
         </div>
       </div>
-      <div v-if="alert.info" class="alert alert-info" role="alert">{{alert.infoText}}</div>
-      <div v-if="alert.success" class="alert alert-success" role="alert" v-html="alert.successText"></div>
-      <div v-if="alert.danger"  class="alert alert-danger" role="alert">{{alert.dangerText}}</div>
+      
     </div>    
   </div>
 </template>
@@ -270,6 +271,7 @@ export default {
 
         if(k.badge && k.badge.issuer && k.badge.permlink) this.keysWithBadge.push(k)
         if(!k.imgUrl) k.imgUrl = Config.DEFAULT_COURSE_IMAGE
+        console.log(k)
       })
       this.dataChart.datasets[0].data = [ this.keysWithBadge.length , this.keys.length - this.keysWithBadge.length ]
 
@@ -278,7 +280,9 @@ export default {
           var key = this.keysWithBadge[i]
           key.badge.content = await this.steem_get_badge(key.badge)
           key.badge.assertion = key.badge.content.metadata.assertions.find( (a)=>{ return a.recipient.identity === key.public_key })
-          this.keys.find((k)=>{return k.public_key === key.public_key}).badge = key.badge
+          var indexKey = this.keys.findIndex((k)=>{return k.public_key === key.public_key})
+          this.keys[indexKey].badge = key.badge
+          this.$set(this.keys, indexKey, this.keys[indexKey])
           console.log('badge loaded: '+key.badge.permlink)
           console.log('Assertion award date: '+key.badge.assertion.award_date)
         }catch(error){
