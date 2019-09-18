@@ -69,6 +69,11 @@ export default new Router({
       component: () => import('./views/IssuersPage.vue')
     },
     {
+      path: "/profile",
+      name: "Profile",
+      component: () => import('./views/ProfilePage.vue')
+    },
+    {
       path: "/explorer",
       name: "Explorer",
       component: HomeExplorer

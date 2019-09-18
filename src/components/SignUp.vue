@@ -2,6 +2,30 @@
   <div class="container">
     <div novalidate>
       <div class="form-group row">
+        <label for="inputName" class="col-md-4 col-form-label">NAME</label>
+        <div class="col-md-8">
+          <input class="form-control" type="text" id="inputName"
+             @keyup.enter="try_to_signup" 
+             v-model="name" placeholder="Name"/>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label for="inputFamilyName" class="col-md-4 col-form-label">FAMILY NAME</label>
+        <div class="col-md-8">
+          <input class="form-control" type="text" id="inputFamilyName"
+             @keyup.enter="try_to_signup" 
+             v-model="family_name" placeholder="Family name"/>
+        </div>
+      </div>
+      <div class="form-group row">
+        <label for="inputAddress" class="col-md-4 col-form-label">ADDRESS</label>
+        <div class="col-md-8">
+          <input class="form-control" type="text" id="inputAddress"
+             @keyup.enter="try_to_signup" 
+             v-model="address" placeholder="Address"/>
+        </div>
+      </div>
+      <div class="form-group row">
         <label for="inputUsername" class="col-md-4 col-form-label">USERNAME</label>
         <div class="col-md-8">
           <input class="form-control" type="text" id="inputUsername"
@@ -47,6 +71,9 @@ export default {
 
   data() {
     return {
+      name: '',
+      family_name: '',
+      address: '',
       username: '',
       password: '',
       password2: '',
@@ -67,8 +94,19 @@ export default {
         this.hideInfo()
         if(this.password !== this.password2)
           throw new Error('Passwords do not match')
+        if(name === '')
+          throw new Error('Name is empty')
+        if(family_name === '')
+          throw new Error('Family name is empty')
 
-        var data = await this.signup(this.username, this.password);
+        var profile = {
+          name: this.name,
+          family_name: this.family_name,
+          address: this.address,
+          image: ''
+        }
+
+        var data = await this.signup(this.username, this.password, profile);
         this.showSuccess('Account created')
         console.log(data)
         this.close()

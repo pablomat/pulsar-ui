@@ -46,8 +46,8 @@ export default {
       router.push(Config.PAGE_AFTER_LOGOUT)
     },
 
-    async signup(username, password) {
-      var response = await axios.post(Config.SERVER_API + 'signup', {username, password})
+    async signup(username, password, profile) {
+      var response = await axios.post(Config.SERVER_API + 'signup', {username, password, profile})
       return response.data
     },
 
