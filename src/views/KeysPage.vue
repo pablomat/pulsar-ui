@@ -349,8 +349,17 @@ export default {
 
     async showModalCreateKey() {
       this.$refs.modalCreateKeys.show()
-      var response = await axios.get(Config.SERVER_API + 'issuers')
-      this.issuers = response.data
+      var accountNames = await this.steem_database_call('lookup_accounts',['uni.',50])
+      accountNames = accountNames.filter( (a)=>{return a.startsWith('uni.')} )
+      var accounts = await this.steem_database_call('get_accounts',[accountNames])
+      accounts = accounts.filter( (a)=>{
+        if(!a.json_metadata || a.json_metadata.length==0) return false
+        var metadata = JSON.parse(a.json_metadata)
+        if(!metadata.api) return false
+        return true
+      })
+      accounts.forEach( (a)=>{ a.api = JSON.parse(a.json_metadata).api })
+      this.issuers = accounts
     },
 
     showBadge(course) {
