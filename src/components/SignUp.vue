@@ -94,9 +94,9 @@ export default {
         this.hideInfo()
         if(this.password !== this.password2)
           throw new Error('Passwords do not match')
-        if(name === '')
+        if(this.name === '')
           throw new Error('Name is empty')
-        if(family_name === '')
+        if(this.family_name === '')
           throw new Error('Family name is empty')
 
         var profile = {
