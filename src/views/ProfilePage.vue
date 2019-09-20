@@ -42,6 +42,8 @@ import axios from 'axios'
 
 import Config from '@/config.js'
 import Utils from '@/js/utils.js'
+import Alerts from '@/mixins/Alerts.js'
+import router from '@/router.js'
 import HeaderEFTG from '@/components/HeaderEFTG'
 
 export default {
@@ -59,9 +61,17 @@ export default {
     }
   },
 
+  created() {
+    this.loadUserData()
+  },
+
   components: {
     HeaderEFTG
   },
+
+  mixins: [
+    Alerts
+  ],
 
   methods: {
     async update() {
@@ -87,6 +97,21 @@ export default {
       }
       this.sending = false
     },
+
+    async loadUserData(){
+      this.name = this.$store.state.auth.profile.name
+      this.family_name = this.$store.state.auth.family_name
+      this.address = this.$store.state.auth.profile.address
+      this.image = this.$store.state.auth.profile.image
+    },
+
+    onLogin(){
+      this.loadUserData()
+    },
+
+    onLogout(){
+      router.push(Config.PAGE_AFTER_LOGOUT)
+    }
   },
 }
 
