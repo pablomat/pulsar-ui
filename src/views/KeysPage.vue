@@ -82,7 +82,9 @@
         <b-card 
           v-for="(course,index) in keys"
           v-bind:key="index"
-          v-bind:value="index"class="mb-1"
+          v-bind:value="index"
+          class="mb-1"
+          :class="{'bg-gray': !course.registration.pending && !course.registration.accepted}"
         >
           <div role="tab" v-b-toggle="'accordion'+index">
             <div class="square4" v-bind:style="{ backgroundImage: 'url(' + course.imgUrl + ')' }"></div>
@@ -93,8 +95,9 @@
           </div>
           <b-collapse :id="'accordion'+index" visible accordion="my-accordion" role="tabpanel">
             <div v-if="course.badge.assertion" class="mt-3">Award date: {{course.badge.assertion.award_date.slice(0,-9)}}</div>
-            <div v-else-if="course.registration_pending">Registration in progress</div>
-            <div v-else>Registered: {{course.registration.comments}}</div>
+            <div v-else-if="course.registration.pending">Registration in progress</div>
+            <div v-else-if="course.registration.accepted">Registered: {{course.registration.comments}}</div>
+            <div v-else>Rejected: {{course.registration.comments}}</div>
             <div class="card-text mt-2">
               <div class="row">
                 <div class="col-4">
@@ -265,10 +268,6 @@ export default {
       this.keysWithBadge = []
       this.keys.forEach( (k)=>{
         if(k.badge) k.badge.link = this.EXPLORER + '@' + k.badge.issuer + '/' + k.badge.permlink
-        if(k.registration){
-          k.registration_pending = k.registration.pending
-        }
-
         if(k.badge && k.badge.issuer && k.badge.permlink) this.keysWithBadge.push(k)
         if(!k.imgUrl) k.imgUrl = Config.DEFAULT_COURSE_IMAGE
         console.log(k)
@@ -424,5 +423,9 @@ export default {
   font-size: 12px;
   line-height: 1.428571429;
   border-radius: 25px;
+}
+
+.bg-gray {
+  background-color: #f1f1f1;
 }
 </style>
