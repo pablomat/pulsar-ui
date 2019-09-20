@@ -25,7 +25,7 @@
       <div class="form-group row">
         <label for="input_password" class="col-md-4 col-form-label">PASSWORD</label>
         <div class="col-md-8">
-          <input class="form-control" type="password" id="input_password"
+          <input class="form-control" type="text" id="input_password"
              v-model="password" placeholder="password"/>        
         </div>
       </div>

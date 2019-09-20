@@ -100,7 +100,7 @@ export default {
 
     async loadUserData(){
       this.name = this.$store.state.auth.profile.name
-      this.family_name = this.$store.state.auth.family_name
+      this.family_name = this.$store.state.auth.profile.family_name
       this.address = this.$store.state.auth.profile.address
       this.image = this.$store.state.auth.profile.image
     },
