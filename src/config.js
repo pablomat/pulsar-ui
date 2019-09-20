@@ -45,7 +45,7 @@ const VESTS = 'VESTS';
 
 const HARDFORK = 19
 
-const EXPLORER = process.env.EXPLORER || '/explorer/'
+const EXPLORER = process.env.VUE_APP_EXPLORER || '/exploreraaa/'
 const DSTEEM_TIMEOUT = 5000 //ms
 
 const STEEM_ADDRESS_PREFIX = 'EUR';
