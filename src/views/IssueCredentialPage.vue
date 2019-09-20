@@ -327,7 +327,7 @@ export default {
     validateAwardDate(submit) {
       let self = this
       return this.validateField('award_date', submit, function(){
-        var d = new Date(self.award_date + 'Z').toISOString().slice(0, -14)
+        var d = new Date(self.award_date + 'T00:00:00Z').toISOString().slice(0, -14)
         if(d !== self.award_date) throw new Error('Incorrect date')
       })
     },
@@ -335,7 +335,7 @@ export default {
     validateExpirationDate(submit) {
       let self = this
       return this.validateField('expiration_date', submit, function(){
-        var d = new Date(self.expiration_date + 'Z').toISOString().slice(0, -14)
+        var d = new Date(self.expiration_date + 'T00:00:00Z').toISOString().slice(0, -14)
         if(d !== self.expiration_date) throw new Error('Incorrect date')
       })
     },
