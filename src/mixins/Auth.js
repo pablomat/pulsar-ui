@@ -12,28 +12,29 @@ export default {
   methods: {
 
     async login(username, password) {
-      if(process.env.VUE_APP_DEV){
-        var dev_user = { 
-          username: process.env.VUE_APP_DEV_USERNAME,
-          imgUrl: "'https://steemitimages.com/DQmb2HNSGKN3pakguJ4ChCRjgkVuDN9WniFRPmrxoJ4sjR4'",
-          logged: true
-        }
-        this.$store.state.auth = dev_user
-        return dev_user
-      }
-
       var response
       var user
-      if(!username && !password){
+
+      if(process.env.VUE_APP_DEV){
+        var response = {
+          data: { 
+            username: process.env.VUE_APP_DEV_USERNAME,
+            profile: {
+              name: 'example',
+              family_name: 'family',
+              address: 'Luxembourg',
+              image: 'https://steemitimages.com/DQmb2HNSGKN3pakguJ4ChCRjgkVuDN9WniFRPmrxoJ4sjR4'
+            },
+            logged: true
+          }
+        }
+      }else if(!username && !password){
         response = await axios.get(Config.SERVER_API + 'login')
-        user = this.setLoginUser(response.data)
-        return user
+      }else{
+        response = await axios.post(Config.SERVER_API + "login", {username, password})
+        router.push(Config.PAGE_AFTER_LOGIN)
       }
-
-      response = await axios.post(Config.SERVER_API + "login", {username, password})
       user = this.setLoginUser(response.data)
-
-      router.push(Config.PAGE_AFTER_LOGIN)
       return user
     },
 
@@ -52,11 +53,9 @@ export default {
     },
 
     setLoginUser(user){
-      console.log('Logged in as '+user.username)      
-      if(!user.imgUrl || user.imgUrl==='')
-        user.imgUrl = "'https://steemitimages.com/DQmb2HNSGKN3pakguJ4ChCRjgkVuDN9WniFRPmrxoJ4sjR4'"
-      else
-        user.imgUrl = "'" + user.imgUrl + "'"
+      console.log('Logged in as '+user.username)
+      if(!user.profile || !user.profile.image || user.profile.image==='')
+        user.profile.image = 'https://steemitimages.com/DQmb2HNSGKN3pakguJ4ChCRjgkVuDN9WniFRPmrxoJ4sjR4'
       user.logged = true
       this.$store.state.auth = user
       return user

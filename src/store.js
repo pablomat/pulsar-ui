@@ -9,7 +9,11 @@ export default new Vuex.Store({
     auth: {
       user: '',
       logged: false,
-      imgUrl: '',
+      profile: {
+        name: '',
+        family_name: '',
+        image: ''
+      },
       keys: {
         owner: null,
         active: null,

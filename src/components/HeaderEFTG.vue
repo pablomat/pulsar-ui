@@ -14,7 +14,7 @@
           <b-nav-item-dropdown variant="link" size="lg" no-caret right>
             <template slot="button-content">
               <div class="image-profile" 
-                v-bind:style="{ backgroundImage: 'url(' + $store.state.auth.imgUrl + ')' }"                  
+                v-bind:style="{ backgroundImage: 'url(' + $store.state.auth.profile.image + ')' }"
               ></div>
             </template>
             <b-dropdown-header>{{$store.state.auth.username}}</b-dropdown-header>
