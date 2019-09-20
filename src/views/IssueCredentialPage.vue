@@ -164,11 +164,11 @@ export default {
           throw new Error("Error validating fields!");
         }
 
-        var award_date = new Date(this.award_date + 'Z').toISOString().slice(0, -5)
-        var expiration_date = new Date(this.expiration_date + 'Z').toISOString().slice(0, -5)
+        var award_date = new Date(this.award_date + 'T00:00:00Z').toISOString().slice(0, -5)
+        var expiration_date = new Date(this.expiration_date + 'T00:00:00Z').toISOString().slice(0, -5)
 
         this.graduates.forEach( (graduate)=>{
-          graduate.start_date = new Date(graduate.course_key.start_date + 'Z').toISOString().slice(0, -5)
+          graduate.start_date = graduate.course_key.start_date
           graduate.award_date = award_date
           graduate.expiration_date = expiration_date
           graduate.key = graduate.course_key.key
