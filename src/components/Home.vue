@@ -3,7 +3,7 @@
     <HeaderEFTG :showAuth="false" ref="headerEFTG"></HeaderEFTG>
     <div class="container">
       <h2 class="text-center mb-4">My portfolio</h2>
-      <AuthComponent ref="auth" v-on:login="onLogin"></AuthComponent>
+      <AuthComponent></AuthComponent>
     </div>            
   </div>
 </template>
