@@ -5,7 +5,11 @@
 		"university": "University of Luxembourg",
 		"course": "mathematics",
     "pending": false,
-    "status": "Course finished",
+    "registration" : {
+       "pending" : false,
+       "accepted" : true,
+       "comments" : "ok"
+    },
     "badge": {
       "issuer": "initminer",
       "permlink": "v7cp9-steem-2019-07-10"
@@ -17,6 +21,11 @@
 		"university": "University of Colombia",
 		"course": "Electronics",
 		"pending": false,
+    "registration" : {
+       "pending" : false,
+       "accepted" : true,
+       "comments" : "ok"
+    },
     "status": "Course finished",
     "badge": {
       "issuer": "initminer",
@@ -28,11 +37,15 @@
 	{
 		"university": "University of France",
 		"course": "Mathematics",
-		"pending": false,
+		"pending": true,
+    "registration" : {
+       "pending" : true,
+       "accepted" : false,
+       "comments" : ""
+    },
     "status": "Course finished",
     "badge": {
-      "issuer": "initminer",
-      "permlink": "v7cp9-steem-2019-07-10"
+
     },
 		"public_key": "EUR6qsQS3uCpPiBA3cxAjeY5ZeERZpc6FKz4aimhUpULFWCVd3BhZ",
 		"private_key": "5HzR6btG4LZ7ySfBRNeNVSYVbLV4oFz29kpM5dH51uqkkt7k4uK"
@@ -41,6 +54,11 @@
 		"university": "University of Belgium",
 		"course": "Software Engineering",
 		"pending": true,
+    "registration" : {
+       "pending" : false,
+       "accepted" : false,
+       "comments" : "sorry, denied"
+    },
     "status": "In process",
     "badge": {
       
@@ -51,11 +69,15 @@
 	{
 		"university": "University of Belgium",
 		"course": "Medicine",
-		"pending": false,
+		"pending": true,
+    "registration" : {
+       "pending" : false,
+       "accepted" : true,
+       "comments" : "ok"
+    },
     "status": "Course finished",
     "badge": {
-      "issuer": "initminer",
-      "permlink": "v7cp9-steem-2019-07-10"
+
     },
 		"public_key": "EUR6qsQS3uCpPiBA3cxAjeY5ZeERZpc6FKz4aimhUpULFWCVd3BhZ",
 		"private_key": "5HzR6btG4LZ7ySfBRNeNVSYVbLV4oFz29kpM5dH51uqkkt7k4uK"
