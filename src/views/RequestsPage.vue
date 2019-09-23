@@ -6,18 +6,51 @@
       
       <div class="row">
         <div class="col-md-3">
+          <h4>Pending</h4>
           <div class="card mb-2">
             <ul class="list-group list-group-flush">
-              <li v-for="(request,index) in requests" 
+              <li v-for="(request,index) in requestsPending" 
                 class="list-group-item"
                 :class="{
                   'approved': request.status  === 'approved',
                   'denied': request.status === 'denied',
                   'pending': request.status === 'pending'
                 }"
-                @click="selectRequest(index)"
+                @click="selectRequest(index,'pending')"
               >
-                {{request.course_name}}
+                {{request.course_name}}<br/><small>{{request.time2}}</small>
+              </li>
+            </ul>
+          </div>
+          <h4>Approved</h4>
+          <div class="card mb-2">
+            <ul class="list-group list-group-flush">
+              <li v-for="(request,index) in requestsApproved" 
+                class="list-group-item"
+                :class="{
+                  'approved': request.status  === 'approved',
+                  'denied': request.status === 'denied',
+                  'pending': request.status === 'pending'
+                }"
+                @click="selectRequest(index,'approved')"
+              >
+                {{request.course_name}}<br/><small>{{request.time2}}</small>
+              </li>
+            </ul>
+          </div>
+          <h4>Rejected</h4>
+          <div class="card mb-2">
+            <ul class="list-group list-group-flush">
+              <li v-for="(request,index) in requestsRejected" 
+                class="list-group-item"
+                :class="{
+                  'approved': request.status  === 'approved',
+                  'denied': request.status === 'denied',
+                  'pending': request.status === 'pending'
+                }"
+                @click="selectRequest(index,'denied')"
+              >
+                {{request.course_name}}<br/><small>{{request.time2}}</small>
               </li>
             </ul>
           </div>
@@ -82,7 +115,9 @@ export default {
 
   data() {
     return {
-      requests: [],
+      requestsPending: [],
+      requestsApproved: [],
+      requestsRejected: [],
       courses: [],
       current: null,
 
@@ -108,12 +143,15 @@ export default {
       try{
         var response = await axios.get(Config.SERVER_API + "requests")
         console.log(response.data.length)
-        this.requests = response.data
-        console.log(this.requests)
-        for(var i in this.requests){
-          var r = this.requests[i]
+        var requests = response.data.reverse()
+        var rPending  = []
+        var rApproved = []
+        var rRejected = []
+        for(var i in requests){
+          var r = requests[i]
 
           r.course_name = this.courses.find((c)=>{ return r.course === c._id }).name
+          r.time2 = r.time.slice(0,-9)
 
           if(!r.preconditions) r.preconditions = []
           for(var j in r.preconditions){
@@ -123,12 +161,25 @@ export default {
             p.course = check.course
             p.messages = check.messages
           }
-          this.$set(this.requests, i, r)
+          switch(r.status){
+            case 'pending':
+              rPending.push(r)
+              break
+            case 'approved':
+              rApproved.push(r)
+              break
+            case 'denied':
+              rRejected.push(r)
+              break
+            default:
+              throw new Error(`status type '${r.status}' does not exist`)
+          }
         }
+        this.requestsPending = rPending
+        this.requestsApproved = rApproved
+        this.requestsRejected = rRejected
 
         this.reloadCurrent()
-        console.log('load request')
-        console.log(this.requests)
       }catch(error){
         console.log(error)
       }
@@ -231,13 +282,30 @@ export default {
       }
     },
 
-    selectRequest(id) {
-      this.current = this.requests[id]
+    selectRequest(id,type) {
+      switch(type){
+        case 'pending':
+          this.current = this.requestsPending[id]
+          break
+        case 'approved':
+          this.current = this.requestsApproved[id]
+          break
+        case 'denied':
+          this.current = this.requestsRejected[id]
+          break
+        default:
+          throw new Error(`status type '${type}' does not exist`)
+      }
     },
 
     reloadCurrent() {
       if(!this.current) return
-      this.current = this.requests.find( (s)=>{ return s._id === this.current._id } )
+      var current = this.requestsPending.find( (s)=>{ return s._id === this.current._id } )
+      if(!current)
+        current = this.requestsApproved.find( (s)=>{ return s._id === this.current._id } )
+      if(!current)
+        current = this.requestsRejected.find( (s)=>{ return s._id === this.current._id } )
+      this.current = current
     },
 
     getSignatureKeys(trx,chainId){
