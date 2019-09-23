@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <HeaderEFTG ref="headerEFTG"></HeaderEFTG>     
+    <HeaderEFTG ref="headerEFTG" headerClass="bg-secondary"></HeaderEFTG>     
     <div class="container">
     <h1>EFTG Explorer</h1>
     <div class="row">

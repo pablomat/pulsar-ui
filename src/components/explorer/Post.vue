@@ -1,6 +1,6 @@
 <template>
   <div class="post">
-    <HeaderEFTG ref="headerEFTG"></HeaderEFTG>
+    <HeaderEFTG ref="headerEFTG" headerClass="bg-secondary"></HeaderEFTG>
     <div class="container">
     <div v-if="this.exists">
     <div class="row">

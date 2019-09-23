@@ -1,6 +1,6 @@
 <template>
   <div class="account">
-    <HeaderEFTG ref="headerEFTG"></HeaderEFTG>     
+    <HeaderEFTG ref="headerEFTG" headerClass="bg-secondary"></HeaderEFTG>     
     <div v-if="this.exists.account">
       <div class="profile" :style="this.account.cover_image==''?'background-color: black;':'background-image: url('+this.account.cover_image+');'">
         <div>

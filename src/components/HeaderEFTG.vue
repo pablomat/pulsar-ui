@@ -3,7 +3,7 @@
     <b-modal ref="modalAuth" hide-footer title="Login">
       <AuthComponent ref="auth" v-on:login="onLogin" v-on:close="closeModalAuth"></AuthComponent>
     </b-modal>
-    <b-navbar toggleable="lg" type="dark" variant="primary">
+    <b-navbar toggleable="lg" type="dark" :class="headerClass">
       <ul class="navbar-nav">
         <li class="nav-item">
           <router-link to="/" class="nav-item nav-link"><div id="logo"><img src="../../public/university-logo-white.png" /></div></router-link>
@@ -54,7 +54,7 @@
           <li class="nav-item">
             <router-link to="/verify" class="nav-item nav-link"><div class="extra-padding">Verify</div></router-link>
           </li>
-          <li class="nav-item">
+          <!--<li class="nav-item">
             <router-link to="/explorer" class="nav-item nav-link"><div class="extra-padding">Explorer</div></router-link>
           </li>
           <li class="nav-item">
@@ -65,7 +65,7 @@
           </li>
           <li class="nav-item">
             <router-link to="/contact" class="nav-item nav-link"><div class="extra-padding">Contact</div></router-link>
-          </li>
+          </li>-->
         </ul>
         <ul class="navbar-nav ml-auto">
           <li class="nav-item d-lg-block d-none">
@@ -102,8 +102,9 @@ import axios from 'axios'
 export default {
   name: "HeaderEFTG",
   props: {
-    portal: "",
-    showAuth: false
+    portal: {type: String, required: false, default: ''},
+    showAuth: {type: Boolean, required: false, default: false},
+    headerClass: {type: String, required: false, default: 'bg-primary'},
   },
   data() {
     return {
