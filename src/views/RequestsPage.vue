@@ -59,20 +59,24 @@
           <div v-if="current">
             <h3>Request {{current.course_name}}</h3>
             <div class="row">
-              <div class="col-md-3">Student</div>
+              <div class="col-md-3">Student name</div>
               <div class="col">{{current.family_name}}, {{current.name}}</div>
             </div>
             <div class="row">
-              <div class="col-md-3">Key</div>
+              <div class="col-md-3">Student's public key</div>
               <div class="col">{{current.key}}</div>
             </div>
             <div class="row">
-              <div class="col-md-3">Date</div>
+              <div class="col-md-3">Date of request</div>
               <div class="col">{{current.start_date}}</div>
             </div>
             <div class="row">
               <div class="col-md-3">Status</div>
               <div class="col">{{current.status}}</div>
+            </div>
+            <div class="row" v-if="current.comments">
+              <div class="col-md-3">Comments</div>
+              <div class="col">{{current.comments}}</div>
             </div>
             <div class="row" v-if="current.preconditions && current.preconditions.length > 0">
               <div class="col-md-3">Provided Badges</div>
