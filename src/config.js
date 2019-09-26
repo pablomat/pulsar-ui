@@ -61,6 +61,8 @@ const MAP = {
   INI_ZOOM : 4 ,
 }
 
+const NO_PROFILE_IMAGE = 'https://steemitimages.com/DQmb2HNSGKN3pakguJ4ChCRjgkVuDN9WniFRPmrxoJ4sjR4'
+
 const APP_VERSION = 'pulsar/1.5.3';
 
 export default {
@@ -94,6 +96,7 @@ export default {
   STEEM_SBD_STOP_PERCENT: STEEM_SBD_STOP_PERCENT,
 
   MAP:MAP,
+  NO_PROFILE_IMAGE,
 
   APP_VERSION: APP_VERSION,
 };
