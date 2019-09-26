@@ -86,7 +86,7 @@
                     :style="{ backgroundImage: 'url(' + p.issuer_image + ')' }"
                   ></div>
                   <div class="custom-card-body">
-                    <h5 class="card-title"><router-link :to="p.course_link">{{p.course}}</router-link></h5>
+                    <h5 class="card-title"><router-link :to="p.course_link">{{p.course}}</router-link> ({{p.badge.issuer}})</h5>
                     <ul class="card-text list-group">
                       <li v-for="message in p.messages" class="list-group-item" :class="{'bg-danger':!message.ok}">
                       <font-awesome-icon :icon="message.ok?'check':'times'" class="mr-2"/> {{message.message}} <router-link v-if="message.link" :to=message.link.url>{{message.link.text}}</router-link>
@@ -209,7 +209,7 @@ export default {
           var chainId = this.RPCnode_initClient().chainId
           if(sgnTrx.operations[0].length > 0){
             if(sgnTrx.operations[0][0] === 'transfer')
-              messages[i++] = {ok: true, message: `Message: ${sgnTrx.operations[0][1].memo}`}
+              messages[i++] = {ok: true, message: `Message: "${sgnTrx.operations[0][1].memo}"`}
           }else{
             messages[i++] = {ok: false, message: 'The proof does not contain operations'}
             verification = false
@@ -250,7 +250,7 @@ export default {
             course = content.title
             var metadata = JSON.parse(content.json_metadata)
             if(metadata && metadata.badge){
-              messages[i++] = {ok: true, message: `A Badge from ${data.badge.issuer} is present in the blockchain`}
+              messages[i++] = {ok: true, message: `This badge from ${data.badge.issuer} is present in the blockchain`}
             }else{
               messages[i++] = {ok: false, message: 'There is no badge in ', link:{text:content.title, url:Config.EXPLORER+url}}
               verification = false
