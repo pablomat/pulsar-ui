@@ -5,8 +5,8 @@
       <h2 class="text-center">Issue Bagdes</h2>
       <div :class="{'was-validated':was_validated}" novalidate>
         <div class="form-group row">
-          <label for="input_course" class="col-md-2 col-form-label">COURSE</label>
-          <div class="col-md-10">
+          <label for="input_course" class="col-md-12 col-form-label">COURSE</label>
+          <div class="col-md-12">
             <select class="form-control" id="input_course" v-model="course" :class="{'is-invalid': error.course }">
               <option disabled value="">Please select one</option>
               <option
@@ -21,46 +21,29 @@
           </div>
         </div>
         <div class="form-group row">
-          <label for="input_award_date" class="col-md-2 col-form-label">AWARD DATE</label>
-          <div class="col-md-10">
+          <label for="input_graduates" class="col-md-12 col-form-label">GRADUATES</label>
+          <div class="col-md-12">
+            <button class="btn btn-primary mt-2 mb-2" v-if="graduates.length > 1" @click="toggleSelectAllGraduates">{{selectAllGraduates?'Unselect all':'Select all'}}</button>
+          </div>
+          <div class="col-md-12" v-for="(student,index) in graduates">
+            <input v-model="student.input" type="checkbox"/>
+            <label class="label-form-control ml-2">{{student.family_name}}, {{student.name}}</label>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label for="input_award_date" class="col-md-12 col-form-label">AWARD DATE</label>
+          <div class="col-md-12">
             <input class="form-control" type="text" id="input_award_date"
               v-model="award_date" placeholder="yyyy-mm-dd" :class="{'is-invalid': error.award_date }"/>
             <div v-if="error.award_date" class="invalid-feedback">{{ errorText.award_date }}</div>
           </div>
         </div>
         <div class="form-group row">
-          <label for="input_expiration_date" class="col-md-2 col-form-label">EXPIRATION DATE</label>
-          <div class="col-md-10">
+          <label for="input_expiration_date" class="col-md-12 col-form-label">EXPIRATION DATE</label>
+          <div class="col-md-12">
             <input class="form-control" type="text" id="input_expiration_date"
               v-model="expiration_date" placeholder="yyyy-mm-dd" :class="{'is-invalid': error.expiration_date }"/>
             <div v-if="error.expiration_date" class="invalid-feedback">{{ errorText.expiration_date }}</div>
-          </div>
-        </div>
-        <div class="form-group row">
-          <label for="input_graduates" class="col-md-2 col-form-label">GRADUATES</label>
-          <div class="col-md-10">
-            <div class="row">
-              <div class="col-md-6">
-                <div class="card">
-                  <ul class="list-group list-group-flush">
-                    <li v-for="(student,index) in no_graduates" class="list-group-item" @click="selectStudent(index, 'no_graduates')">
-                      <div>{{student.family_name}}, {{student.name}}</div>
-                      <div><small>{{student.course_key.key}}</small></div>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-              <div class="col-md-6">
-                <div class="card">
-                  <ul class="list-group list-group-flush">
-                    <li v-for="(student,index) in graduates" class="list-group-item" @click="selectStudent(index, 'graduates')">
-                      <div>{{student.family_name}}, {{student.name}}</div>
-                      <div><small>{{student.course_key.key}}</small></div>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
         <div class="row mt-4">
@@ -104,7 +87,7 @@ export default {
       expiration_date: '',
 
       graduates: [],
-      no_graduates: [],
+      selectAllGraduates: false,
 
       sending: false,
       error: {
@@ -166,17 +149,21 @@ export default {
 
         var award_date = new Date(this.award_date + 'T00:00:00Z').toISOString().slice(0, -5)
         var expiration_date = new Date(this.expiration_date + 'T00:00:00Z').toISOString().slice(0, -5)
-
-        this.graduates.forEach( (graduate)=>{
-          graduate.start_date = graduate.course_key.start_date
-          graduate.award_date = award_date
-          graduate.expiration_date = expiration_date
-          graduate.key = graduate.course_key.key
+        
+        var graduates = []
+        this.graduates.forEach( (g)=>{
+          if(g.input){
+            g.start_date = g.course_key.start_date
+            g.award_date = award_date
+            g.expiration_date = expiration_date
+            g.key = g.course_key.key
+            graduates.push(g)
+          }
         })
 
         var badges = {
           course: course,
-          graduates: this.graduates
+          graduates: graduates
         }
 
         var response = await axios.post(Config.SERVER_API + "create_badges", badges)
@@ -257,13 +244,11 @@ export default {
       try{
         var filter = {keys:{$all:[{$elemMatch:{course:this.course}}]}}
         var response = await axios.post(Config.SERVER_API + "students", filter)
-        console.log(response.data.length)
         var students = response.data
         students.forEach( (s)=>{
           s.course_key = s.keys.find( (k)=>{return k.course === this.course} )
         })
-        this.no_graduates = response.data
-        this.graduates = []
+        this.graduates = response.data
 
         console.log('load students')
         this.isAdmin = true
@@ -273,18 +258,13 @@ export default {
       this.loadingAdmin = false
     },
 
-    selectStudent(index, clickOn) {
-      if(clickOn === 'graduates') {
-        var from = 'graduates'
-        var to =   'no_graduates'
-      }else{
-        var from = 'no_graduates'
-        var to =   'graduates'
-      }
-      var students = this[from].splice(index, 1)
-      var student = students[0]
-      if(student) {
-        this[to].push( student )
+    toggleSelectAllGraduates(){
+      this.selectAllGraduates = !this.selectAllGraduates
+      for(var i in this.graduates){
+        var g = this.graduates[i]
+        if(this.selectAllGraduates) g.input = true
+        else g.input = false
+        this.$set(this.graduates, i, g)
       }
     },
 
