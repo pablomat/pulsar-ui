@@ -59,35 +59,40 @@
           <div v-if="current">
             <h3>Request {{current.course_name}}</h3>
             <div class="row">
-              <div class="col-md-3">Student name</div>
+              <div class="col-md-2">Student name</div>
               <div class="col">{{current.family_name}}, {{current.name}}</div>
             </div>
             <div class="row">
-              <div class="col-md-3">Student's public key</div>
+              <div class="col-md-2">Student's public key</div>
               <div class="col">{{current.key}}</div>
             </div>
             <div class="row">
-              <div class="col-md-3">Date of request</div>
+              <div class="col-md-2">Date of request</div>
               <div class="col">{{current.start_date}}</div>
             </div>
             <div class="row">
-              <div class="col-md-3">Status</div>
+              <div class="col-md-2">Status</div>
               <div class="col">{{current.status}}</div>
             </div>
             <div class="row" v-if="current.comments">
-              <div class="col-md-3">Comments</div>
+              <div class="col-md-2">Comments</div>
               <div class="col">{{current.comments}}</div>
             </div>
             <div class="row" v-if="current.preconditions && current.preconditions.length > 0">
-              <div class="col-md-3">Provided Badges</div>
+              <div class="col-md-2">Provided Badges</div>
               <div class="col">
-                <div v-for="p in current.preconditions">
-                  <ul>
-                    {{p.course}}
-                    <li v-for="message in p.messages">
-                    <font-awesome-icon :icon="message.ok?'check':'times'" class="mr-2"/> {{message.message}} <router-link v-if="message.link" :to=message.link.url>{{message.link.text}}</router-link>
-                    </li>
-                  </ul>
+                <div v-for="p in current.preconditions" class="custom-card">
+                  <div class="image-diploma"
+                    :style="{ backgroundImage: 'url(' + p.issuer_image + ')' }"
+                  ></div>
+                  <div class="custom-card-body">
+                    <h5 class="card-title"><router-link :to="p.course_link">{{p.course}}</router-link></h5>
+                    <ul class="card-text list-group">
+                      <li v-for="message in p.messages" class="list-group-item" :class="{'bg-danger':!message.ok}">
+                      <font-awesome-icon :icon="message.ok?'check':'times'" class="mr-2"/> {{message.message}} <router-link v-if="message.link" :to=message.link.url>{{message.link.text}}</router-link>
+                      </li>
+                    </ul>
+                  </div>
                 </div>
               </div>
             </div>
@@ -160,10 +165,12 @@ export default {
           if(!r.preconditions) r.preconditions = []
           for(var j in r.preconditions){
             var p = r.preconditions[j]
-            var check =  await this.checkProofs(p)
+            var check =  await this.checkProofs(p, r)
             console.log(check)
             p.course = check.course
+            p.course_link = check.course_link
             p.messages = check.messages
+            p.issuer_image = check.issuer_image
           }
           switch(r.status){
             case 'pending':
@@ -189,9 +196,11 @@ export default {
       }
     },
 
-    async checkProofs(data) {
+    async checkProofs(data, request) {
       var messages = []
       var course = ''
+      var course_link = ''
+      var issuer_image = Config.NO_PROFILE_IMAGE
       var i = 0
       var verification
       if(data.proof) {
@@ -200,16 +209,16 @@ export default {
           var chainId = this.RPCnode_initClient().chainId
           if(sgnTrx.operations[0].length > 0){
             if(sgnTrx.operations[0][0] === 'transfer')
-              messages[i++] = {ok: true, message: 'Message in the proof: '+sgnTrx.operations[0][1].memo}
+              messages[i++] = {ok: true, message: `Message: ${sgnTrx.operations[0][1].memo}`}
           }else{
             messages[i++] = {ok: false, message: 'The proof does not contain operations'}
             verification = false
           }
           var expiration = new Date(sgnTrx.expiration + 'Z')
           if(new Date() <= expiration){
-            messages[i++] = {ok: true, message: 'The proof has not expired ('+sgnTrx.expiration+')'}
+            messages[i++] = {ok: true, message: `Proof valid until ${sgnTrx.expiration}`}
           }else{
-            messages[i++] = {ok: false, message: 'The proof has expired ('+sgnTrx.expiration+')'}
+            messages[i++] = {ok: false, message: `The proof has expired (${sgnTrx.expiration})`}
             verification = false
           }
           var pubKeys = this.getSignatureKeys(sgnTrx,chainId)
@@ -217,12 +226,12 @@ export default {
             messages[i++] = {ok: false, message: 'The proof has not been signed'}
             verification = false
           }else if(pubKeys.length == 1){
-            messages[i++] = {ok: true, message: 'The proof has been signed by '+pubKeys[0]}
+            // messages[i++] = {ok: true, message: `The proof has been signed by ${pubKeys[0]}`}
           }else{
-            messages[i++] = {ok: true, message: 'The proof has been signed by the following keys: '+pubKeys}
+            // messages[i++] = {ok: true, message: `The proof has been signed by the following keys: ${pubKeys}`}
           }
         }catch(error){
-          messages[i++] = {ok: false, message: 'Problems reading the proof: '+error.message}
+          messages[i++] = {ok: false, message: `Problems reading the proof: ${error.message}`}
           console.log(error)
           verification = false
         }
@@ -233,6 +242,7 @@ export default {
       if(data.badge) {
         if(data.badge.issuer && data.badge.permlink) {
           var url = '@'+data.badge.issuer+'/'+data.badge.permlink
+          course_link = Config.EXPLORER + url
           try{
             var content = await this.steem_database_call( 'get_content', [data.badge.issuer, data.badge.permlink] )
             if(!content) throw new Error('There is no content')
@@ -240,7 +250,7 @@ export default {
             course = content.title
             var metadata = JSON.parse(content.json_metadata)
             if(metadata && metadata.badge){
-              messages[i++] = {ok: true, message: 'Badge found in the blockchain: ', link:{text:content.title, url:Config.EXPLORER+url}}
+              messages[i++] = {ok: true, message: `A Badge from ${data.badge.issuer} is present in the blockchain`}
             }else{
               messages[i++] = {ok: false, message: 'There is no badge in ', link:{text:content.title, url:Config.EXPLORER+url}}
               verification = false
@@ -249,9 +259,9 @@ export default {
               pubKeys.forEach( (pubKey) => {
                 var assertion = metadata.assertions.find( (a)=>{ return a.recipient.identity === pubKey.toString() })
                 if(assertion){
-                  messages[i++] = {ok: true, message: 'The public key '+pubKey+' is present in the badge'}
+                  messages[i++] = {ok: true, message: `The signature of ${request.name} ${request.family_name} confirms the ownership of the badge`}
                 }else{
-                  messages[i++] = {ok: false, message: 'The public key '+pubKey+' is not present in the badge'}
+                  messages[i++] = {ok: false, message: `The signature of ${request.name} ${request.family_name} do not match with the any ID in the badge`}
                   verification = false
                 }
               })
@@ -260,9 +270,18 @@ export default {
               verification = false
             }
           }catch(error){
-            messages[i++] = {ok: false, message: 'Problems reading the badge '+url+'. Reason: '+error.message}
+            messages[i++] = {ok: false, message: `Problems reading the badge ${url}. Reason: ${error.message}`}
             console.log(error)
             verification = false
+          }
+
+          try{
+            var response_accounts = await this.steem_database_call('get_accounts',[[data.badge.issuer]])
+            var issuer_account = response_accounts[0]
+            issuer_image = JSON.parse(issuer_account.json_metadata).profile.profile_image
+          }catch(error){
+            console.log(`Error with get_accounts for the issuer '${data.badge.issuer}'`)
+            console.log(error)
           }
         }else{
           messages[i++] = {ok: false, message: 'The badge does not contain issuer and permlink'}
@@ -272,7 +291,9 @@ export default {
 
       return {
         messages: messages,
-        course: course
+        course: course,
+        course_link: course_link,
+        issuer_image: issuer_image
       }
     },
 
@@ -372,5 +393,26 @@ export default {
 
 .pending{
   background-color: white;
+}
+
+.image-diploma{
+  display: inline-block;
+  height: 4rem;
+  width: 4rem;
+  overflow: hidden;
+  background-size: cover;
+  background-position: center center;
+  vertical-align: middle;
+}
+
+.custom-card{
+  padding: 15px;
+}
+
+.custom-card-body{
+  display: inline-block;
+  width: calc(100% - 4rem - 15px);
+  vertical-align: top;
+  margin-left: 15px;
 }
 </style>
