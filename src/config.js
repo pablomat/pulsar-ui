@@ -63,7 +63,7 @@ const MAP = {
 
 const NO_PROFILE_IMAGE = 'https://steemitimages.com/DQmb2HNSGKN3pakguJ4ChCRjgkVuDN9WniFRPmrxoJ4sjR4'
 
-const APP_VERSION = 'pulsar/1.5.3';
+const APP_VERSION = 'pulsar/1.5.4';
 
 export default {
 
