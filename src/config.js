@@ -109,7 +109,7 @@ const PRODUCT_CATEGORY_LIST = [
   'Emergency',
 ]
 
-const APP_VERSION = 'pulsar/1.5.3';
+const APP_VERSION = 'pulsar/1.6.2';
 
 export default {
 
