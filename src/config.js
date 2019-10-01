@@ -51,7 +51,7 @@ const MAP = {
 
 const ACCOUNT_CREATION_FEE = '3.000 PULSE'
 
-const APP_VERSION = 'pulsar/1.5.3';
+const APP_VERSION = 'pulsar/1.6.2';
 
 export default {
 
