@@ -1,5 +1,38 @@
 <template>
   <div>
+    <b-modal ref="modalBadge" hide-footer title="Badge">
+      <div v-if="selBadge">
+        <div class="row mb-3">
+          <div class="col-11">
+            <strong>{{selBadge.badge.name}}</strong>
+            <div><router-link :to="EXPLORER+selBadge.badge.link.url">{{selBadge.badge.link.title}}</router-link></div>
+            <div class="row">
+              <div class="col-3">Start date</div>
+              <div class="col-9">{{selBadge.assertion.start_date}}</div>
+            </div>
+            <div class="row">
+              <div class="col-3">Award date</div>
+              <div class="col-9">{{selBadge.assertion.award_date}}</div>
+            </div>
+            <div class="row">
+              <div class="col-3">Expiration date</div>
+              <div class="col-9">{{selBadge.assertion.expiration_date}}</div>
+            </div>
+            <div class="row">
+              <div class="col-3">Key</div>
+              <div class="col-9 text-break">{{selBadge.assertion.recipient.identity}}</div>
+            </div>
+            <div v-if="selBadge.assertion.revoked" class="row">
+              <div class="col-3 text-danger">Revoked</div>
+            </div>
+          </div>
+        </div>
+        <button v-if="!selBadge.assertion.revoked" class="btn btn-danger" @click="revoke" :disabled="sending"><div v-if="sending" class="mini loader"></div>Revoke</button>
+        <button v-else class="btn btn-danger" @click="approveAgain" :disabled="sending"><div v-if="sending" class="mini loader"></div>Approve again</button>
+      </div>
+    </b-modal>
+
+
     <HeaderEFTG ref="headerEFTG" v-on:login="onLogin" v-on:logout="onLogout"></HeaderEFTG>
     <div class="container">
       <h2 class="text-center">Admin Students</h2>
@@ -117,7 +150,7 @@
                   <h4 class="mt-4">Badges</h4>
                   <div class="card">
                     <ul class="list-group list-group-flush">
-                      <li v-for="(badge,index) in current.badges" class="list-group-item" @click="selectBadge(index)">
+                      <li v-for="(badge,index) in current.badges" class="list-group-item" @click="showBadge(index)">
                         <div class="row">
                           <div class="col-11">
                             <strong>{{badge.badge.name}}</strong>
@@ -137,6 +170,9 @@
                             <div class="row">
                               <div class="col-3">Key</div>
                               <div class="col-9">{{badge.assertion.recipient.identity}}</div>
+                            </div>
+                            <div v-if="badge.assertion.revoked" class="row">
+                              <div class="col-3 text-danger">Revoked</div>
                             </div>
                           </div>
                           <div class="col-1">
@@ -192,6 +228,7 @@ export default {
       students: [],
       current: null,
       selectedKey: -1,
+      selBadge: null,
 
       name: '',
       family_name: '',
@@ -240,7 +277,8 @@ export default {
   },
 
   mixins: [
-    Alerts
+    Alerts,
+    SteemClient
   ],
 
   created() {
@@ -442,6 +480,56 @@ export default {
         console.log(error)
         this.showDanger(error.message)
       }
+    },
+
+    showBadge(index) {
+      this.selBadge = this.current.badges[index]
+      this.$refs.modalBadge.show()
+    },
+
+    async revoke(){
+      this.sending = true
+      this.hideSuccess()
+      this.hideDanger()
+
+      try{
+        var author = this.selBadge.badge.link.author
+        var permlink = this.selBadge.badge.link.permlink
+        var student = {_id: this.current._id}
+  
+        var content = await this.steem_database_call('get_content',[author, permlink])
+        var metadata = JSON.parse(content.json_metadata)
+        var graduates = []
+        var no_graduates = []
+        var course = {_id: metadata.badge.id, name: metadata.badge.name}
+        metadata.assertions.forEach( (a)=>{
+          var graduate = {
+            start_date: a.start_date,
+            award_date: a.award_date,
+            expiration_date: a.expiration_date,
+            key: a.recipient.identity
+          }
+          if(a.recipient.identity === this.selBadge.assertion.recipient.identity)
+            no_graduates.push(graduate)
+          else
+            graduates.push(graduate)
+        })
+        var data = {course, graduates, no_graduates, author, permlink, student}
+        var response = await axios.post(Config.SERVER_API + "create_badges", data)
+        console.log(response.data)
+        this.showSuccess('<a href="'+Config.EXPLORER+'b/'+response.data.block_num+'/'+response.data.id+'" class="alert-link" target="_blank">Diploma revoked</a>')
+      }catch(error){
+        console.log(error)
+        this.showDanger(error.message)
+      }
+      this.sending = false
+      this.hideInfo()
+      this.$refs.modalBadge.hide()
+      await this.loadStudents()
+    },
+
+    approveAgain(){
+      alert('Not implemented yet')
     },
 
     onLogin() {},
