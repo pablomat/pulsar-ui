@@ -261,7 +261,7 @@ export default {
                 if(assertion){
                   messages[i++] = {ok: true, message: `The signature of ${request.name} ${request.family_name} confirms the ownership of the badge`}
                 }else{
-                  messages[i++] = {ok: false, message: `The signature of ${request.name} ${request.family_name} do not match with the any ID in the badge`}
+                  messages[i++] = {ok: false, message: `The signature of ${request.name} ${request.family_name} do not match with any ID in the badge`}
                   verification = false
                 }
               })
