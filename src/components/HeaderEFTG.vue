@@ -34,6 +34,12 @@
       <b-collapse id="nav-collapse" is-nav>
         <ul class="navbar-nav">
           <li class="nav-item">
+            <router-link to="/publish" class="nav-item nav-link"><div class="extra-padding">Publish</div></router-link>
+          </li>
+          <li class="nav-item">
+            <router-link to="/market" class="nav-item nav-link"><div class="extra-padding">Market</div></router-link>
+          </li>
+          <li class="nav-item">
             <router-link to="/explorer" class="nav-item nav-link"><div class="extra-padding">Explorer</div></router-link>
           </li>
           <li class="nav-item">

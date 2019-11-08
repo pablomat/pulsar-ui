@@ -39,6 +39,16 @@ export default new Router({
       component: () => import('./views/BroadcastPage.vue')
     },
     {
+      path: "/publish",
+      name: "Publish",
+      component: () => import('./views/PublishPage.vue')
+    },
+    {
+      path: "/market",
+      name: "MarketPage",
+      component: () => import('./views/MarketPage.vue')
+    },
+    {
       path: "/explorer",
       name: "Explorer",
       component: () => import('./components/explorer/Home.vue')
