@@ -52,7 +52,7 @@ Open the file `config.js` and set your username and password.
 ```
 // Authentication
 const username = 'country_code-busX'
-const password = 'your password'
+const password = 'your posting key'
 ```
 
 Save the changes, and run in the terminal
