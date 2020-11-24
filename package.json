@@ -21,7 +21,7 @@
     "file-saver": "^2.0.2",
     "leaflet.icon.glyph": "^0.2.0",
     "lodash.debounce": "4.0.8",
-    "marked": "^0.6.1",
+    "marked": "^1.1.1",
     "moment": "^2.22.2",
     "pdfobject": "^2.1.1",
     "vue": "^2.6.7",
