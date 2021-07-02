@@ -48,18 +48,18 @@
           <li class="nav-item">
             <router-link to="/oam-portal" class="nav-item nav-link"><div class="extra-padding">OAM Portal</div></router-link>
           </li>
-          <li class="nav-item">
+          <!--<li class="nav-item">
             <router-link to="/explorer" class="nav-item nav-link"><div class="extra-padding">Explorer</div></router-link>
           </li>
           <li class="nav-item">
             <router-link to="/map" class="nav-item nav-link"><div class="extra-padding">Map</div></router-link>
-          </li>
+          </li>-->
           <li class="nav-item">
             <router-link to="/search.html" class="nav-item nav-link"><div class="extra-padding">Investor Portal</div></router-link>
           </li>
-          <li class="nav-item">
+          <!--<li class="nav-item">
             <router-link to="/witnesses" class="nav-item nav-link"><div class="extra-padding">Witnesses</div></router-link>
-          </li>
+          </li>-->
           <li class="nav-item">
             <router-link to="/faq" class="nav-item nav-link"><div class="extra-padding">FAQ</div></router-link>
           </li>

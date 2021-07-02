@@ -4,7 +4,7 @@
     <div class="container">
       <h2 class="text-center mb-4">European Financial Transparency Gateway</h2>
       <div class="row">
-        <div class="offset-md-1 col-md-4">
+        <div class="offset-md-1 col-md-10">
           <router-link to="/oam-portal" class="card no-a mb-3">
             <img class="card-img-top" src="">
             <div class="card-body row">
@@ -29,13 +29,13 @@
             </div>
           </router-link>
         </div>
-        <div class="col-md-6">
+        <!--<div class="col-md-6">
           <div class="card">
             <div class="card-body">
               <Map :showBlocks="false" :showLegend="false" :showTitles="false"></Map>
             </div>
           </div>
-        </div>
+        </div>-->
       </div>      
       <p class="mt-4 text-justify">In order to promote cross-border investment and provide investors with easy access to regulated financial information of companies listed on the European Union's (EU) regulated markets, the European Commission (EC) is developing a platform that offers a single view for such information currently stored within different Member States' infrastructures. Following a successful Proof of Concept (PoC) using Blockchain technology, the EC is launching the European Financial Transparency Gateway (EFTG) Pilot Project within the framework of the Capital Market Union and the legal obligations of the Directive 2013/50/EC.</p>
       <p class="text-justify">EFTG Pilot Project is based on a new approach to build a distributed and decentralized system by interconnecting the OAMs (Officially Appointed Mechanisms) in Europe into a dedicated platform for sharing data instead of exchanging it, offering full traceability and ownership management of both submitted and consumed financial data.</p>
